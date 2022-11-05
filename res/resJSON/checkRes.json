@@ -1,0 +1,26 @@
+{
+	"shader":[
+		"spriteShader"
+	],
+	
+	"textureAtlases":[
+		"Knight"
+	],
+	
+	"sprites":[
+		"S_Attack1_1",
+		"S_Attack1_2",
+		"S_Attack1_3",
+		"S_Attack1_4",
+		"S_Attack1_4",
+		"S_Idle_1",
+		"S_Idle_2",
+		"S_Idle_3",
+		"S_Idle_4"	
+	],
+	
+	"StateAnimation":[
+		"Attack1",
+		"Idle"
+	]
+}

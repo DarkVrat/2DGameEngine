@@ -21,6 +21,8 @@ add_executable(${PROJECT}
 	src/Renderer/VertexArray.h
 	src/Renderer/IndexBuffer.cpp
 	src/Renderer/IndexBuffer.h
+	src/Renderer/PrintText.cpp
+	src/Renderer/PrintText.h
 	src/Renderer/RenderEngine.cpp
 	src/Renderer/RenderEngine.h
 	
@@ -36,6 +38,8 @@ add_executable(${PROJECT}
 	src/GameClass/StateController.h
 	src/GameClass/Timer.cpp
 	src/GameClass/Timer.h
+	
+	
 )
 
 target_compile_features(${PROJECT} PUBLIC cxx_std_17)
@@ -54,6 +58,9 @@ target_link_libraries(${PROJECT} glad)
 include_directories(external/glm)
 
 include_directories(external/rapidjson/include)
+
+add_subdirectory(external/freetype)
+target_link_libraries(${PROJECT} freetype)
 
 set_target_properties(${PROJECT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 

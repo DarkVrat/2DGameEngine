@@ -11,6 +11,7 @@
 #include <glm/vec2.hpp>
 #include <iostream>
 #include <rapidjson/document.h>
+#include "../Renderer/PrintText.h"
 
 MainGameClass::MainGameClass(const glm::ivec2& window) :m_GState(E_GAME_STATE::Active), m_window(window) {
     m_keys.fill(false);
@@ -23,12 +24,15 @@ void MainGameClass::update(double duration){
     for (auto current : m_GObject) {
         current.update(duration);
     }
+    Renderer::PrintText::updateBuffer(duration);
 }
 
 void MainGameClass::render() {
     for (auto current : m_GObject) {
         current.render();
     }
+    Renderer::PrintText::RenderText("Hello world! -> Привет славяне!", glm::vec3(10, 400, 1), 0.5, glm::vec3(1,1,1));
+    Renderer::PrintText::renderBuffer();
 }
 
 void MainGameClass::setKey(const int key, const int action) {
@@ -39,6 +43,7 @@ bool MainGameClass::init() {
     ResourceManager::loadJSONResurces("res/resJSON/resources.json");
 
     auto pSpriteShaderProgram = ResourceManager::getShader("spriteShader");
+    auto pTextShaderProgram = ResourceManager::getShader("textShader");
 
     m_GObject.emplace_back("Attack1", glm::vec2(0, 100), glm::vec2(256, 256), 0.f, -4.f);
     m_GObject.emplace_back("Attack1", glm::vec2(60, 100), glm::vec2(256, 256), 0.f, -3.f);
@@ -57,6 +62,11 @@ bool MainGameClass::init() {
     pSpriteShaderProgram->use();
     pSpriteShaderProgram->setInt("tex", 0);
     pSpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
+
+    pTextShaderProgram->use();
+    pTextShaderProgram->setMatrix4("projection", projectionMatrix);
+
+    Renderer::PrintText::init(pTextShaderProgram);
 
     return true;
 }
@@ -81,4 +91,6 @@ void MainGameClass::Events(){
     if (m_keys[GLFW_KEY_7] == GLFW_RELEASE) m_GObject[6].idle();
     if (m_keys[GLFW_KEY_8] == GLFW_RELEASE) m_GObject[7].idle();
     if (m_keys[GLFW_KEY_9] == GLFW_RELEASE) m_GObject[8].idle();
+
+    if (m_keys[GLFW_KEY_SPACE] == GLFW_PRESS) Renderer::PrintText::AddTextInBuffer("space it ok", glm::vec3(200, 500, 100), 0.5, glm::vec3(1, 1, 1), 5000.0);
 }

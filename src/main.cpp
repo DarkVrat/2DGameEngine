@@ -31,7 +31,7 @@ void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int
 int main(int argc, char** argv){
 
     if (!glfwInit()) { //Инициализация библиотеки GLFW
-        std::cout << "glfwInit failed" << std::endl;
+        std::cerr << "(!) glfwInit failed" << std::endl;
         return -1;
     }
 
@@ -45,7 +45,7 @@ int main(int argc, char** argv){
 
     if (!PWindow){//Проверка создания
         glfwTerminate();//Уничтожение GLFW и невозможность дальнейшего использования
-        std::cout << "PWindow failed" << std::endl;
+        std::cerr << "(!) PWindow failed" << std::endl;
         return -1;
     }
 
@@ -55,7 +55,7 @@ int main(int argc, char** argv){
 	
 	if(!gladLoadGL()){//загрузка OpenGL
         glfwTerminate();//Уничтожение GLFW и невозможность дальнейшего использования
-		std::cout<<"gladLoadGL failed"<<std::endl;
+		std::cerr<<"(!) gladLoadGL failed"<<std::endl;
 		return -1;
 	}
 
@@ -63,7 +63,10 @@ int main(int argc, char** argv){
     std::cout << "Renderer: " << Renderer::RenderEngine::getRender() << std::endl;
     std::cout << "OpenGL version: " << Renderer::RenderEngine::getVersion() << std::endl;
 
-    Renderer::RenderEngine::setClearColor(0.5f, 0.5f, 0.5f, 1.0f);//цвет заполнения
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    Renderer::RenderEngine::setClearColor(0.f, 0.f, 0.f, 1.f);//цвет заполнения
     Renderer::RenderEngine::setDetphTest(true);
     {
         ResourceManager::setExecutablePath(argv[0]);//Передача пути к программе

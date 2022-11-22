@@ -1,0 +1,12 @@
+#version 460
+in vec2 texCoord;
+out vec4 flag_color;
+
+uniform sampler2D tex;
+
+void main() {
+	vec4 texCollor=texture(tex,texCoord);
+    if(texCollor.a<0.1)
+		discard;
+	flag_color=texCollor;
+}

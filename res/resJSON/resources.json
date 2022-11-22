@@ -4,8 +4,13 @@
 	"shader":[
 		{
 			"name" : "spriteShader",
-			"filePath_v" : "res/shaders/vSprite.txt",
-			"filePath_f" : "res/shaders/fSprite.txt"
+			"filePath_v" : "res/shaders/SpriteVertexShader.txt",
+			"filePath_f" : "res/shaders/SpriteFragmentShader.txt"
+		},
+		{
+			"name" : "textShader",
+			"filePath_v" : "res/shaders/TextVertexShader.txt",
+			"filePath_f" : "res/shaders/TextFragmentShader.txt"
 		}
 	],
 	

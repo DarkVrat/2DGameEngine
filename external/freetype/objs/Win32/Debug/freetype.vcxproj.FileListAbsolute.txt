@@ -1,0 +1,1 @@
+C:\Users\DarkVrat\Desktop\2DGameEngine\external\freetype\objs\Win32\Debug\freetype.dll

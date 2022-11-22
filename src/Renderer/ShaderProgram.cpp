@@ -8,14 +8,14 @@ namespace Renderer {
 		//Комтиляция вертексного шейдера в и сохранение ID в vertexShaderID
 		GLuint vertexShaderID;
 		if (!createShader(vertexShader, GL_VERTEX_SHADER, vertexShaderID)) {
-			std::cerr << "VERTEX SHADER Compile-time error" << std::endl;
+			std::cerr << "(!) VERTEX SHADER Compile-time error" << std::endl;
 			return;
 		}
 
 		//Комтиляция фрагментного шейдера в и сохранение ID в fragmentShaderID
 		GLuint fragmentShaderID;
 		if (!createShader(fragmentShader, GL_FRAGMENT_SHADER, fragmentShaderID)) {
-			std::cerr << "FRAGMENT SHADER Compile-time error" << std::endl;
+			std::cerr << "(!) FRAGMENT SHADER Compile-time error" << std::endl;
 			glDeleteShader(vertexShaderID);
 			return;
 		}
@@ -31,7 +31,7 @@ namespace Renderer {
 		if (!success) {
 			GLchar infoLog[1024];
 			glGetShaderInfoLog(m_ID, 1024, nullptr, infoLog);
-			std::cerr << "ERROR::SHADER: Limk-time error: \n" << infoLog << std::endl;
+			std::cerr << "(!) ERROR::SHADER: Limk-time error: \n" << infoLog << std::endl;
 		}
 		else m_isCompiled = true;
 
@@ -55,7 +55,7 @@ namespace Renderer {
 		if (!success) {
 			GLchar infoLog[1024];
 			glGetShaderInfoLog(shaderID, 1024, nullptr, infoLog); 
-			std::cerr << "ERROR::SHADER: Compile-time error: \n" << infoLog << std::endl; 
+			std::cerr << "(!) ERROR::SHADER: Compile-time error: \n" << infoLog << std::endl; 
 			return false;
 		}
 		return true;
@@ -85,6 +85,11 @@ namespace Renderer {
 	void ShaderProgram::setMatrix4(const std::string& name, const glm::mat4& matrix){
 		//Получение адреса юниформ переменной шейдера по name, указание количества mat4 матриц, указание о ненадобности транспоритрования матриц, и загрузка матрицы в переменную
 		glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()),1,GL_FALSE, glm::value_ptr(matrix));
+	}
+
+	void ShaderProgram::setVec3(const std::string& name, const glm::vec3 vec3) {
+		//Получение адреса юниформ переменной шейдера по name, и установка ей значения
+		glUniform3f(glGetUniformLocation(m_ID, name.c_str()), vec3.x,vec3.y,vec3.z);
 	}
 
 	//Передача данных програмного шейдера с удалением передаваемого

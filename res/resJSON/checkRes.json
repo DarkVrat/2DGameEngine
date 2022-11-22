@@ -1,6 +1,7 @@
 {
 	"shader":[
-		"spriteShader"
+		"spriteShader",
+		"textShader"
 	],
 	
 	"textureAtlases":[

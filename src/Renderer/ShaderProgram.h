@@ -25,6 +25,7 @@ namespace Renderer {
 		void setInt(const std::string& name, const GLint value);
 		void setFloat(const std::string& name, const GLfloat value);
 		void setMatrix4(const std::string& name, const glm::mat4& matrix);
+		void setVec3(const std::string& name, const glm::vec3 vec3);
 
 	private:
 		GLuint m_ID = 0; //ID шейдера

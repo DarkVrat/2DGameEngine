@@ -34,7 +34,7 @@ std::string ResourceManager::getFileString(const std::string& relativeFilePath) 
 	std::ifstream f;
 	f.open(m_path + "/" + relativeFilePath.c_str(), std::ios::in | std::ios::binary);
 	if (!f.is_open()) {
-		std::cerr << "Failed to open: " << relativeFilePath << std::endl;
+		std::cerr << "(!) Failed to open: " << relativeFilePath << std::endl;
 		return std::string{};
 	}
 	std::stringstream buffer;
@@ -48,13 +48,13 @@ std::string ResourceManager::getFileString(const std::string& relativeFilePath) 
 std::shared_ptr<Renderer::ShaderProgram> ResourceManager::loadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath) {
 	std::string vertexString = getFileString(vertexPath);//ƒанные из вертексного шейдера
 	if (vertexString.empty()) {//ѕроверка наличи€
-		std::cerr << "No vertex" << std::endl;
+		std::cerr << "(!) No vertex" << std::endl;
 		return nullptr;
 	}
 
 	std::string fragmentString = getFileString(fragmentPath);//ƒанные из фрагментного шейдера
 	if (fragmentString.empty()) {//ѕроверка наличи€
-		std::cerr << "No fragment" << std::endl;
+		std::cerr << "(!) No fragment" << std::endl;
 		return nullptr;
 	}
 
@@ -62,7 +62,7 @@ std::shared_ptr<Renderer::ShaderProgram> ResourceManager::loadShader(const std::
 	std::shared_ptr<Renderer::ShaderProgram>&newShader = m_shaderPrograms.emplace(shaderName, std::make_shared<Renderer::ShaderProgram>(vertexString, fragmentString)).first->second;
 	if (newShader->isCompiled()) return newShader;//ѕроверка и возврат шейдера при успешном выполнении
 
-	std::cerr << "Can't load shader" << std::endl;
+	std::cerr << "(!) Can't load shader" << std::endl;
 	return nullptr;
 }
 
@@ -70,7 +70,7 @@ std::shared_ptr<Renderer::ShaderProgram> ResourceManager::loadShader(const std::
 std::shared_ptr<Renderer::ShaderProgram>  ResourceManager::getShader(const std::string& shaderName) {
 	ShaderProgramsMap::const_iterator it = m_shaderPrograms.find(shaderName);//поиск
 	if (it != m_shaderPrograms.end()) return it->second;//проверка наличи€ и возврат если есть
-	std::cerr << "Cant find the shader " << shaderName << std::endl;
+	std::cerr << "(!) Cant find the shader " << shaderName << std::endl;
 	return nullptr;
 }
 //-------------------------------Shader------------------------------------//
@@ -86,7 +86,7 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::loadTexture(const std::str
 	stbi_set_flip_vertically_on_load(true);//ƒл€ загрузки текстуры в правильном ориентривании, при false изображение будет перевЄрнуто
 	unsigned char* pixels=stbi_load(std::string(m_path + "/" + texturePatn).c_str(), &widht, &height, &channels, 0);//загрузка пикселей, а так же заполнение иформации
 	if (!pixels) { //ѕроверка успешности
-		std::cerr << "ERROR TEXTUR LOAD" << textureName <<std::endl;
+		std::cerr << "(!) ERROR TEXTUR LOAD" << textureName <<std::endl;
 		return nullptr;
 	}
 
@@ -100,7 +100,7 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::loadTexture(const std::str
 std::shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const std::string& textureName) {
 	TexturesMap::const_iterator it = m_textures.find(textureName);//поиск
 	if (it != m_textures.end()) return it->second;//получение
-	std::cerr << "Cant find the textureName " << textureName << std::endl;
+	std::cerr << "(!) Cant find the textureName " << textureName << std::endl;
 	return nullptr;
 }
 //-------------------------------Texture-----------------------------------//
@@ -112,11 +112,11 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const std::stri
 std::shared_ptr<Renderer::Sprite> ResourceManager::loadSprite(const std::string& spriteName, const std::string& textureName, const std::string& shaderName,const std::string& subTextureName){
 	//ѕоиск и проверка текстуры
 	auto pTexture = getTexture(textureName);
-	if (!pTexture) std::cerr << "Cant find the textureName " << textureName << " for sprite " << spriteName << std::endl;
+	if (!pTexture) std::cerr << "(!) Cant find the textureName " << textureName << " for sprite " << spriteName << std::endl;
 	
 	//ѕоиск и проверка шейдера
 	auto pShader = getShader(shaderName);
-	if (!pShader) std::cerr << "Cant find the shaderName " << shaderName << " for sprite " << spriteName << std::endl;
+	if (!pShader) std::cerr << "(!) Cant find the shaderName " << shaderName << " for sprite " << spriteName << std::endl;
 	
 	//создание спрайта и возврат указател€ на спрайт
 	std::shared_ptr<Renderer::Sprite> newSprite = m_sprite.emplace(spriteName,std::make_shared<Renderer::Sprite>(pTexture,subTextureName,pShader)).first->second;
@@ -127,7 +127,7 @@ std::shared_ptr<Renderer::Sprite> ResourceManager::loadSprite(const std::string&
 std::shared_ptr<Renderer::Sprite> ResourceManager::getSprite(const std::string& spriteName){
 	SpriteMap::const_iterator it = m_sprite.find(spriteName);//поиск
 	if (it != m_sprite.end()) return it->second;//получение
-	std::cerr << "Cant find the spriteName " << spriteName << std::endl;
+	std::cerr << "(!) Cant find the spriteName " << spriteName << std::endl;
 	return nullptr;
 }
 //-------------------------------Sprite------------------------------------//
@@ -142,7 +142,7 @@ std::shared_ptr<Renderer::StateAnimation> ResourceManager::loadStateAnimation(co
 std::shared_ptr<Renderer::StateAnimation> ResourceManager::getStateAnimation(const std::string& stateName) {
 	StateAnimationMap::const_iterator it = m_stateAnimation.find(stateName);
 	if (it != m_stateAnimation.end()) return it->second;
-	std::cerr << "Cant find the spriteName " << stateName << std::endl;
+	std::cerr << "(!) Cant find the spriteName " << stateName << std::endl;
 	return nullptr;
 }
 //-------------------------------StateAnimation------------------------------------//
@@ -177,14 +177,14 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::loadTextureAtlas(std::stri
 rapidjson::Document ResourceManager::loadJSONDoc(const std::string& JSONPath){
 	const std::string JSONString = getFileString(JSONPath);
 	if (JSONString.empty()) {
-		std::cerr << "No JSON resources file" << std::endl;
+		std::cerr << "(!) No JSON resources file" << std::endl;
 		return nullptr;
 	}
 	rapidjson::Document JSONDoc;
 	rapidjson::ParseResult parseResult = JSONDoc.Parse(JSONString.c_str());
 	if (!parseResult) {
-		std::cerr << "JSON parse error: " << rapidjson::GetParseError_En(parseResult.Code()) << "(" << parseResult.Offset() << ")" << std::endl;
-		std::cerr << "in JSON resources file: " << JSONPath << std::endl;
+		std::cerr << "(!) JSON parse error: " << rapidjson::GetParseError_En(parseResult.Code()) << "(" << parseResult.Offset() << ")" << std::endl;
+		std::cerr << "(!) in JSON resources file: " << JSONPath << std::endl;
 		return nullptr;
 	}
 	return JSONDoc;
@@ -275,7 +275,7 @@ bool ResourceManager::checkJSONResurces(const std::string& JSONPath){
 	if (It != JSONDoc.MemberEnd()) {
 		for (const auto& current : It->value.GetArray()) {
 			if (!getShader(current.GetString())) {
-				std::cerr << " can't find shader: " << current.GetString() << std::endl;
+				std::cerr << "(!) can't find shader: " << current.GetString() << std::endl;
 				unloadAllRes();
 				return false;
 			}
@@ -286,7 +286,7 @@ bool ResourceManager::checkJSONResurces(const std::string& JSONPath){
 	if (It != JSONDoc.MemberEnd()) {
 		for (const auto& current : It->value.GetArray()) {
 			if (!getTexture(current.GetString())) {
-				std::cerr << " can't find texture: " << current.GetString() << std::endl;
+				std::cerr << "(!) can't find texture: " << current.GetString() << std::endl;
 				unloadAllRes();
 				return false;
 			}
@@ -297,7 +297,7 @@ bool ResourceManager::checkJSONResurces(const std::string& JSONPath){
 	if (It != JSONDoc.MemberEnd()) {
 		for (const auto& current : It->value.GetArray()) {
 			if (!getSprite(current.GetString())) {
-				std::cerr << " can't find sprite: " << current.GetString() << std::endl;
+				std::cerr << "(!) can't find sprite: " << current.GetString() << std::endl;
 				unloadAllRes();
 				return false;
 			}
@@ -308,7 +308,7 @@ bool ResourceManager::checkJSONResurces(const std::string& JSONPath){
 	if (It != JSONDoc.MemberEnd()) {
 		for (const auto& current : It->value.GetArray()) {
 			if (!getStateAnimation(current.GetString())) {
-				std::cerr << " can't find stateAnimation: " << current.GetString() << std::endl;
+				std::cerr << "(!) can't find stateAnimation: " << current.GetString() << std::endl;
 				unloadAllRes();
 				return false;
 			}

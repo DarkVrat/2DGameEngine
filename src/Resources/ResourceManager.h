@@ -5,16 +5,17 @@
 #include <map>
 #include <vector>
 #include <rapidjson/document.h>
-#include "../Renderer/Sprite.h"
-#include "../Renderer/ShaderProgram.h"
-#include "../Renderer/Texture2D.h"
-#include "../Renderer/StateAnimation.h"
+#include "../Renderer/AllRender.h"
+#include "../Audio/FileOfSound.h"
 
 namespace Renderer {
 	class ShaderProgram;
 	class Texture2D;
 	class Sprite;
 	class StateAnimation;
+}
+namespace Audio {
+	class FileOfSound;
 }
 
 class ResourceManager {
@@ -43,6 +44,9 @@ public:
 	static std::shared_ptr<Renderer::StateAnimation> loadStateAnimation(const std::string& spriteName, std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> frames, std::vector<std::string> sources, std::string nextState, bool uninterrupted);
 	static std::shared_ptr<Renderer::StateAnimation> getStateAnimation(const std::string& spriteName);
 
+	static Audio::FileOfSound loadSound(const std::string& soundName, const std::string& soundPath);
+	static Audio::FileOfSound getSound(const std::string& soundName);
+
 	//создание текстурного атласа
 	static std::shared_ptr<Renderer::Texture2D> loadTextureAtlas(std::string textureName,std::string texturePatn,std::vector<std::string> subTextures,const unsigned subWidth,const unsigned subHeigth);
 
@@ -59,11 +63,14 @@ private:
 	typedef std::map<const std::string, std::shared_ptr<Renderer::StateAnimation>> StateAnimationMap;
 	typedef std::map<const std::string, std::shared_ptr<Renderer::Texture2D>> TexturesMap;
 	typedef std::map<const std::string, std::shared_ptr<Renderer::ShaderProgram>> ShaderProgramsMap;
+	typedef std::map < const std::string, Audio::FileOfSound> SoundMap;
+
 	//Хранение всех данных загруженных в программу
 	static SpriteMap m_sprite;
 	static StateAnimationMap m_stateAnimation;
 	static TexturesMap m_textures;
 	static ShaderProgramsMap m_shaderPrograms;
+	static SoundMap m_soundMap;
 	//путь к папке с игрой
 	static std::string m_path;
 };

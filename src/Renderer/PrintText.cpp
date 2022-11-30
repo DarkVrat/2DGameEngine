@@ -119,8 +119,10 @@ namespace Renderer {
     void PrintText::AddTextInBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time){
         std::vector<Text>::iterator It;
         for (It = m_bufferText.begin(); It != m_bufferText.end(); It++) {
-            if (It->text == text && It->position == position)
+            if (It->text == text && It->position == position) {
+                It->time = Time;
                 return;
+            }
         }
         Text textInBuffer = {
             text,

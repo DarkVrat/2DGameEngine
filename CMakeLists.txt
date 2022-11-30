@@ -25,10 +25,26 @@ add_executable(${PROJECT}
 	src/Renderer/PrintText.h
 	src/Renderer/RenderEngine.cpp
 	src/Renderer/RenderEngine.h
+	src/Renderer/AllRender.h
 	
 	src/Resources/ResourceManager.cpp
 	src/Resources/ResourceManager.h
 	src/Resources/stb_image.h 
+	
+	src/Audio/SoundEffectsPlayer.cpp
+	src/Audio/SoundEffectsPlayer.h
+	src/Audio/SoundDevice.cpp
+	src/Audio/SoundDevice.h
+	src/Audio/PlayerManager.cpp
+	src/Audio/PlayerManager.h
+	src/Audio/SampleSourse.cpp
+	src/Audio/SampleSourse.h
+	src/Audio/SoundEffectsLibrary.cpp
+	src/Audio/SoundEffectsLibrary.h
+	src/Audio/OpenALErrorCheck.h
+	src/Audio/FileOfSound.cpp
+	src/Audio/FileOfSound.h
+	src/Audio/AllAudio.h
 	
 	src/GameClass/MainGameClass.cpp
 	src/GameClass/MainGameClass.h
@@ -61,6 +77,15 @@ include_directories(external/rapidjson/include)
 
 add_subdirectory(external/freetype)
 target_link_libraries(${PROJECT} freetype)
+
+add_subdirectory(external/openal-soft)
+include_directories(external/openal-soft/include)
+target_link_libraries(${PROJECT} OpenAL)
+
+
+add_subdirectory(external/libsndfile)
+include_directories(external/libsndfile/include)
+target_link_libraries(${PROJECT} sndfile)
 
 set_target_properties(${PROJECT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 

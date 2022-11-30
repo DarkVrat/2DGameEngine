@@ -2,12 +2,14 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 
-
 #include <chrono>
 #include <iostream>
 #include "Resources/ResourceManager.h"
 #include "GameClass/MainGameClass.h"
 #include "Renderer/RenderEngine.h"
+
+
+
 
 //Размер окна
 glm::ivec2 g_window(1280, 720);
@@ -34,6 +36,7 @@ int main(int argc, char** argv){
         std::cerr << "(!) glfwInit failed" << std::endl;
         return -1;
     }
+    
 
     //Установка используемой версии OpenGL
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -62,10 +65,13 @@ int main(int argc, char** argv){
     //Вывод версии
     std::cout << "Renderer: " << Renderer::RenderEngine::getRender() << std::endl;
     std::cout << "OpenGL version: " << Renderer::RenderEngine::getVersion() << std::endl;
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //
 
+
+
+    //
     Renderer::RenderEngine::setClearColor(0.f, 0.f, 0.f, 1.f);//цвет заполнения
     Renderer::RenderEngine::setDetphTest(true);
     {
@@ -82,20 +88,12 @@ int main(int argc, char** argv){
             double dura = std::chrono::duration<double, std::milli>(currTime - lastTime).count();//Просчёт изменившегося времени
             lastTime = currTime;//сдвиг таймера
             
-            t += dura;
-            i++;
             g_Game.update(dura);
 
-            if (t > 1000.0) {
-                std::cerr << "fps: " << i << std::endl;
-                t -= 1000.0;
-                i = 0;
-            }
             //Заполнение цветом указаном в glClearColor
             Renderer::RenderEngine::clear();
 
             g_Game.render();
-
 
             glfwSwapBuffers(PWindow);//Меняет буферы отрисовки
             glfwPollEvents();//Обработка событий

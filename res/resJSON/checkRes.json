@@ -23,5 +23,9 @@
 	"StateAnimation":[
 		"Attack1",
 		"Idle"
+	],
+	
+	"sound" : [
+		"sword"
 	]
 }

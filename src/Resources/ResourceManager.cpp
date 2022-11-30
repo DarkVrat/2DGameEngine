@@ -1,7 +1,4 @@
 #include "ResourceManager.h"
-#include "../Renderer/ShaderProgram.h"
-#include "../Renderer/Texture2D.h"
-#include "../Renderer/Sprite.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -14,6 +11,7 @@ ResourceManager::SpriteMap ResourceManager::m_sprite;
 ResourceManager::TexturesMap ResourceManager::m_textures;
 ResourceManager::StateAnimationMap ResourceManager::m_stateAnimation;
 ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
+ResourceManager::SoundMap ResourceManager::m_soundMap;
 
 std::string ResourceManager::m_path;
 
@@ -147,6 +145,20 @@ std::shared_ptr<Renderer::StateAnimation> ResourceManager::getStateAnimation(con
 }
 //-------------------------------StateAnimation------------------------------------//
 
+//-------------------------------Sound------------------------------------//
+Audio::FileOfSound ResourceManager::loadSound(const std::string& soundName, const std::string& soundPath){
+	Audio::FileOfSound File(soundPath);
+	m_soundMap.emplace(soundName, File);
+	return File;
+}
+Audio::FileOfSound ResourceManager::getSound(const std::string& soundName){
+	SoundMap::const_iterator it = m_soundMap.find(soundName);
+	if (it != m_soundMap.end()) return it->second;
+	std::cerr << "(!) Cant find the spriteName " << soundName << std::endl;
+	return Audio::FileOfSound();
+}
+//-------------------------------Sound------------------------------------//
+
 
 
 //загрузка текстурного атласа, текстурный атлас не привязывается к уже загруженым текстурам
@@ -265,6 +277,16 @@ bool ResourceManager::loadJSONResurces(const std::string& JSONPath){
 		}
 	}
 
+	auto soundIt = JSONDoc.FindMember("sound");
+	if (soundIt != JSONDoc.MemberEnd()) {
+		for (const auto& currentSound : soundIt->value.GetArray()) {
+			const std::string name = currentSound["name"].GetString();
+			const std::string path = currentSound["path"].GetString();
+
+			loadSound(name, path);
+		}
+	}
+
 	return checkJSONResurces(check);
 }
 
@@ -309,6 +331,17 @@ bool ResourceManager::checkJSONResurces(const std::string& JSONPath){
 		for (const auto& current : It->value.GetArray()) {
 			if (!getStateAnimation(current.GetString())) {
 				std::cerr << "(!) can't find stateAnimation: " << current.GetString() << std::endl;
+				unloadAllRes();
+				return false;
+			}
+		}
+	}
+
+	It = JSONDoc.FindMember("sound");
+	if (It != JSONDoc.MemberEnd()) {
+		for (const auto& current : It->value.GetArray()) {
+			if (!getSound(current.GetString())) {
+				std::cerr << "(!) can't find sound: " << current.GetString() << std::endl;
 				unloadAllRes();
 				return false;
 			}

@@ -137,5 +137,12 @@
 				}
 			]
 		}
+	],
+	
+	"sound" : [
+	{
+		"name" : "sword",
+		"path" : "../res/sound/effect/sword.wav"
+	}
 	]
 }

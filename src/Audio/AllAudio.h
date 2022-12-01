@@ -8,3 +8,4 @@
 
 Audio::SoundDevice* GlobalSoundDevice = GETDEVICE;
 Audio::SoundEffectsLibrary* LibSound = GETLIB;
+Audio::PlayerManager* PlayerSound = GETPLAYER;

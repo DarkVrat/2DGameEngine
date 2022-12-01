@@ -2,8 +2,6 @@
 #include <iostream>
 #include "OpenALErrorCheck.h"
 
-static Audio::SoundEffectsPlayer* player = nullptr;
-
 namespace Audio {
 	SoundEffectsPlayer::SoundEffectsPlayer(){
 		alGenSources(1, &p_Source);
@@ -13,6 +11,12 @@ namespace Audio {
 	SoundEffectsPlayer::SoundEffectsPlayer(const ALuint& buffer_to_play){
 		alGenSources(1, &p_Source);
 		alSourcei(p_Source, AL_BUFFER, buffer_to_play);
+		AL_CheckAndThrow();
+	}
+	SoundEffectsPlayer::SoundEffectsPlayer(const ALuint& buffer_to_play, const SampleSourse sample) {
+		alGenSources(1, &p_Source);
+		alSourcei(p_Source, AL_BUFFER, buffer_to_play);
+		SetSampleSourse(sample);
 		AL_CheckAndThrow();
 	}
 	SoundEffectsPlayer::~SoundEffectsPlayer(){
@@ -48,12 +52,24 @@ namespace Audio {
 		alSourcei(p_Source, param, value);
 		AL_CheckAndThrow();
 	}
+	void SoundEffectsPlayer::SetSampleSourse(const SampleSourse sample){
+		alSourcef(p_Source, AL_PITCH, sample.AlPitch);
+		alSourcef(p_Source, AL_GAIN, sample.AlGain);
+		alSourcef(p_Source, AL_MAX_DISTANCE, sample.AlMaxDistance);
+		alSourcef(p_Source, AL_ROLLOFF_FACTOR, sample.AlRolloffFactor);
+		alSourcef(p_Source, AL_REFERENCE_DISTANCE, sample.AlReferenceDistance);
+		alSourcef(p_Source, AL_MIN_GAIN, sample.AlMinGain);
+		alSourcef(p_Source, AL_MAX_GAIN, sample.AlMaxGain);
+		alSourcef(p_Source, AL_CONE_OUTER_GAIN, sample.AlGainOutCone);
+		alSourcef(p_Source, AL_CONE_INNER_ANGLE, sample.AlAngleInCone);
+		alSourcef(p_Source, AL_CONE_OUTER_ANGLE, sample.AlAngleOutCone);
+	}
 
 	
 
-	bool SoundEffectsPlayer::isPlaying(){
+	bool SoundEffectsPlayer::isStopped(){
 		ALint playState;
 		alGetSourcei(p_Source, AL_SOURCE_STATE, &playState);
-		return (playState == AL_PLAYING);
+		return (playState == AL_STOPPED);
 	}
 }

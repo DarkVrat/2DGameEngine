@@ -5,13 +5,13 @@
 #include <iostream>
 #include "OpenALErrorCheck.h"
 
-static Audio::SoundDevice* _instance = nullptr;
+static Audio::SoundDevice* soundDevice = nullptr;
 
 namespace Audio {
 	SoundDevice* SoundDevice::Get(){
-		if (_instance == nullptr)
-			_instance = new SoundDevice();
-		return _instance;
+		if (soundDevice == nullptr)
+			soundDevice = new SoundDevice();
+		return soundDevice;
 	}
 
 	void SoundDevice::SetAttunation(int key){

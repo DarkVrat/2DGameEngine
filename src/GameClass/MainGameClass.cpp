@@ -12,6 +12,7 @@
 #include "../Audio/AllAudio.h"
 
 int xWWW = 0, yWWW = 0;
+std::shared_ptr<Audio::SoundEffectsPlayer> player;
 
 MainGameClass::MainGameClass(const glm::ivec2& window) :m_GState(E_GAME_STATE::Active), m_window(window) {
     m_keys.fill(false);
@@ -50,6 +51,11 @@ bool MainGameClass::init() {
     GlobalSoundDevice->SetPosition(glm::vec3(0.f, 0.f, 0.f));
     GlobalSoundDevice->SetOrientation(glm::vec3(0.f, 1.f, 0.f), glm::vec3(0.f, 0.f, 1.f));
 
+
+    
+    player = PlayerSound->add(Audio::SoundEffectsPlayer(LibSound->Load("sword")));
+    player->SetIntParam(AL_LOOPING, true);
+    player->Play();
 
     m_GObject.emplace_back("Attack1", glm::vec2(100, 128), glm::vec2(256, 256), 0.f, -4.f);
     m_GObject.emplace_back("Attack1", glm::vec2(180, 128), glm::vec2(256, 256), 0.f, -3.f);

@@ -1,12 +1,14 @@
 #pragma once
 #include <AL\al.h>
 #include <glm/vec3.hpp>
+#include "SampleSourse.h"
 
 namespace Audio {
 	class SoundEffectsPlayer{
 	public:
 		SoundEffectsPlayer();
 		SoundEffectsPlayer(const ALuint& buffer_to_play);
+		SoundEffectsPlayer(const ALuint& buffer_to_play, const SampleSourse sample);
 		~SoundEffectsPlayer();
 
 		void Play();
@@ -17,8 +19,9 @@ namespace Audio {
 		void SetFloatParam(ALenum param, const float& value);
 		void SetVec3Param(ALenum param, const glm::vec3& value);
 		void SetIntParam(ALenum param, const int& value);
+		void SetSampleSourse(const SampleSourse sample);
 
-		bool isPlaying();
+		bool isStopped();
 
 	private:
 		ALuint p_Source;

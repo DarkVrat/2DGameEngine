@@ -23,6 +23,8 @@ namespace Audio {
 
 		bool isStopped();
 
+		ALuint GetSource() { return p_Source; }
+
 	private:
 		ALuint p_Source;
 	};

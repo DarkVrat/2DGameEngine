@@ -1,6 +1,7 @@
 #include "SoundEffectsPlayer.h"
 #include <iostream>
 #include "OpenALErrorCheck.h"
+#include "SoundDevice.h"
 
 namespace Audio {
 	SoundEffectsPlayer::SoundEffectsPlayer(){
@@ -20,11 +21,14 @@ namespace Audio {
 		AL_CheckAndThrow();
 	}
 	SoundEffectsPlayer::~SoundEffectsPlayer(){
-		alDeleteSources(1, &p_Source);
+		//alDeleteSources(1, &p_Source);
 	}
 
 	void SoundEffectsPlayer::Play() {
-		alSourcePlay(p_Source);
+		ALint playState;
+		alGetSourcei(p_Source, AL_SOURCE_STATE, &playState);
+		if(playState!=AL_PLAYING)
+			alSourcePlay(p_Source);
 		AL_CheckAndThrow();
 	}
 	void SoundEffectsPlayer::Stop(){
@@ -64,8 +68,6 @@ namespace Audio {
 		alSourcef(p_Source, AL_CONE_INNER_ANGLE, sample.AlAngleInCone);
 		alSourcef(p_Source, AL_CONE_OUTER_ANGLE, sample.AlAngleOutCone);
 	}
-
-	
 
 	bool SoundEffectsPlayer::isStopped(){
 		ALint playState;

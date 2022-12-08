@@ -5,6 +5,7 @@
 #include<memory>
 #include"StateController.h"
 #include"../Renderer/PrintText.h"
+#include"../Audio/AllAudio.h"
 
 class GameObject {
 public:
@@ -26,4 +27,5 @@ private:
 	glm::vec2 m_size;
 	float m_rotation;
 	float m_layer;
+	std::map<std::string, Audio::SoundEffectsPlayer> m_mapPlayer;
 };

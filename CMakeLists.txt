@@ -35,9 +35,6 @@ add_executable(${PROJECT}
 	src/Audio/SoundEffectsPlayer.h
 	src/Audio/SoundDevice.cpp
 	src/Audio/SoundDevice.h
-	src/Audio/PlayerManager.cpp
-	src/Audio/PlayerManager.h
-	src/Audio/SampleSourse.cpp
 	src/Audio/SampleSourse.h
 	src/Audio/SoundEffectsLibrary.cpp
 	src/Audio/SoundEffectsLibrary.h

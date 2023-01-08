@@ -43,6 +43,11 @@ add_executable(${PROJECT}
 	src/Audio/FileOfSound.h
 	src/Audio/AllAudio.h
 	
+	src/Control/KeyboardControl.cpp
+	src/Control/KeyboardControl.h
+	src/Control/MouseControl.cpp
+	src/Control/MouseControl.h
+	
 	src/GameClass/MainGameClass.cpp
 	src/GameClass/MainGameClass.h
 	src/GameClass/GameObject.cpp

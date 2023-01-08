@@ -10,6 +10,7 @@
 #include <iostream>
 #include <rapidjson/document.h>
 #include "../Audio/AllAudio.h"
+#include "../Control/MouseControl.h"
 
 MainGameClass::MainGameClass(const glm::ivec2& window) :m_GState(E_GAME_STATE::Active), m_window(window) {
     m_keys.fill(false);
@@ -23,6 +24,7 @@ void MainGameClass::update(double duration){
         current.update(duration);
     }
     Renderer::PrintText::updateBuffer(duration);
+    Control::MouseControl::Get()->Update();
 }
 
 void MainGameClass::render() {
@@ -31,6 +33,8 @@ void MainGameClass::render() {
     }
     Renderer::PrintText::RenderText("Hello world! -> Привет мир!", glm::vec3(10, 400, 1), 0.5, glm::vec3(1,1,1));
     Renderer::PrintText::renderBuffer();
+    glm::vec2 p= Control::MouseControl::Get()->GetPosition();
+    Renderer::PrintText::RenderText("x: " + std::to_string(p.x) + " y:" + std::to_string(p.y), glm::vec3(10, 500, 0), 0.5, glm::vec3(1, 1, 1));
 }
 
 void MainGameClass::setKey(const int key, const int action) {
@@ -39,9 +43,6 @@ void MainGameClass::setKey(const int key, const int action) {
 
 bool MainGameClass::init() {
     ResourceManager::loadJSONResurces("res/resJSON/resources.json");
-
-    auto pSpriteShaderProgram = ResourceManager::getShader("spriteShader");
-    auto pTextShaderProgram = ResourceManager::getShader("textShader");
 
     GlobalSoundDevice->SetAttunation(AL_INVERSE_DISTANCE_CLAMPED);
     GlobalSoundDevice->SetPosition(glm::vec3(420.f, 128.f, 0.f));
@@ -59,18 +60,9 @@ bool MainGameClass::init() {
     m_GObject.emplace_back("Attack1", glm::vec2(660, 128), glm::vec2(-256, 256), 0.f, -0.3f);
     m_GObject.emplace_back("Attack1", glm::vec2(740, 128), glm::vec2(-256, 256), 0.f, -0.4f);
 
-    //Матрица для шейдера
-    glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 100.f);
+    SetProjectionMat(m_window);
 
-    //Активация шейдера
-    pSpriteShaderProgram->use();
-    pSpriteShaderProgram->setInt("tex", 0);
-    pSpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
-
-    pTextShaderProgram->use();
-    pTextShaderProgram->setMatrix4("projection", projectionMatrix);
-
-    Renderer::PrintText::init(pTextShaderProgram);
+    Renderer::PrintText::init(ResourceManager::getShader("textShader"));
     
     return true;
 }
@@ -98,6 +90,25 @@ void MainGameClass::Events(){
     if (m_keys[GLFW_KEY_9] == GLFW_RELEASE) m_GObject[8].idle();
     
     if (m_keys[GLFW_KEY_SPACE] == GLFW_PRESS) {
-        Renderer::PrintText::AddTextInBuffer("space it ok", glm::vec3(200, 500, 100), 0.5, glm::vec3(1, 1, 1), 5000.0);
+        Renderer::PrintText::AddTextInBuffer("space it ok", glm::vec3(200, 600, 100), 0.5, glm::vec3(1, 1, 1), 5000.0);
     }
+
+    if (Control::MouseControl::Get()->IfClamped(GLFW_MOUSE_BUTTON_LEFT)) {
+        Renderer::PrintText::AddTextInBuffer("Mouse press", glm::vec3(200, 450, 100), 0.5, glm::vec3(1, 1, 1), 1000.0);
+    }
+}
+
+void MainGameClass::SetProjectionMat(glm::ivec2 window){
+    m_window = window;
+
+    glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 100.f);
+
+    auto pSpriteShaderProgram = ResourceManager::getShader("spriteShader");
+    pSpriteShaderProgram->use();
+    pSpriteShaderProgram->setInt("tex", 0);
+    pSpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
+
+    auto pTextShaderProgram = ResourceManager::getShader("textShader");
+    pTextShaderProgram->use();
+    pTextShaderProgram->setMatrix4("projection", projectionMatrix);
 }

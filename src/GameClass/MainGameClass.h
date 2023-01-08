@@ -15,6 +15,7 @@ public:
 	void setKey(const int key,const int action);
 	bool init();
 	void Events();
+	void SetProjectionMat(glm::ivec2 window);
 
 private:
 	std::array<bool, 349> m_keys;

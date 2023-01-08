@@ -7,6 +7,7 @@
 #include "Resources/ResourceManager.h"
 #include "GameClass/MainGameClass.h"
 #include "Renderer/RenderEngine.h"
+#include "Control/MouseControl.h"
 
 
 
@@ -20,6 +21,8 @@ void glfwWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
     g_window.x = width;
     g_window.y = height;
     Renderer::RenderEngine::setViewport(g_window.x, g_window.y);
+    Control::MouseControl::Get()->SetHeight(g_window.y);
+    g_Game.SetProjectionMat(g_window);
 }
 
 //проверка нажатия кнопок
@@ -28,6 +31,10 @@ void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int
         glfwSetWindowShouldClose(pWindow, GL_TRUE);
     }
     g_Game.setKey(key, action);
+}
+
+void glfwMouseCallback(GLFWwindow* pWindow, int button, int action, int mods) {
+    Control::MouseControl::Get()->SetKey(button, action); 
 }
 
 int main(int argc, char** argv){
@@ -54,6 +61,7 @@ int main(int argc, char** argv){
 
     glfwSetWindowSizeCallback(PWindow, glfwWindowSizeCallback);//Передача в GLFW функции изменения размера окна приложения
     glfwSetKeyCallback(PWindow, glfwKeyCallback);//Передача в GLFW функции отслеживающей нажатия
+    glfwSetMouseButtonCallback(PWindow, glfwMouseCallback);
     glfwMakeContextCurrent(PWindow);//Указывает контекст окна активным
 	
 	if(!gladLoadGL()){//загрузка OpenGL
@@ -69,6 +77,8 @@ int main(int argc, char** argv){
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //
 
+    Control::MouseControl::Get()->SetWindow(PWindow);
+    Control::MouseControl::Get()->SetHeight(g_window.y);
 
 
     //

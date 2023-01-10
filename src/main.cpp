@@ -34,7 +34,11 @@ void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int
 }
 
 void glfwMouseCallback(GLFWwindow* pWindow, int button, int action, int mods) {
-    Control::MouseControl::Get()->SetKey(button, action); 
+    MOUSE->SetKey(button, action); 
+}
+
+void glfwMouseScrollCallback(GLFWwindow* окно, double x, double y){
+    MOUSE->SetScroll(glm::vec2(x, y));
 }
 
 int main(int argc, char** argv){
@@ -62,6 +66,7 @@ int main(int argc, char** argv){
     glfwSetWindowSizeCallback(PWindow, glfwWindowSizeCallback);//Передача в GLFW функции изменения размера окна приложения
     glfwSetKeyCallback(PWindow, glfwKeyCallback);//Передача в GLFW функции отслеживающей нажатия
     glfwSetMouseButtonCallback(PWindow, glfwMouseCallback);
+    glfwSetScrollCallback(PWindow, glfwMouseScrollCallback);
     glfwMakeContextCurrent(PWindow);//Указывает контекст окна активным
 	
 	if(!gladLoadGL()){//загрузка OpenGL
@@ -77,8 +82,8 @@ int main(int argc, char** argv){
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //
 
-    Control::MouseControl::Get()->SetWindow(PWindow);
-    Control::MouseControl::Get()->SetHeight(g_window.y);
+    MOUSE->SetWindow(PWindow);
+    MOUSE->SetHeight(g_window.y);
 
 
     //

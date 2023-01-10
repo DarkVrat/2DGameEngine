@@ -15,6 +15,7 @@ namespace Control {
 		double x, y;
 		glfwGetCursorPos(m_PWindow, &x, &y);
 		m_mousePosition = glm::vec2(x, m_height -y);
+		m_scroll = glm::vec2(0, 0);
 		for (auto i : m_keys) {
 			if (i == BUTTON_ACTION::Pressed)
 				i = BUTTON_ACTION::Clamped;
@@ -56,6 +57,7 @@ namespace Control {
 		m_PWindow = nullptr;
 		m_height = 0;
 		m_mousePosition = glm::vec2(0, 0);
+		m_scroll = glm::vec2(0, 0);
 		for (auto i : m_keys) {
 			i = BUTTON_ACTION::NotClamped;
 		}

@@ -24,17 +24,16 @@ void MainGameClass::update(double duration){
         current.update(duration);
     }
     Renderer::PrintText::updateBuffer(duration);
-    Control::MouseControl::Get()->Update();
+    MOUSE->Update();
 }
 
 void MainGameClass::render() {
     for (auto current : m_GObject) {
         current.render();
     }
-    Renderer::PrintText::RenderText("Hello world! -> Привет мир!", glm::vec3(10, 400, 1), 0.5, glm::vec3(1,1,1));
+    Renderer::PrintText::RenderText("Hello world! -> Привет мир!", glm::vec3(10, 400, 1), 0.5, glm::vec3(1, 1, 1));
     Renderer::PrintText::renderBuffer();
-    glm::vec2 p= Control::MouseControl::Get()->GetPosition();
-    Renderer::PrintText::RenderText("x: " + std::to_string(p.x) + " y:" + std::to_string(p.y), glm::vec3(10, 500, 0), 0.5, glm::vec3(1, 1, 1));
+    Renderer::PrintText::RenderText("x: " + std::to_string(MOUSE->GetPosition().x) + " y: " + std::to_string(MOUSE->GetPosition().y), glm::vec3(10, 500, 0), 0.5, glm::vec3(1, 1, 1));
 }
 
 void MainGameClass::setKey(const int key, const int action) {
@@ -90,12 +89,14 @@ void MainGameClass::Events(){
     if (m_keys[GLFW_KEY_9] == GLFW_RELEASE) m_GObject[8].idle();
     
     if (m_keys[GLFW_KEY_SPACE] == GLFW_PRESS) {
-        Renderer::PrintText::AddTextInBuffer("space it ok", glm::vec3(200, 600, 100), 0.5, glm::vec3(1, 1, 1), 5000.0);
+        Renderer::PrintText::AddTextInTimeBuffer("space it ok", glm::vec3(200, 600, 100), 0.5, glm::vec3(1, 1, 1), 5000.0);
     }
 
-    if (Control::MouseControl::Get()->IfClamped(GLFW_MOUSE_BUTTON_LEFT)) {
-        Renderer::PrintText::AddTextInBuffer("Mouse press", glm::vec3(200, 450, 100), 0.5, glm::vec3(1, 1, 1), 1000.0);
+    if (MOUSE->IfPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+        Renderer::PrintText::AddTextInTimeBuffer("Mouse press", glm::vec3(200, 450, 100), 0.5, glm::vec3(1, 1, 1), 1000.0);
     }
+
+    Renderer::PrintText::AddTextInCountBuffer("scroll x: " + std::to_string(MOUSE->GetScroll().x) + " scroll y: " + std::to_string(MOUSE->GetScroll().y), glm::vec3(10, 550, 0), 0.5, glm::vec3(1, 1, 1));
 }
 
 void MainGameClass::SetProjectionMat(glm::ivec2 window){

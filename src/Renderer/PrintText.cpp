@@ -6,7 +6,8 @@
 
 std::shared_ptr<Renderer::ShaderProgram> Renderer::PrintText::m_shader;
 std::map<GLchar, Renderer::PrintText::Character> Renderer::PrintText::m_Characters;
-std::vector<Renderer::PrintText::Text> Renderer::PrintText::m_bufferText;
+std::vector<std::pair<Renderer::PrintText::Text, double>> Renderer::PrintText::m_timeBufferText;
+std::vector<std::pair<Renderer::PrintText::Text, int>> Renderer::PrintText::m_countBufferText;
 GLuint Renderer::PrintText::m_VAO, Renderer::PrintText::m_VBO;
 
 namespace Renderer {
@@ -116,11 +117,11 @@ namespace Renderer {
         glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-    void PrintText::AddTextInBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time){
-        std::vector<Text>::iterator It;
-        for (It = m_bufferText.begin(); It != m_bufferText.end(); It++) {
-            if (It->text == text && It->position == position) {
-                It->time = Time;
+    void PrintText::AddTextInTimeBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time){
+        std::vector<std::pair<Text, double>>::iterator It;
+        for (It = m_timeBufferText.begin(); It != m_timeBufferText.end(); It++) {
+            if (It->first.text == text && It->first.position == position) {
+                It->second = Time;
                 return;
             }
         }
@@ -129,25 +130,45 @@ namespace Renderer {
             position,
             scale,
             color,
-            Time
         };
-        m_bufferText.emplace_back(textInBuffer);
+        m_timeBufferText.emplace_back(std::make_pair<>(textInBuffer,Time));
+    }
+
+    void PrintText::AddTextInCountBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, int Count){
+        std::vector<std::pair<Text, int>>::iterator It;
+        for (It = m_countBufferText.begin(); It != m_countBufferText.end(); It++) {
+            if (It->first.text == text && It->first.position == position) {
+                It->second = Count;
+                return;
+            }
+        }
+        Text textInBuffer = {
+            text,
+            position,
+            scale,
+            color,
+        };
+        m_countBufferText.emplace_back(std::make_pair<>(textInBuffer, Count));
     }
 
     void PrintText::renderBuffer(){
-        std::vector<Text>::iterator It;
-        for (It = m_bufferText.begin(); It != m_bufferText.end(); It++) {
-            RenderText(It->text, It->position, It->scale, It->color);
+        for (auto It:m_timeBufferText) {
+            RenderText(It.first.text, It.first.position, It.first.scale, It.first.color);
+        }
+        for (int i = 0; i < m_countBufferText.size(); i++) {
+            Text t = m_countBufferText.at(i).first;
+            RenderText(t.text, t.position, t.scale, t.color);
+            m_countBufferText.at(i).second--;
+            if (m_countBufferText.at(i).second < 1)
+                m_countBufferText.erase(m_countBufferText.begin() + i);
         }
     }
 
     void PrintText::updateBuffer(double duration){
-        for (int i = 0; i < m_bufferText.size(); i++) {
-            m_bufferText.at(i).time -= duration;
-            if (m_bufferText.at(i).time < 0.0)
-                m_bufferText.erase(m_bufferText.begin()+i);
+        for (int i = 0; i < m_timeBufferText.size(); i++) {
+            m_timeBufferText.at(i).second -= duration;
+            if (m_timeBufferText.at(i).second < 0.0)
+                m_timeBufferText.erase(m_timeBufferText.begin()+i);
         }
     }
-
-
 }

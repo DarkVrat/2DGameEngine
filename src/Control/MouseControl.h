@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <array>
 
+#define MOUSE Control::MouseControl::Get()
+
 namespace Control {
 	class MouseControl {
 	public:
@@ -18,6 +20,8 @@ namespace Control {
 		bool IfClamped(const int key);
 		bool IfNotClamped(const int key);
 
+		void SetScroll(glm::vec2 scroll) { m_scroll = scroll; }
+		glm::vec2 GetScroll() { return m_scroll; }
 
 		glm::vec2 GetPosition() { return m_mousePosition; }
 	private:
@@ -27,6 +31,7 @@ namespace Control {
 		GLFWwindow* m_PWindow;
 		double m_height;
 		glm::vec2 m_mousePosition;
+		glm::vec2 m_scroll;
 
 		enum class BUTTON_ACTION {
 			NotClamped,

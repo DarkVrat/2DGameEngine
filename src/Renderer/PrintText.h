@@ -22,19 +22,20 @@ namespace Renderer {
 			glm::vec3 position;
 			GLfloat scale;
 			glm::vec3 color;
-			double time;
 		};
 
 	public:
 		static void init(std::shared_ptr<ShaderProgram> shader);
 		static void RenderText(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color);
-		static void AddTextInBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time);
+		static void AddTextInTimeBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time);
+		static void AddTextInCountBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, int Count=1);
 		static void renderBuffer();
 		static void updateBuffer(double duration);
 	private:
 		static std::shared_ptr<ShaderProgram> m_shader;
 		static std::map<GLchar, Character> m_Characters;
-		static std::vector<Text> m_bufferText;
+		static std::vector<std::pair<Text,double>> m_timeBufferText;
+		static std::vector<std::pair<Text,int>> m_countBufferText;
 		static GLuint m_VAO, m_VBO;
 	};
 }

@@ -8,6 +8,7 @@
 #include "GameClass/MainGameClass.h"
 #include "Renderer/RenderEngine.h"
 #include "Control/MouseControl.h"
+#include "Control/KeyboardControl.h"
 
 
 
@@ -27,10 +28,7 @@ void glfwWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
 
 //проверка нажатия кнопок
 void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mode) {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-        glfwSetWindowShouldClose(pWindow, GL_TRUE);
-    }
-    g_Game.setKey(key, action);
+    KEYBOARD->SetKey(key, action);
 }
 
 void glfwMouseCallback(GLFWwindow* pWindow, int button, int action, int mods) {
@@ -87,7 +85,7 @@ int main(int argc, char** argv){
 
 
     //
-    Renderer::RenderEngine::setClearColor(0.f, 0.f, 0.f, 1.f);//цвет заполнения
+    Renderer::RenderEngine::setClearColor(0.2f, 0.2f, 0.2f, 1.f);//цвет заполнения
     Renderer::RenderEngine::setDetphTest(true);
     {
         ResourceManager::setExecutablePath(argv[0]);//Передача пути к программе
@@ -95,14 +93,12 @@ int main(int argc, char** argv){
         g_Game.init();
 
         //Таймер
-        auto lastTime = std::chrono::high_resolution_clock::now();
-        int i = 0;
-        double t= 0;
+        double lastTime = glfwGetTime();
         while (!glfwWindowShouldClose(PWindow)) {
-            auto currTime = std::chrono::high_resolution_clock::now();//Обновление таймера
-            double dura = std::chrono::duration<double, std::milli>(currTime - lastTime).count();//Просчёт изменившегося времени
+            double currTime = glfwGetTime();//Обновление таймера
+            double dura = (currTime - lastTime)*1000;//Просчёт изменившегося времени
             lastTime = currTime;//сдвиг таймера
-            
+
             g_Game.update(dura);
 
             //Заполнение цветом указаном в glClearColor

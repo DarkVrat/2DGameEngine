@@ -10,7 +10,8 @@ namespace Control {
 	public:
 		static MouseControl* Get();
 
-		void Update();
+		void UpdatePosition();
+		void UpdateButton();
 		void SetWindow(GLFWwindow* pWindow) { m_PWindow = pWindow; }
 		void SetHeight(double height) { m_height = height; }
 

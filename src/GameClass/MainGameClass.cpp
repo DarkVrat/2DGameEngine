@@ -11,20 +11,18 @@
 #include <rapidjson/document.h>
 #include "../Audio/AllAudio.h"
 #include "../Control/MouseControl.h"
+#include "../Control/KeyboardControl.h"
 
-MainGameClass::MainGameClass(const glm::ivec2& window) :m_GState(E_GAME_STATE::Active), m_window(window) {
-    m_keys.fill(false);
-}
+MainGameClass::MainGameClass(const glm::ivec2& window) :m_GState(E_GAME_STATE::Active), m_window(window) {}
 
-MainGameClass::~MainGameClass() {
-}
+MainGameClass::~MainGameClass() {}
 
 void MainGameClass::update(double duration){
     for (auto current : m_GObject) {
         current.update(duration);
     }
     Renderer::PrintText::updateBuffer(duration);
-    MOUSE->Update();
+    MOUSE->UpdatePosition();
 }
 
 void MainGameClass::render() {
@@ -34,10 +32,6 @@ void MainGameClass::render() {
     Renderer::PrintText::RenderText("Hello world! -> Привет мир!", glm::vec3(10, 400, 1), 0.5, glm::vec3(1, 1, 1));
     Renderer::PrintText::renderBuffer();
     Renderer::PrintText::RenderText("x: " + std::to_string(MOUSE->GetPosition().x) + " y: " + std::to_string(MOUSE->GetPosition().y), glm::vec3(10, 500, 0), 0.5, glm::vec3(1, 1, 1));
-}
-
-void MainGameClass::setKey(const int key, const int action) {
-    m_keys[key] = action;
 }
 
 bool MainGameClass::init() {
@@ -67,36 +61,39 @@ bool MainGameClass::init() {
 }
 
 void MainGameClass::Events(){
-    if (m_keys[GLFW_KEY_1] == GLFW_PRESS) m_GObject[0].attack();
-    if (m_keys[GLFW_KEY_2] == GLFW_PRESS) m_GObject[1].attack();
-    if (m_keys[GLFW_KEY_3] == GLFW_PRESS) m_GObject[2].attack();
-    if (m_keys[GLFW_KEY_4] == GLFW_PRESS) m_GObject[3].attack();
-    if (m_keys[GLFW_KEY_5] == GLFW_PRESS) m_GObject[4].attack();
-    if (m_keys[GLFW_KEY_6] == GLFW_PRESS) m_GObject[5].attack();
-    if (m_keys[GLFW_KEY_7] == GLFW_PRESS) m_GObject[6].attack();
-    if (m_keys[GLFW_KEY_8] == GLFW_PRESS) m_GObject[7].attack();
-    if (m_keys[GLFW_KEY_9] == GLFW_PRESS) m_GObject[8].attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_1)) m_GObject[0].attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_2)) m_GObject[1].attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_3)) m_GObject[2].attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_4)) m_GObject[3].attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_5)) m_GObject[4].attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_6)) m_GObject[5].attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_7)) m_GObject[6].attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_8)) m_GObject[7].attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_9)) m_GObject[8].attack();
     
 
-    if (m_keys[GLFW_KEY_1] == GLFW_RELEASE) m_GObject[0].idle();
-    if (m_keys[GLFW_KEY_2] == GLFW_RELEASE) m_GObject[1].idle();
-    if (m_keys[GLFW_KEY_3] == GLFW_RELEASE) m_GObject[2].idle();
-    if (m_keys[GLFW_KEY_4] == GLFW_RELEASE) m_GObject[3].idle();
-    if (m_keys[GLFW_KEY_5] == GLFW_RELEASE) m_GObject[4].idle();
-    if (m_keys[GLFW_KEY_6] == GLFW_RELEASE) m_GObject[5].idle();
-    if (m_keys[GLFW_KEY_7] == GLFW_RELEASE) m_GObject[6].idle();
-    if (m_keys[GLFW_KEY_8] == GLFW_RELEASE) m_GObject[7].idle();
-    if (m_keys[GLFW_KEY_9] == GLFW_RELEASE) m_GObject[8].idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_1)) m_GObject[0].idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_2)) m_GObject[1].idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_3)) m_GObject[2].idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_4)) m_GObject[3].idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_5)) m_GObject[4].idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_6)) m_GObject[5].idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_7)) m_GObject[6].idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_8)) m_GObject[7].idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_9)) m_GObject[8].idle();
     
-    if (m_keys[GLFW_KEY_SPACE] == GLFW_PRESS) {
+    if (KEYBOARD->IfPressed(GLFW_KEY_SPACE)) {
         Renderer::PrintText::AddTextInTimeBuffer("space it ok", glm::vec3(200, 600, 100), 0.5, glm::vec3(1, 1, 1), 5000.0);
     }
 
     if (MOUSE->IfPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-        Renderer::PrintText::AddTextInTimeBuffer("Mouse press", glm::vec3(200, 450, 100), 0.5, glm::vec3(1, 1, 1), 1000.0);
+        Renderer::PrintText::AddTextInCountBuffer("Mouse press", glm::vec3(200, 450, 100), 0.5, glm::vec3(1, 1, 1));
     }
 
     Renderer::PrintText::AddTextInCountBuffer("scroll x: " + std::to_string(MOUSE->GetScroll().x) + " scroll y: " + std::to_string(MOUSE->GetScroll().y), glm::vec3(10, 550, 0), 0.5, glm::vec3(1, 1, 1));
+
+    MOUSE->UpdateButton();
+    KEYBOARD->UpdateButton();
 }
 
 void MainGameClass::SetProjectionMat(glm::ivec2 window){

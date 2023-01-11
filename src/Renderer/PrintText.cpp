@@ -155,7 +155,7 @@ namespace Renderer {
         for (auto It:m_timeBufferText) {
             RenderText(It.first.text, It.first.position, It.first.scale, It.first.color);
         }
-        for (int i = 0; i < m_countBufferText.size(); i++) {
+        for (int i = m_countBufferText.size()-1; i >= 0; i--) {
             Text t = m_countBufferText.at(i).first;
             RenderText(t.text, t.position, t.scale, t.color);
             m_countBufferText.at(i).second--;
@@ -165,7 +165,7 @@ namespace Renderer {
     }
 
     void PrintText::updateBuffer(double duration){
-        for (int i = 0; i < m_timeBufferText.size(); i++) {
+        for (int i = m_timeBufferText.size() - 1; i >= 0; i--) {
             m_timeBufferText.at(i).second -= duration;
             if (m_timeBufferText.at(i).second < 0.0)
                 m_timeBufferText.erase(m_timeBufferText.begin()+i);

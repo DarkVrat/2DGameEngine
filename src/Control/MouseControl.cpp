@@ -1,6 +1,4 @@
-#include <chrono>
 #include "MouseControl.h"
-
 
 static Control::MouseControl* mouseControl = nullptr;
 
@@ -11,16 +9,18 @@ namespace Control {
 		return mouseControl;
 	}
 
-	void MouseControl::Update(){
+	void MouseControl::UpdatePosition(){
 		double x, y;
 		glfwGetCursorPos(m_PWindow, &x, &y);
 		m_mousePosition = glm::vec2(x, m_height -y);
+	}
+	void MouseControl::UpdateButton() {
 		m_scroll = glm::vec2(0, 0);
-		for (auto i : m_keys) {
-			if (i == BUTTON_ACTION::Pressed)
-				i = BUTTON_ACTION::Clamped;
-			if (i == BUTTON_ACTION::Released)
-				i = BUTTON_ACTION::NotClamped;
+		for (int i = 0; i < m_keys.size(); i++) {
+			if (m_keys[i] == BUTTON_ACTION::Pressed)
+				m_keys[i] = BUTTON_ACTION::Clamped;
+			if (m_keys[i] == BUTTON_ACTION::Released)
+				m_keys[i] = BUTTON_ACTION::NotClamped;
 		}
 	}
 
@@ -58,8 +58,6 @@ namespace Control {
 		m_height = 0;
 		m_mousePosition = glm::vec2(0, 0);
 		m_scroll = glm::vec2(0, 0);
-		for (auto i : m_keys) {
-			i = BUTTON_ACTION::NotClamped;
-		}
+		m_keys.fill(BUTTON_ACTION::NotClamped);
 	}
 }

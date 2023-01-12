@@ -205,8 +205,6 @@ rapidjson::Document ResourceManager::loadJSONDoc(const std::string& JSONPath){
 bool ResourceManager::loadJSONResurces(const std::string& JSONPath){
 	const rapidjson::Document JSONDoc = loadJSONDoc(JSONPath);
 
-	const std::string check = JSONDoc["checkJSON"].GetString();
-
 	auto shadersIt = JSONDoc.FindMember("shader");
 	if (shadersIt != JSONDoc.MemberEnd()) {
 		for (const auto& currentShader : shadersIt->value.GetArray()) {
@@ -284,67 +282,6 @@ bool ResourceManager::loadJSONResurces(const std::string& JSONPath){
 			const std::string path = currentSound["path"].GetString();
 
 			loadSound(name, path);
-		}
-	}
-
-	return checkJSONResurces(check);
-}
-
-bool ResourceManager::checkJSONResurces(const std::string& JSONPath){
-	const rapidjson::Document JSONDoc = loadJSONDoc(JSONPath);
-
-	auto It = JSONDoc.FindMember("shader");
-	if (It != JSONDoc.MemberEnd()) {
-		for (const auto& current : It->value.GetArray()) {
-			if (!getShader(current.GetString())) {
-				std::cerr << "(!) can't find shader: " << current.GetString() << std::endl;
-				unloadAllRes();
-				return false;
-			}
-		}
-	}
-
-	It = JSONDoc.FindMember("textureAtlases");
-	if (It != JSONDoc.MemberEnd()) {
-		for (const auto& current : It->value.GetArray()) {
-			if (!getTexture(current.GetString())) {
-				std::cerr << "(!) can't find texture: " << current.GetString() << std::endl;
-				unloadAllRes();
-				return false;
-			}
-		}
-	}
-
-	It = JSONDoc.FindMember("sprites");
-	if (It != JSONDoc.MemberEnd()) {
-		for (const auto& current : It->value.GetArray()) {
-			if (!getSprite(current.GetString())) {
-				std::cerr << "(!) can't find sprite: " << current.GetString() << std::endl;
-				unloadAllRes();
-				return false;
-			}
-		}
-	}
-
-	It = JSONDoc.FindMember("StateAnimation");
-	if (It != JSONDoc.MemberEnd()) {
-		for (const auto& current : It->value.GetArray()) {
-			if (!getStateAnimation(current.GetString())) {
-				std::cerr << "(!) can't find stateAnimation: " << current.GetString() << std::endl;
-				unloadAllRes();
-				return false;
-			}
-		}
-	}
-
-	It = JSONDoc.FindMember("sound");
-	if (It != JSONDoc.MemberEnd()) {
-		for (const auto& current : It->value.GetArray()) {
-			if (!getSound(current.GetString())) {
-				std::cerr << "(!) can't find sound: " << current.GetString() << std::endl;
-				unloadAllRes();
-				return false;
-			}
 		}
 	}
 

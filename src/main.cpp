@@ -14,8 +14,8 @@
 
 
 //Размер окна
-glm::ivec2 g_window(1280, 720);
-MainGameClass g_Game(g_window);
+glm::ivec2 g_window;
+MainGameClass g_Game;
 
 //При измении окна
 void glfwWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
@@ -45,7 +45,11 @@ int main(int argc, char** argv){
         std::cerr << "(!) glfwInit failed" << std::endl;
         return -1;
     }
-    
+
+    Renderer::RenderEngine::init(argv[0]);
+
+    g_window = Renderer::RenderEngine::getWindowSize();
+    g_Game = MainGameClass(g_window);
 
     //Установка используемой версии OpenGL
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -76,15 +80,13 @@ int main(int argc, char** argv){
     //Вывод версии
     std::cout << "Renderer: " << Renderer::RenderEngine::getRender() << std::endl;
     std::cout << "OpenGL version: " << Renderer::RenderEngine::getVersion() << std::endl;
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //
 
     MOUSE->SetWindow(PWindow);
     MOUSE->SetHeight(g_window.y);
 
-
     //
+    Renderer::RenderEngine::enableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Renderer::RenderEngine::setClearColor(0.2f, 0.2f, 0.2f, 1.f);//цвет заполнения
     Renderer::RenderEngine::setDetphTest(true);
     {

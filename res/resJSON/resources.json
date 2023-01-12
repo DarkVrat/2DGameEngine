@@ -1,6 +1,4 @@
 {
-	"checkJSON" : "res/resJSON/checkRES.json",
-	
 	"shader":[
 		{
 			"name" : "spriteShader",

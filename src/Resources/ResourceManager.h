@@ -52,7 +52,6 @@ public:
 
 	static rapidjson::Document loadJSONDoc(const std::string& JSONPath);
 	static bool loadJSONResurces(const std::string& JSONPath);
-	static bool checkJSONResurces(const std::string& JSONPath);
 
 private:
 	//функция получения данных из файла

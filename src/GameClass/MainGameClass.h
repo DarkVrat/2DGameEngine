@@ -7,6 +7,7 @@
 class MainGameClass {
 public:
 	MainGameClass(const glm::ivec2& window);
+	MainGameClass() {};
 	~MainGameClass();
 
 	void update(double duration);

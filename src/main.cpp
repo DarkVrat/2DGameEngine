@@ -56,8 +56,19 @@ int main(int argc, char** argv){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    //—оздание окна, размером g_window.x на g_window.y, с именем Game, в оконном режиме, и контекст использовани€ общих ресурсов
-    GLFWwindow* PWindow = glfwCreateWindow(g_window.x, g_window.y, "Game", NULL, NULL);
+    GLFWwindow* PWindow = nullptr;
+
+    if (Renderer::RenderEngine::getFullScreen()) {
+        int count;
+        GLFWmonitor** monitors = glfwGetMonitors(&count);
+        if (count > Renderer::RenderEngine::getDisplayNumber()) {
+            PWindow = glfwCreateWindow(g_window.x, g_window.y, "Game", monitors[Renderer::RenderEngine::getDisplayNumber()], NULL);
+        }
+    }
+
+    if(!PWindow) {
+        PWindow = glfwCreateWindow(g_window.x, g_window.y, "Game", NULL, NULL);
+    }
 
     if (!PWindow){//ѕроверка создани€
         glfwTerminate();//”ничтожение GLFW и невозможность дальнейшего использовани€

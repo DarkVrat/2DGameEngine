@@ -22,12 +22,10 @@ namespace Renderer {
 		static void init(const std::string& executablePath);
 		static glm::vec2 getWindowSize() { return g_windowSize; }
 		static int getDisplayNumber() { return g_displayNumber; }
-		static int getGraphicsCard() { return g_graphicsCard; }
 		static bool getFullScreen() { return g_fullScreen; }
 	private:
 		static glm::vec2 g_windowSize;
 		static int g_displayNumber;
-		static int g_graphicsCard;
 		static bool g_fullScreen;
 	};
 }

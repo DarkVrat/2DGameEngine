@@ -7,7 +7,6 @@
 
 glm::vec2 Renderer::RenderEngine::g_windowSize;
 int Renderer::RenderEngine::g_displayNumber;
-int Renderer::RenderEngine::g_graphicsCard;
 bool Renderer::RenderEngine::g_fullScreen;
 
 namespace Renderer {
@@ -72,10 +71,8 @@ namespace Renderer {
 		const auto& windowSize = JSONDoc.FindMember("window size")->value;
 		g_windowSize = glm::vec2(windowSize["width"].GetInt(), windowSize["height"].GetInt());
 		
-		g_displayNumber = JSONDoc.FindMember("display")->value.GetInt();
-
-		g_graphicsCard = JSONDoc.FindMember("graphics card")->value.GetInt();
-
 		g_fullScreen = JSONDoc.FindMember("full screen")->value.GetBool();
+
+		g_displayNumber = JSONDoc.FindMember("display")->value.GetInt();
 	}
 }

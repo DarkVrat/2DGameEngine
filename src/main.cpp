@@ -10,7 +10,11 @@
 #include "Control/MouseControl.h"
 #include "Control/KeyboardControl.h"
 
-
+//Проверить позже на ноутбуке
+//extern "C" {
+//    _declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+//    _declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+//}
 
 
 //Размер окна
@@ -47,6 +51,7 @@ int main(int argc, char** argv){
     }
 
     Renderer::RenderEngine::init(argv[0]);
+    SOUND_DEVICE->SetGain(Renderer::RenderEngine::getVolumeSounde());
 
     g_window = Renderer::RenderEngine::getWindowSize();
     g_Game = MainGameClass(g_window);

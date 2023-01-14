@@ -8,6 +8,7 @@
 glm::vec2 Renderer::RenderEngine::g_windowSize;
 int Renderer::RenderEngine::g_displayNumber;
 bool Renderer::RenderEngine::g_fullScreen;
+double Renderer::RenderEngine::g_volumeSound;
 
 namespace Renderer {
 	void RenderEngine::draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shader){
@@ -74,5 +75,7 @@ namespace Renderer {
 		g_fullScreen = JSONDoc.FindMember("full screen")->value.GetBool();
 
 		g_displayNumber = JSONDoc.FindMember("display")->value.GetInt();
+
+		g_volumeSound = JSONDoc.FindMember("volume")->value.GetDouble();
 	}
 }

@@ -6,5 +6,7 @@
 	
 	"full screen" : true,
 	
-	"display" : 0
+	"display" : 0,
+	
+	"volume" : 1.0
 }

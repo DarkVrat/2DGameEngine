@@ -2,7 +2,7 @@
 #include <AL\alc.h>
 #include <glm/vec3.hpp>
 
-#define GETDEVICE Audio::SoundDevice::Get();
+#define SOUND_DEVICE Audio::SoundDevice::Get()
 
 namespace Audio {
 	class SoundDevice{

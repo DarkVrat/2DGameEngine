@@ -23,9 +23,11 @@ namespace Renderer {
 		static glm::vec2 getWindowSize() { return g_windowSize; }
 		static int getDisplayNumber() { return g_displayNumber; }
 		static bool getFullScreen() { return g_fullScreen; }
+		static double getVolumeSounde() { return g_volumeSound; }
 	private:
 		static glm::vec2 g_windowSize;
 		static int g_displayNumber;
 		static bool g_fullScreen;
+		static double g_volumeSound;
 	};
 }

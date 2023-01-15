@@ -5,7 +5,7 @@
 #include<memory>
 #include"StateController.h"
 #include"../Renderer/PrintText.h"
-#include"../Audio/AllAudio.h"
+#include"../Audio/SoundEffectsPlayer.h"
 
 class GameObject {
 public:

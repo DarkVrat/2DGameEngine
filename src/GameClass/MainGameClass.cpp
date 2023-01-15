@@ -3,25 +3,28 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 #include "../Resources/ResourceManager.h"
-#include "../Renderer/AllRender.h"
+#include "../Audio/SoundDevice.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec2.hpp>
 #include <iostream>
 #include <rapidjson/document.h>
-#include "../Audio/AllAudio.h"
 #include "../Control/MouseControl.h"
 #include "../Control/KeyboardControl.h"
 
-MainGameClass::MainGameClass(const glm::ivec2& window) :m_GState(E_GAME_STATE::Active), m_window(window) {}
+static MainGameClass* mainGameClass = nullptr;
 
-MainGameClass::~MainGameClass() {}
+MainGameClass* MainGameClass::Get() {
+    if (mainGameClass == nullptr)
+        mainGameClass = new MainGameClass();
+    return mainGameClass;
+}
 
 void MainGameClass::update(double duration){
     for (auto current : m_GObject) {
         current.update(duration);
     }
-    Renderer::PrintText::updateBuffer(duration);
+    PRINT_TEXT->updateBuffer(duration);
     MOUSE->UpdatePosition();
 }
 
@@ -29,17 +32,17 @@ void MainGameClass::render() {
     for (auto current : m_GObject) {
         current.render();
     }
-    Renderer::PrintText::RenderText("Hello world! -> Привет мир!", glm::vec3(10, 400, 1), 0.5, glm::vec3(1, 1, 1));
-    Renderer::PrintText::renderBuffer();
-    Renderer::PrintText::RenderText("x: " + std::to_string(MOUSE->GetPosition().x) + " y: " + std::to_string(MOUSE->GetPosition().y), glm::vec3(10, 500, 0), 0.5, glm::vec3(1, 1, 1));
+    PRINT_TEXT->RenderText("Hello world! -> Привет мир!", glm::vec3(10, 400, 1), 0.5, glm::vec3(1, 1, 1));
+    PRINT_TEXT->renderBuffer();
+    PRINT_TEXT->RenderText("x: " + std::to_string(MOUSE->GetPosition().x) + " y: " + std::to_string(MOUSE->GetPosition().y), glm::vec3(10, 500, 0), 0.5, glm::vec3(1, 1, 1));
 }
 
 bool MainGameClass::init() {
-    ResourceManager::loadJSONResurces("res/resJSON/resources.json");
+    RESOURCE_MANAGER->loadJSONResurces("res/resJSON/resources.json");
 
-    GlobalSoundDevice->SetAttunation(AL_INVERSE_DISTANCE_CLAMPED);
-    GlobalSoundDevice->SetPosition(glm::vec3(420.f, 128.f, 0.f));
-    GlobalSoundDevice->SetOrientation(glm::vec3(0.f, 1.f, 0.f), glm::vec3(0.f, 0.f, 1.f));
+    SOUND_DEVICE->SetAttunation(AL_INVERSE_DISTANCE_CLAMPED);
+    SOUND_DEVICE->SetPosition(glm::vec3(420.f, 128.f, 0.f));
+    SOUND_DEVICE->SetOrientation(glm::vec3(0.f, 1.f, 0.f), glm::vec3(0.f, 0.f, 1.f));
 
     m_GObject.reserve(sizeof(GameObject));
 
@@ -55,7 +58,7 @@ bool MainGameClass::init() {
 
     SetProjectionMat(m_window);
 
-    Renderer::PrintText::init(ResourceManager::getShader("textShader"));
+    PRINT_TEXT->SetShader(RESOURCE_MANAGER->getShader("textShader"));
     
     return true;
 }
@@ -83,14 +86,14 @@ void MainGameClass::Events(){
     if (KEYBOARD->IfReleased(GLFW_KEY_9)) m_GObject[8].idle();
     
     if (KEYBOARD->IfPressed(GLFW_KEY_SPACE)) {
-        Renderer::PrintText::AddTextInTimeBuffer("space it ok", glm::vec3(200, 600, 100), 0.5, glm::vec3(1, 1, 1), 5000.0);
+        PRINT_TEXT->AddTextInTimeBuffer("space it ok", glm::vec3(200, 600, 100), 0.5, glm::vec3(1, 1, 1), 5000.0);
     }
 
     if (MOUSE->IfPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-        Renderer::PrintText::AddTextInCountBuffer("Mouse press", glm::vec3(200, 450, 100), 0.5, glm::vec3(1, 1, 1));
+        PRINT_TEXT->AddTextInCountBuffer("Mouse press", glm::vec3(200, 450, 100), 0.5, glm::vec3(1, 1, 1));
     }
 
-    Renderer::PrintText::AddTextInCountBuffer("scroll x: " + std::to_string(MOUSE->GetScroll().x) + " scroll y: " + std::to_string(MOUSE->GetScroll().y), glm::vec3(10, 550, 0), 0.5, glm::vec3(1, 1, 1));
+    PRINT_TEXT->AddTextInCountBuffer("scroll x: " + std::to_string(MOUSE->GetScroll().x) + " scroll y: " + std::to_string(MOUSE->GetScroll().y), glm::vec3(10, 550, 0), 0.5, glm::vec3(1, 1, 1));
 
     MOUSE->UpdateButton();
     KEYBOARD->UpdateButton();
@@ -101,12 +104,12 @@ void MainGameClass::SetProjectionMat(glm::ivec2 window){
 
     glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 100.f);
 
-    auto pSpriteShaderProgram = ResourceManager::getShader("spriteShader");
+    auto pSpriteShaderProgram = RESOURCE_MANAGER->getShader("spriteShader");
     pSpriteShaderProgram->use();
     pSpriteShaderProgram->setInt("tex", 0);
     pSpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
 
-    auto pTextShaderProgram = ResourceManager::getShader("textShader");
+    auto pTextShaderProgram = RESOURCE_MANAGER->getShader("textShader");
     pTextShaderProgram->use();
     pTextShaderProgram->setMatrix4("projection", projectionMatrix);
 }

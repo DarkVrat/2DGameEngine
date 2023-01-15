@@ -4,7 +4,7 @@
 #include <map>
 #include"FileOfSound.h"
 
-#define GETLIB Audio::SoundEffectsLibrary::Get();
+#define SOUND_LIBRARY Audio::SoundEffectsLibrary::Get()
 
 namespace Audio {
 	class SoundEffectsLibrary{

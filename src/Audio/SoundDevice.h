@@ -1,4 +1,5 @@
 #pragma once
+
 #include <AL\alc.h>
 #include <glm/vec3.hpp>
 

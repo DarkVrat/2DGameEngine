@@ -7,13 +7,13 @@
 #define STBI_ONLY_PNG
 #include "stb_image.h"
 
-ResourceManager::SpriteMap ResourceManager::m_sprite;
-ResourceManager::TexturesMap ResourceManager::m_textures;
-ResourceManager::StateAnimationMap ResourceManager::m_stateAnimation;
-ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
-ResourceManager::SoundMap ResourceManager::m_soundMap;
+static ResourceManager* resourceManager = nullptr;
 
-std::string ResourceManager::m_path;
+ResourceManager* ResourceManager::Get() {
+	if (resourceManager == nullptr)
+		resourceManager = new ResourceManager();
+	return resourceManager;
+}
 
 //Метод получающий argv[0] в main для получения пути к игре
 void ResourceManager::setExecutablePath(const std::string& executablePath){

@@ -7,6 +7,8 @@
 #include <vector>
 #include "ShaderProgram.h"
 
+#define PRINT_TEXT Renderer::PrintText::Get()
+
 namespace Renderer {
 	class PrintText {
 
@@ -25,17 +27,20 @@ namespace Renderer {
 		};
 
 	public:
-		static void init(std::shared_ptr<ShaderProgram> shader);
-		static void RenderText(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color);
-		static void AddTextInTimeBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time);
-		static void AddTextInCountBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, int Count=1);
-		static void renderBuffer();
-		static void updateBuffer(double duration);
+		static PrintText* Get();
+
+		void SetShader(std::shared_ptr<ShaderProgram> shader);
+		void RenderText(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color);
+		void AddTextInTimeBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time);
+		void AddTextInCountBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, int Count=1);
+		void renderBuffer();
+		void updateBuffer(double duration);
+
 	private:
-		static std::shared_ptr<ShaderProgram> m_shader;
-		static std::map<GLchar, Character> m_Characters;
-		static std::vector<std::pair<Text,double>> m_timeBufferText;
-		static std::vector<std::pair<Text,int>> m_countBufferText;
-		static GLuint m_VAO, m_VBO;
+		std::shared_ptr<ShaderProgram> m_shader;
+		std::map<GLchar, Character> m_Characters;
+		std::vector<std::pair<Text,double>> m_timeBufferText;
+		std::vector<std::pair<Text,int>> m_countBufferText;
+		GLuint m_VAO, m_VBO;
 	};
 }

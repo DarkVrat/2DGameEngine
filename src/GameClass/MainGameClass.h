@@ -4,11 +4,11 @@
 #include <glm/vec2.hpp>
 #include "GameObject.h"
 
+#define MAIN_GAME_CLASS MainGameClass::Get()
+
 class MainGameClass {
 public:
-	MainGameClass(const glm::ivec2& window);
-	MainGameClass() {};
-	~MainGameClass();
+	static MainGameClass* Get();
 
 	void update(double duration);
 	void render();
@@ -18,6 +18,9 @@ public:
 	void SetProjectionMat(glm::ivec2 window);
 
 private:
+	MainGameClass() {};
+	~MainGameClass() {};
+
 	std::vector<GameObject> m_GObject;
 
 	enum class E_GAME_STATE {

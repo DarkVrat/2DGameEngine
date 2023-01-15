@@ -80,6 +80,6 @@ namespace Renderer {
         glActiveTexture(GL_TEXTURE0);
         m_pTexture->bind();
 
-        RenderEngine::draw(m_vertexArray, m_indexBuffer, *m_pShaderProgram);
+        RENDER_ENGINE->Get()->draw(m_vertexArray, m_indexBuffer, *m_pShaderProgram);
     }
 }

@@ -4,14 +4,16 @@
 #include <iostream>
 #include FT_FREETYPE_H
 
-std::shared_ptr<Renderer::ShaderProgram> Renderer::PrintText::m_shader;
-std::map<GLchar, Renderer::PrintText::Character> Renderer::PrintText::m_Characters;
-std::vector<std::pair<Renderer::PrintText::Text, double>> Renderer::PrintText::m_timeBufferText;
-std::vector<std::pair<Renderer::PrintText::Text, int>> Renderer::PrintText::m_countBufferText;
-GLuint Renderer::PrintText::m_VAO, Renderer::PrintText::m_VBO;
+static Renderer::PrintText* printText = nullptr;
 
 namespace Renderer {
-    void PrintText::init(std::shared_ptr<ShaderProgram> shader) {
+    PrintText* PrintText::Get() {
+        if (printText == nullptr)
+            printText = new PrintText();
+        return printText;
+    }
+
+    void PrintText::SetShader(std::shared_ptr<ShaderProgram> shader) {
         m_shader=std::move(shader);
 
         FT_Library ft;

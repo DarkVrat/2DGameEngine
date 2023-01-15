@@ -3,7 +3,7 @@
 
 StateController::StateController(const std::string initState){
 	m_nameState=initState;
-	m_State = ResourceManager::getStateAnimation(m_nameState);
+	m_State = RESOURCE_MANAGER->getStateAnimation(m_nameState);
 	m_bufferState = m_State->getNextStateName();
 	m_Sprites = m_State->getFrames();
 	m_indexFrame = 0;
@@ -18,7 +18,7 @@ void StateController::setState(const std::string nextState){
 			m_durationFrame = m_Sprites[m_indexFrame].second;
 		}
 		else {
-			std::shared_ptr<Renderer::StateAnimation> newState = ResourceManager::getStateAnimation(nextState);
+			std::shared_ptr<Renderer::StateAnimation> newState = RESOURCE_MANAGER->getStateAnimation(nextState);
 			m_nameState = nextState;
 			m_State = newState;
 			m_bufferState = newState->getNextStateName();
@@ -29,7 +29,7 @@ void StateController::setState(const std::string nextState){
 	}
 	else {
 		if (nextState == m_nameState) return;
-		std::shared_ptr<Renderer::StateAnimation> newState = ResourceManager::getStateAnimation(nextState);
+		std::shared_ptr<Renderer::StateAnimation> newState = RESOURCE_MANAGER->getStateAnimation(nextState);
 		if (!newState->canChange(m_nameState)) { return; }
 		if (m_State->getUninterrupted()) {
 			m_bufferState = nextState;

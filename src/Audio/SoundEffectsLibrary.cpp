@@ -18,7 +18,7 @@ namespace Audio {
 		if (p_SoundEffectBuffers.find(name) != p_SoundEffectBuffers.end())
 			return p_SoundEffectBuffers.at(name);
 
-		FileOfSound file = ResourceManager::getSound(name);
+		FileOfSound file = RESOURCE_MANAGER->getSound(name);
 
 		ALenum format=file.getFormat();
 		SNDFILE* sndfile= file.getSndFile();

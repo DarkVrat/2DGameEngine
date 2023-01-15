@@ -5,12 +5,15 @@
 #include <sstream>
 #include <iostream>
 
-glm::vec2 Renderer::RenderEngine::g_windowSize;
-int Renderer::RenderEngine::g_displayNumber;
-bool Renderer::RenderEngine::g_fullScreen;
-double Renderer::RenderEngine::g_volumeSound;
+static Renderer::RenderEngine* renderEngine = nullptr;
 
 namespace Renderer {
+	RenderEngine* RenderEngine::Get() {
+		if (renderEngine == nullptr)
+			renderEngine = new RenderEngine();
+		return renderEngine;
+	}
+
 	void RenderEngine::draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shader){
 		shader.use();
 		vertexArray.bind();
@@ -45,7 +48,7 @@ namespace Renderer {
 		glBlendFunc(sfactor, dfactor);
 	}
 
-	void RenderEngine::init(const std::string& executablePath) {
+	void RenderEngine::loadConfig(const std::string& executablePath) {
 		size_t found = executablePath.find_last_of("/\\");
 		std::string m_path = executablePath.substr(0, found);
 		std::ifstream f;

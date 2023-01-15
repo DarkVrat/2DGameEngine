@@ -25,7 +25,6 @@ add_executable(${PROJECT}
 	src/Renderer/PrintText.h
 	src/Renderer/RenderEngine.cpp
 	src/Renderer/RenderEngine.h
-	src/Renderer/AllRender.h
 	
 	src/Resources/ResourceManager.cpp
 	src/Resources/ResourceManager.h
@@ -41,7 +40,6 @@ add_executable(${PROJECT}
 	src/Audio/OpenALErrorCheck.h
 	src/Audio/FileOfSound.cpp
 	src/Audio/FileOfSound.h
-	src/Audio/AllAudio.h
 	
 	src/Control/KeyboardControl.cpp
 	src/Control/KeyboardControl.h
@@ -54,10 +52,6 @@ add_executable(${PROJECT}
 	src/GameClass/GameObject.h
 	src/GameClass/StateController.cpp
 	src/GameClass/StateController.h
-	src/GameClass/Timer.cpp
-	src/GameClass/Timer.h
-	
-	
 )
 
 target_compile_features(${PROJECT} PUBLIC cxx_std_17)

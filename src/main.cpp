@@ -9,6 +9,7 @@
 #include "Renderer/RenderEngine.h"
 #include "Control/MouseControl.h"
 #include "Control/KeyboardControl.h"
+#include "Audio/SoundDevice.h"
 
 //Проверить позже на ноутбуке
 //extern "C" {
@@ -19,15 +20,14 @@
 
 //Размер окна
 glm::ivec2 g_window;
-MainGameClass g_Game;
 
 //При измении окна
 void glfwWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
     g_window.x = width;
     g_window.y = height;
-    Renderer::RenderEngine::setViewport(g_window.x, g_window.y);
+    RENDER_ENGINE->setViewport(g_window.x, g_window.y);
     Control::MouseControl::Get()->SetHeight(g_window.y);
-    g_Game.SetProjectionMat(g_window);
+    MAIN_GAME_CLASS->SetProjectionMat(g_window);
 }
 
 //проверка нажатия кнопок
@@ -50,11 +50,11 @@ int main(int argc, char** argv){
         return -1;
     }
 
-    Renderer::RenderEngine::init(argv[0]);
-    SOUND_DEVICE->SetGain(Renderer::RenderEngine::getVolumeSounde());
+    RENDER_ENGINE->loadConfig(argv[0]);
+    SOUND_DEVICE->SetGain(RENDER_ENGINE->getVolumeSounde());
 
-    g_window = Renderer::RenderEngine::getWindowSize();
-    g_Game = MainGameClass(g_window);
+    g_window = RENDER_ENGINE->getWindowSize();
+
 
     //Установка используемой версии OpenGL
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -63,11 +63,11 @@ int main(int argc, char** argv){
 
     GLFWwindow* PWindow = nullptr;
 
-    if (Renderer::RenderEngine::getFullScreen()) {
+    if (RENDER_ENGINE->getFullScreen()) {
         int count;
         GLFWmonitor** monitors = glfwGetMonitors(&count);
-        if (count > Renderer::RenderEngine::getDisplayNumber()) {
-            PWindow = glfwCreateWindow(g_window.x, g_window.y, "Game", monitors[Renderer::RenderEngine::getDisplayNumber()], NULL);
+        if (count > RENDER_ENGINE->getDisplayNumber()) {
+            PWindow = glfwCreateWindow(g_window.x, g_window.y, "Game", monitors[RENDER_ENGINE->getDisplayNumber()], NULL);
         }
     }
 
@@ -94,21 +94,22 @@ int main(int argc, char** argv){
 	}
 
     //Вывод версии
-    std::cout << "Renderer: " << Renderer::RenderEngine::getRender() << std::endl;
-    std::cout << "OpenGL version: " << Renderer::RenderEngine::getVersion() << std::endl;
+    std::cout << "Renderer: " << RENDER_ENGINE->getRender() << std::endl;
+    std::cout << "OpenGL version: " << RENDER_ENGINE->getVersion() << std::endl;
     //
 
     MOUSE->SetWindow(PWindow);
     MOUSE->SetHeight(g_window.y);
 
     //
-    Renderer::RenderEngine::enableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    Renderer::RenderEngine::setClearColor(0.2f, 0.2f, 0.2f, 1.f);//цвет заполнения
-    Renderer::RenderEngine::setDetphTest(true);
+    RENDER_ENGINE->enableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    RENDER_ENGINE->setClearColor(0.2f, 0.2f, 0.2f, 1.f);//цвет заполнения
+    RENDER_ENGINE->setDetphTest(true);
     {
-        ResourceManager::setExecutablePath(argv[0]);//Передача пути к программе
+        RESOURCE_MANAGER->setExecutablePath(argv[0]);//Передача пути к программе
        
-        g_Game.init();
+        MAIN_GAME_CLASS->init();
+        MAIN_GAME_CLASS->SetProjectionMat(g_window);
 
         //Таймер
         double lastTime = glfwGetTime();
@@ -117,18 +118,18 @@ int main(int argc, char** argv){
             double dura = (currTime - lastTime)*1000;//Просчёт изменившегося времени
             lastTime = currTime;//сдвиг таймера
 
-            g_Game.update(dura);
+            MAIN_GAME_CLASS->update(dura);
 
             //Заполнение цветом указаном в glClearColor
-            Renderer::RenderEngine::clear();
+            RENDER_ENGINE->clear();
 
-            g_Game.render();
+            MAIN_GAME_CLASS->render();
 
             glfwSwapBuffers(PWindow);//Меняет буферы отрисовки
             glfwPollEvents();//Обработка событий
-            g_Game.Events();
+            MAIN_GAME_CLASS->Events();
         }
-        ResourceManager::unloadAllRes();
+        RESOURCE_MANAGER->unloadAllRes();
     }
     glfwTerminate();//Уничтожение GLFW и невозможность дальнейшего использования
     return 0;

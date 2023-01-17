@@ -35,6 +35,15 @@ namespace Renderer {
 		}
 	}
 
+	void RenderEngine::setMonitor(int monitorNumber){
+		int count;
+		GLFWmonitor** monitors = glfwGetMonitors(&count);
+		if (g_fullScreen && count > monitorNumber) {
+			g_monitor = monitors[monitorNumber];
+			g_displayNumber = monitorNumber;
+		}
+	}
+
 	void RenderEngine::clear() {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	}
@@ -80,5 +89,10 @@ namespace Renderer {
 		g_displayNumber = JSONDoc.FindMember("display")->value.GetInt();
 
 		g_volumeSound = JSONDoc.FindMember("volume")->value.GetDouble();
+
+		int count;
+		GLFWmonitor** monitors = glfwGetMonitors(&count);
+		g_monitor = monitors[g_displayNumber];
+		
 	}
 }

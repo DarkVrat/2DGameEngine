@@ -5,6 +5,7 @@
 #include"ShaderProgram.h"
 #include<string>
 #include <glm/vec2.hpp>
+#include <GLFW/glfw3.h>
 
 #define RENDER_ENGINE Renderer::RenderEngine::Get()
 
@@ -16,6 +17,7 @@ namespace Renderer {
 		void draw(const VertexArray& vertexArray, const IndexBuffer& indesBuffer, const ShaderProgram& shader);
 		void setClearColor(float r, float g, float b, float a);
 		void setDetphTest(bool flag);
+		void setMonitor(int monitorNumber=0);
 		void clear();
 		void setViewport(unsigned int width, unsigned int height, unsigned intleftOffset=0, unsigned int bottomOffset=0);
 		void enableBlend(GLenum sfactor, GLenum dfactor);
@@ -28,10 +30,12 @@ namespace Renderer {
 		int getDisplayNumber() { return g_displayNumber; }
 		bool getFullScreen() { return g_fullScreen; }
 		double getVolumeSounde() { return g_volumeSound; }
+		GLFWmonitor* getMonitor() { return g_monitor; }
 	private:
 		glm::vec2 g_windowSize;
 		int g_displayNumber;
 		bool g_fullScreen;
 		double g_volumeSound;
+		GLFWmonitor* g_monitor;
 	};
 }

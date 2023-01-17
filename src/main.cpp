@@ -21,6 +21,8 @@
 //Размер окна
 glm::ivec2 g_window;
 
+GLFWwindow* PWindow = nullptr;
+
 //При измении окна
 void glfwWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
     g_window.x = width;
@@ -43,6 +45,15 @@ void glfwMouseScrollCallback(GLFWwindow* окно, double x, double y){
     MOUSE->SetScroll(glm::vec2(x, y));
 }
 
+void glfwMonitorCallBack(GLFWmonitor* monitor, int action){
+    if (RENDER_ENGINE->getMonitor() == monitor && action==GLFW_DISCONNECTED && RENDER_ENGINE->getFullScreen()) {
+        RENDER_ENGINE->setMonitor();
+        const  GLFWvidmode* mode = glfwGetVideoMode(RENDER_ENGINE->getMonitor());
+        g_window = RENDER_ENGINE->getWindowSize();
+        glfwSetWindowMonitor(PWindow, RENDER_ENGINE->getMonitor(), 0, 0, g_window.x, g_window.y, mode->refreshRate); 
+    }
+}
+
 int main(int argc, char** argv){
 
     if (!glfwInit()) { //Инициализация библиотеки GLFW
@@ -61,17 +72,10 @@ int main(int argc, char** argv){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* PWindow = nullptr;
-
     if (RENDER_ENGINE->getFullScreen()) {
-        int count;
-        GLFWmonitor** monitors = glfwGetMonitors(&count);
-        if (count > RENDER_ENGINE->getDisplayNumber()) {
-            PWindow = glfwCreateWindow(g_window.x, g_window.y, "Game", monitors[RENDER_ENGINE->getDisplayNumber()], NULL);
-        }
+        PWindow = glfwCreateWindow(g_window.x, g_window.y, "Game", RENDER_ENGINE->getMonitor(), NULL);
     }
-
-    if(!PWindow) {
+    else {
         PWindow = glfwCreateWindow(g_window.x, g_window.y, "Game", NULL, NULL);
     }
 
@@ -85,6 +89,7 @@ int main(int argc, char** argv){
     glfwSetKeyCallback(PWindow, glfwKeyCallback);//Передача в GLFW функции отслеживающей нажатия
     glfwSetMouseButtonCallback(PWindow, glfwMouseCallback);
     glfwSetScrollCallback(PWindow, glfwMouseScrollCallback);
+    glfwSetMonitorCallback(glfwMonitorCallBack);
     glfwMakeContextCurrent(PWindow);//Указывает контекст окна активным
 	
 	if(!gladLoadGL()){//загрузка OpenGL

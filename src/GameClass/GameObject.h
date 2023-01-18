@@ -21,6 +21,7 @@ public:
 	void setRotation(const float rotation){ m_rotation = rotation; }
 
 	glm::vec2 getPosition() { return m_position; }
+	float getLayer() { return m_layer; }
 private:
 	std::shared_ptr<StateController> m_stateControll;
 	glm::vec2 m_position;

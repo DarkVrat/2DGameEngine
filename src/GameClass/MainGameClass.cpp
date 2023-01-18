@@ -8,6 +8,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec2.hpp>
 #include <iostream>
+#include <algorithm>
 #include <rapidjson/document.h>
 #include "../Control/MouseControl.h"
 #include "../Control/KeyboardControl.h"
@@ -20,7 +21,7 @@ MainGameClass* MainGameClass::Get() {
     return mainGameClass;
 }
 
-void MainGameClass::update(double duration){
+void MainGameClass::update(double duration){ 
     for (auto current : m_GObject) {
         current.update(duration);
     }
@@ -35,6 +36,11 @@ void MainGameClass::render() {
     PRINT_TEXT->RenderText("Hello world! -> Привет мир!", glm::vec3(10, 400, 1), 0.5, glm::vec3(1, 1, 1));
     PRINT_TEXT->renderBuffer();
     PRINT_TEXT->RenderText("x: " + std::to_string(MOUSE->GetPosition().x) + " y: " + std::to_string(MOUSE->GetPosition().y), glm::vec3(10, 500, 0), 0.5, glm::vec3(1, 1, 1));
+}
+
+void MainGameClass::sortGameObject(){
+    auto comp = [](GameObject a, GameObject b) {return a.getLayer() < b.getLayer();};
+    std::sort(m_GObject.begin(), m_GObject.end(), comp);
 }
 
 bool MainGameClass::init() {
@@ -55,6 +61,8 @@ bool MainGameClass::init() {
     m_GObject.emplace_back("Attack1", glm::vec2(580, 128), glm::vec2(-256, 256), 0.f, -0.2f);
     m_GObject.emplace_back("Attack1", glm::vec2(660, 128), glm::vec2(-256, 256), 0.f, -0.3f);
     m_GObject.emplace_back("Attack1", glm::vec2(740, 128), glm::vec2(-256, 256), 0.f, -0.4f);
+
+    sortGameObject();
 
     SetProjectionMat(m_window);
 

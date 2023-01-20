@@ -18,7 +18,7 @@ namespace Renderer {
         const GLfloat vertexCoords[] = {
             // 1---2
             // | / |
-            // 0  -3
+            // 0---3
 
             // X  Y
             0.f, 0.f,
@@ -30,7 +30,7 @@ namespace Renderer {
         auto subTexture = m_pTexture->getSubTexture2D(std::move(initialSubTexture));
 
         const GLfloat textureCoords[] = {
-            // U  V
+            // U                       //V
             subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
             subTexture.leftBottomUV.x, subTexture.rightTopUV.y,
             subTexture.rightTopUV.x,   subTexture.rightTopUV.y,

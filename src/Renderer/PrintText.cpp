@@ -1,5 +1,6 @@
 #include "PrintText.h"
 #include "ft2build.h"
+#include "VertexBufferLayout.h"
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include FT_FREETYPE_H
@@ -70,16 +71,20 @@ namespace Renderer {
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
 
+        VertexBufferLayout VBL;
+        VBL.addElementLayoutFloat(4, false);
+        m_VertexBuffer.init(NULL, sizeof(GLfloat) * 6 * 4);
+        m_VertexArray.bind();
+        m_VertexArray.addBuffer(m_VertexBuffer, VBL);
+        m_VertexBuffer.unbind();
+        m_VertexArray.unbind();
 
-        glGenVertexArrays(1, &m_VAO);
-        glBindVertexArray(m_VAO);
-        glGenBuffers(1, &m_VBO);
-        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+        const GLuint indices[] = {
+            0, 1, 2,
+            2, 3, 0
+        };
+
+        m_IndexBuffer.init(indices, 6);
     }
 
     void PrintText::RenderText(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color) {
@@ -88,7 +93,8 @@ namespace Renderer {
         m_shader->setFloat("layer", position.z);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindVertexArray(m_VAO);
+        m_VertexArray.bind();
+        m_IndexBuffer.bind();
 
         for (char c: text)
         {
@@ -99,23 +105,23 @@ namespace Renderer {
 
             GLfloat w = ch.Size.x * scale;
             GLfloat h = ch.Size.y * scale;
-            GLfloat vertices[6][4] = {
+            GLfloat vertices[4][4] = {
                 { xpos,     ypos + h,   0.0, 0.0 },
                 { xpos,     ypos,       0.0, 1.0 },
                 { xpos + w, ypos,       1.0, 1.0 },
-
-                { xpos,     ypos + h,   0.0, 0.0 },
-                { xpos + w, ypos,       1.0, 1.0 },
                 { xpos + w, ypos + h,   1.0, 0.0 }
             };
+
             glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-            glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+
+            m_VertexBuffer.update(vertices, sizeof(vertices));
+            m_VertexBuffer.unbind();
+
+            glDrawElements(GL_TRIANGLES, m_IndexBuffer.getCount(), GL_UNSIGNED_INT, nullptr);
             position.x += (ch.Advance >> 6) * scale;
         }
-        glBindVertexArray(0);
+        m_VertexArray.unbind();
+
         glBindTexture(GL_TEXTURE_2D, 0);
 	}
 

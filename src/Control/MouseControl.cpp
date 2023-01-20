@@ -12,7 +12,7 @@ namespace Control {
 	void MouseControl::UpdatePosition(){
 		double x, y;
 		glfwGetCursorPos(m_PWindow, &x, &y);
-		m_mousePosition = glm::vec2(x, m_height -y);
+		m_mousePosition = glm::vec2(x, m_height -y ); 
 	}
 	void MouseControl::UpdateButton() {
 		m_scroll = glm::vec2(0, 0);

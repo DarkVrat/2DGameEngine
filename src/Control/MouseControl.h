@@ -13,7 +13,7 @@ namespace Control {
 		void UpdatePosition();
 		void UpdateButton();
 		void SetWindow(GLFWwindow* pWindow) { m_PWindow = pWindow; }
-		void SetHeight(double height) { m_height = height; }
+		void SetHeight(double height) { m_height = height-1; }
 
 		void SetKey(const int key, const int action);
 		bool IfPressed(const int key);

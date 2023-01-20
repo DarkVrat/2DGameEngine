@@ -6,6 +6,9 @@
 #include <memory>
 #include <vector>
 #include "ShaderProgram.h"
+#include "VertexBuffer.h"
+#include "VertexArray.h"
+#include "IndexBuffer.h"
 
 #define PRINT_TEXT Renderer::PrintText::Get()
 
@@ -41,6 +44,8 @@ namespace Renderer {
 		std::map<GLchar, Character> m_Characters;
 		std::vector<std::pair<Text,double>> m_timeBufferText;
 		std::vector<std::pair<Text,int>> m_countBufferText;
-		GLuint m_VAO, m_VBO;
+		VertexArray m_VertexArray;
+		VertexBuffer m_VertexBuffer;
+		IndexBuffer m_IndexBuffer;
 	};
 }

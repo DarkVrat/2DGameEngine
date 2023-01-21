@@ -35,6 +35,7 @@ void MainGameClass::render() {
     }
     PRINT_TEXT->RenderText("Hello world! -> Привет мир!", glm::vec3(10, 400, 1), 0.5, glm::vec3(1, 1, 1));
     PRINT_TEXT->renderBuffer();
+    PRINT_TEXT->RenderText(KEYBOARD->GetBuffer(), glm::vec3(500, 600, 100), 0.5, glm::vec3(1, 1, 1));
     PRINT_TEXT->RenderText("x: " + std::to_string(MOUSE->GetPosition().x) + " y: " + std::to_string(MOUSE->GetPosition().y), glm::vec3(10, 500, 0), 0.5, glm::vec3(1, 1, 1));
 }
 
@@ -99,6 +100,14 @@ void MainGameClass::Events(){
 
     if (MOUSE->IfPressed(GLFW_MOUSE_BUTTON_LEFT)) {
         PRINT_TEXT->AddTextInCountBuffer("Mouse press", glm::vec3(200, 450, 100), 0.5, glm::vec3(1, 1, 1));
+    }
+
+    if (KEYBOARD->IfPressed(GLFW_KEY_ENTER)) {
+        KEYBOARD->startWritingText();
+    }
+
+    if (KEYBOARD->IfPressed(GLFW_KEY_BACKSPACE)) {
+        PRINT_TEXT->AddTextInTimeBuffer(KEYBOARD->GetBufferAndRemove(), glm::vec3(400, 300, 100), 0.5, glm::vec3(1, 1, 1), 5000.0);
     }
 
     PRINT_TEXT->AddTextInCountBuffer("scroll x: " + std::to_string(MOUSE->GetScroll().x) + " scroll y: " + std::to_string(MOUSE->GetScroll().y), glm::vec3(10, 550, 0), 0.5, glm::vec3(1, 1, 1));

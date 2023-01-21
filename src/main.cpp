@@ -54,6 +54,10 @@ void glfwMonitorCallBack(GLFWmonitor* monitor, int action){
     }
 }
 
+void glfwCharCallback(GLFWwindow* окно, unsigned int codepoint) {
+    KEYBOARD->addCharInBuffer(codepoint);
+}
+
 int main(int argc, char** argv){
 
     if (!glfwInit()) { //Инициализация библиотеки GLFW
@@ -89,6 +93,7 @@ int main(int argc, char** argv){
     glfwSetKeyCallback(PWindow, glfwKeyCallback);//Передача в GLFW функции отслеживающей нажатия
     glfwSetMouseButtonCallback(PWindow, glfwMouseCallback);
     glfwSetScrollCallback(PWindow, glfwMouseScrollCallback);
+    glfwSetCharCallback(PWindow, glfwCharCallback);
     glfwSetMonitorCallback(glfwMonitorCallBack);
     glfwMakeContextCurrent(PWindow);//Указывает контекст окна активным
 	

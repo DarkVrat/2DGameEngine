@@ -1,5 +1,7 @@
 #pragma once
 #include <array>
+#include <iostream>
+#include <glm/vec2.hpp>
 
 #define KEYBOARD Control::KeyboardControl::Get()
 
@@ -16,8 +18,13 @@ namespace Control {
 		bool IfClamped(const int key);
 		bool IfNotClamped(const int key);
 
+		void startWritingText() { WriteText = true; }
+		void addCharInBuffer(unsigned int codepoint);
+		std::string GetBuffer() { return buffer; }
+		std::string GetBufferAndRemove();
+
 	private:
-		KeyboardControl() { m_keys.fill(BUTTON_ACTION::NotClamped); };
+		KeyboardControl() { m_keys.fill(BUTTON_ACTION::NotClamped); buffer = ""; WriteText = false; };
 		~KeyboardControl() {};
 
 		enum class BUTTON_ACTION {
@@ -27,5 +34,7 @@ namespace Control {
 			Released
 		};
 		std::array<BUTTON_ACTION, 349> m_keys;
+		std::string buffer;
+		bool WriteText;
 	};
 }

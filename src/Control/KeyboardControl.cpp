@@ -2,6 +2,7 @@
 #include "KeyboardControl.h"
 
 
+
 static Control::KeyboardControl* keyboardControl = nullptr;
 
 namespace Control {
@@ -47,5 +48,21 @@ namespace Control {
 		if (m_keys[key] == BUTTON_ACTION::Released || m_keys[key] == BUTTON_ACTION::NotClamped)
 			return true;
 		return false;
+	}
+
+	void KeyboardControl::addCharInBuffer(unsigned int codepoint) {
+		if (WriteText) {
+			if (codepoint > 128) {
+				codepoint -= 848;
+			}
+			buffer += (char)codepoint;
+		} 
+	}
+
+	std::string KeyboardControl::GetBufferAndRemove() {
+		WriteText = false;
+		std::string s = buffer;
+		buffer = "";
+		return s;
 	}
 }

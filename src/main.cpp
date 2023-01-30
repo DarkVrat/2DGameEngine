@@ -34,6 +34,9 @@ void glfwWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
 
 //проверка нажатия кнопок
 void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mode) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        glfwSetWindowShouldClose(pWindow, GL_TRUE);
+    }
     KEYBOARD->SetKey(key, action);
 }
 
@@ -46,11 +49,11 @@ void glfwMouseScrollCallback(GLFWwindow* окно, double x, double y){
 }
 
 void glfwMonitorCallBack(GLFWmonitor* monitor, int action){
-    if (RENDER_ENGINE->getMonitor() == monitor && action==GLFW_DISCONNECTED && RENDER_ENGINE->getFullScreen()) {
-        RENDER_ENGINE->setMonitor();
-        const  GLFWvidmode* mode = glfwGetVideoMode(RENDER_ENGINE->getMonitor());
-        g_window = RENDER_ENGINE->getWindowSize();
-        glfwSetWindowMonitor(PWindow, RENDER_ENGINE->getMonitor(), 0, 0, g_window.x, g_window.y, mode->refreshRate); 
+    if (action==GLFW_DISCONNECTED && RENDER_ENGINE->getFullScreen()) {
+        GLFWmonitor* new_monitor = RENDER_ENGINE->getMonitor();
+        const  GLFWvidmode* mode = glfwGetVideoMode(new_monitor);
+        RENDER_ENGINE->setWindowSize(glm::vec2(mode->width, mode->height));
+        glfwSetWindowMonitor(PWindow, new_monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     }
 }
 
@@ -76,12 +79,7 @@ int main(int argc, char** argv){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    if (RENDER_ENGINE->getFullScreen()) {
-        PWindow = glfwCreateWindow(g_window.x, g_window.y, "Game", RENDER_ENGINE->getMonitor(), NULL);
-    }
-    else {
-        PWindow = glfwCreateWindow(g_window.x, g_window.y, "Game", NULL, NULL);
-    }
+    PWindow = glfwCreateWindow(g_window.x, g_window.y, "Game", RENDER_ENGINE->getMonitor(), NULL); 
 
     if (!PWindow){//Проверка создания
         glfwTerminate();//Уничтожение GLFW и невозможность дальнейшего использования
@@ -141,6 +139,7 @@ int main(int argc, char** argv){
         }
         RESOURCE_MANAGER->unloadAllRes();
     }
+    RENDER_ENGINE->saveConfig(argv[0]);
     glfwTerminate();//Уничтожение GLFW и невозможность дальнейшего использования
     return 0;
 }

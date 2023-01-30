@@ -3,6 +3,8 @@
 #include"VertexArray.h"
 #include"IndexBuffer.h"
 #include"ShaderProgram.h"
+#include <rapidjson/error/en.h>
+#include <rapidjson/document.h>
 #include<string>
 #include <glm/vec2.hpp>
 #include <GLFW/glfw3.h>
@@ -17,7 +19,7 @@ namespace Renderer {
 		void draw(const VertexArray& vertexArray, const IndexBuffer& indesBuffer, const ShaderProgram& shader);
 		void setClearColor(float r, float g, float b, float a);
 		void setDetphTest(bool flag);
-		void setMonitor(int monitorNumber=0);
+		
 		void clear();
 		void setViewport(unsigned int width, unsigned int height, unsigned intleftOffset=0, unsigned int bottomOffset=0);
 		void enableBlend(GLenum sfactor, GLenum dfactor);
@@ -26,16 +28,19 @@ namespace Renderer {
 		std::string getVersion(){ return (char*)glGetString(GL_VERSION);};
 
 		void loadConfig(const std::string& executablePath);
-		glm::vec2 getWindowSize() { return g_windowSize; }
-		int getDisplayNumber() { return g_displayNumber; }
-		bool getFullScreen() { return g_fullScreen; }
-		double getVolumeSounde() { return g_volumeSound; }
-		GLFWmonitor* getMonitor() { return g_monitor; }
+		void saveConfig(const std::string& executablePath);
+
+		void setWindowSize(glm::vec2 windowSize=glm::vec2(800,600));
+		void setFullScreen(bool fullScreen = true);
+		void setVolumeSounde(double volume = 1.0);
+		void setDisplayNumber(int monitorNumber = 0);
+
+		glm::vec2 getWindowSize();
+		int getDisplayNumber();
+		bool getFullScreen();
+		double getVolumeSounde();
+		GLFWmonitor* getMonitor();
 	private:
-		glm::vec2 g_windowSize;
-		int g_displayNumber;
-		bool g_fullScreen;
-		double g_volumeSound;
-		GLFWmonitor* g_monitor;
+		rapidjson::Document JSONDoc;
 	};
 }

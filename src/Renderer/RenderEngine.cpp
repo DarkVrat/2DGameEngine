@@ -1,6 +1,6 @@
 #include "RenderEngine.h"
-#include <rapidjson/error/en.h>
-#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -35,15 +35,6 @@ namespace Renderer {
 		}
 	}
 
-	void RenderEngine::setMonitor(int monitorNumber){
-		int count;
-		GLFWmonitor** monitors = glfwGetMonitors(&count);
-		if (g_fullScreen && count > monitorNumber) {
-			g_monitor = monitors[monitorNumber];
-			g_displayNumber = monitorNumber;
-		}
-	}
-
 	void RenderEngine::clear() {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	}
@@ -73,26 +64,58 @@ namespace Renderer {
 			std::cerr << "(!) No JSON resources file" << std::endl;
 			return;
 		}
-		rapidjson::Document JSONDoc;
 		rapidjson::ParseResult parseResult = JSONDoc.Parse(JSONString.c_str());
 		if (!parseResult) {
 			std::cerr << "(!) JSON parse error: " << rapidjson::GetParseError_En(parseResult.Code()) << "(" << parseResult.Offset() << ")" << std::endl;
 			std::cerr << "(!) in JSON resources file: " << std::endl;
 			return;
 		}
+	}
+	void RenderEngine::saveConfig(const std::string& executablePath) {
+		size_t found = executablePath.find_last_of("/\\");
+		std::string m_path = executablePath.substr(0, found);
+		std::ofstream f;
+		f.open(m_path + "/" + "res/config.json");
+		if (!f.is_open()) {
+			std::cerr << "(!) Failed to open: res / config.json" << std::endl;
+			return;
+		}
 
-		const auto& windowSize = JSONDoc.FindMember("window size")->value;
-		g_windowSize = glm::vec2(windowSize["width"].GetInt(), windowSize["height"].GetInt());
+		rapidjson::StringBuffer buffer;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+		JSONDoc.Accept(writer);
 		
-		g_fullScreen = JSONDoc.FindMember("full screen")->value.GetBool();
+		f << buffer.GetString();
+	}
 
-		g_displayNumber = JSONDoc.FindMember("display")->value.GetInt();
+	void RenderEngine::setWindowSize(glm::vec2 windowSize) {
+		JSONDoc.FindMember("window size")->value["width"].SetInt(windowSize.x);
+		JSONDoc.FindMember("window size")->value["height"].SetInt(windowSize.y);
+	}
+	void RenderEngine::setFullScreen(bool fullScreen) {
+		JSONDoc.FindMember("full screen")->value.SetBool(fullScreen);
+	}
+	void RenderEngine::setVolumeSounde(double volume) {
+		JSONDoc.FindMember("volume")->value.SetDouble(volume);
+	}
+	void RenderEngine::setDisplayNumber(int monitorNumber) {
+		JSONDoc.FindMember("display")->value.SetInt(monitorNumber);
+	}
 
-		g_volumeSound = JSONDoc.FindMember("volume")->value.GetDouble();
+	glm::vec2 RenderEngine::getWindowSize() {
+		int x=JSONDoc.FindMember("window size")->value["width"].GetInt();
+		int y=JSONDoc.FindMember("window size")->value["height"].GetInt();
+		return glm::vec2(x, y);
+	}
+	int RenderEngine::getDisplayNumber(){ return JSONDoc.FindMember("display")->value.GetInt(); }
+	bool RenderEngine::getFullScreen(){return JSONDoc.FindMember("full screen")->value.GetBool(); }
+	double RenderEngine::getVolumeSounde(){return JSONDoc.FindMember("volume")->value.GetDouble();}
 
+	GLFWmonitor* RenderEngine::getMonitor() {
+		if (!getFullScreen()) { return NULL; }
 		int count;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
-		g_monitor = monitors[g_displayNumber];
-		
+		if (count <= getDisplayNumber()) { setDisplayNumber(); }
+		return monitors[getDisplayNumber()];
 	}
 }

@@ -10,6 +10,7 @@ namespace Audio {
 	class SoundEffectsLibrary{
 	public:
 		static SoundEffectsLibrary* Get();
+		static void Terminate();
 
 		ALuint Load(const std::string name);
 		void UnLoad(const std::string name);

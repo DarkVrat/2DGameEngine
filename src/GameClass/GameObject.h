@@ -10,6 +10,7 @@
 class GameObject {
 public:
 	GameObject(std::string startState, glm::vec2& position, glm::vec2& size, float rotation, float layer=0.f);
+	~GameObject();
 
 	void update(double duration) { m_stateControll->update(duration); }
 	void render() { m_stateControll->render(m_position, m_size, m_rotation, m_layer); }
@@ -28,5 +29,5 @@ private:
 	glm::vec2 m_size;
 	float m_rotation;
 	float m_layer;
-	std::map<std::string, Audio::SoundEffectsPlayer> m_mapPlayer;
+	std::map<std::string, std::shared_ptr<Audio::SoundEffectsPlayer>> m_mapPlayer;
 };

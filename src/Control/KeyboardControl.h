@@ -20,6 +20,8 @@ namespace Control {
 
 		void startWritingText() { WriteText = true; }
 		void addCharInBuffer(unsigned int codepoint);
+		void deleteLastCharInBuffer();
+		bool GetWriteText() { return WriteText; }
 		std::string GetBuffer() { return buffer; }
 		std::string GetBufferAndRemove();
 

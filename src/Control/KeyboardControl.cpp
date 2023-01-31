@@ -52,11 +52,18 @@ namespace Control {
 
 	void KeyboardControl::addCharInBuffer(unsigned int codepoint) {
 		if (WriteText) {
-			if (codepoint > 128) {
-				codepoint -= 848;
-			}
+			if (codepoint > 128) {codepoint -= 848;}
+			if (codepoint == 7622) { codepoint = 185; }
+			if (codepoint == 257) { codepoint = 184; }
+			if (codepoint == 177) { codepoint = 168; }
 			buffer += (char)codepoint;
 		} 
+	}
+
+	void KeyboardControl::deleteLastCharInBuffer(){
+		if (!buffer.empty()) {
+			buffer.pop_back();
+		}
 	}
 
 	std::string KeyboardControl::GetBufferAndRemove() {

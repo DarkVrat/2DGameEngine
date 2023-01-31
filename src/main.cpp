@@ -10,6 +10,7 @@
 #include "Control/MouseControl.h"
 #include "Control/KeyboardControl.h"
 #include "Audio/SoundDevice.h"
+#include "Audio/SoundEffectsLibrary.h"
 
 //Проверить позже на ноутбуке
 //extern "C" {
@@ -140,6 +141,10 @@ int main(int argc, char** argv){
         RESOURCE_MANAGER->unloadAllRes();
     }
     RENDER_ENGINE->saveConfig(argv[0]);
+    MainGameClass::Terminate();
+    Renderer::PrintText::Terminate();
+    Audio::SoundDevice::Terminate();
+    Audio::SoundEffectsLibrary::Terminate();
     glfwTerminate();//Уничтожение GLFW и невозможность дальнейшего использования
     return 0;
 }

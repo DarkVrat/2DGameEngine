@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <iostream>
 #include "ShaderProgram.h"
 #include "VertexBuffer.h"
 #include "VertexArray.h"
@@ -20,6 +21,9 @@ namespace Renderer {
 			glm::ivec2 Size;    
 			glm::ivec2 Bearing;  
 			GLuint Advance;
+
+			Character(GLuint T, glm::ivec2 S, glm::ivec2 B, GLuint A) :TextureID(T), Size(S), Bearing(B), Advance(A) {}
+			~Character() {glDeleteTextures(1, &TextureID);}
 		};
 
 		struct Text {
@@ -31,6 +35,7 @@ namespace Renderer {
 
 	public:
 		static PrintText* Get();
+		static void Terminate();
 
 		void SetShader(std::shared_ptr<ShaderProgram> shader);
 		void RenderText(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color);
@@ -40,8 +45,10 @@ namespace Renderer {
 		void updateBuffer(double duration);
 
 	private:
+		~PrintText();
+
 		std::shared_ptr<ShaderProgram> m_shader;
-		std::map<GLchar, Character> m_Characters;
+		std::map<GLchar, std::shared_ptr<Character>> m_Characters;
 		std::vector<std::pair<Text,double>> m_timeBufferText;
 		std::vector<std::pair<Text,int>> m_countBufferText;
 		VertexArray m_VertexArray;

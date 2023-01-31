@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <array>
+#include <memory>
 #include <glm/vec2.hpp>
 #include "GameObject.h"
 
@@ -9,12 +10,12 @@
 class MainGameClass {
 public:
 	static MainGameClass* Get();
+	static void Terminate();
 
 	void update(double duration);
 	void render();
 
 	void sortGameObject();
-	bool comp(GameObject a, GameObject b);
 
 	bool init();
 	void Events();
@@ -22,9 +23,9 @@ public:
 
 private:
 	MainGameClass():m_window(glm::ivec2(0,0)),m_GState(E_GAME_STATE::Pause) {};
-	~MainGameClass() {};
+	~MainGameClass();
 
-	std::vector<GameObject> m_GObject;
+	std::vector<std::shared_ptr<GameObject>> m_GObject;
 
 	enum class E_GAME_STATE {
 		Active,

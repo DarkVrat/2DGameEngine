@@ -9,6 +9,8 @@ namespace Audio {
 	class SoundDevice{
 	public:
 		static SoundDevice* Get();
+		static void Terminate();
+
 		void SetAttunation(int key);
 
 		void GetPosition(glm::vec3& posit);

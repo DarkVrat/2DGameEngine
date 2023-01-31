@@ -13,6 +13,9 @@ namespace Audio {
 			soundDevice = new SoundDevice();
 		return soundDevice;
 	}
+	void SoundDevice::Terminate(){
+		delete soundDevice;
+	}
 
 	void SoundDevice::SetAttunation(int key){
 		if (key < 0xD001 || key > 0xD006)

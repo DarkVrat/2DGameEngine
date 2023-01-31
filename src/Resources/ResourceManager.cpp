@@ -25,6 +25,8 @@ void ResourceManager::unloadAllRes(){
 	m_shaderPrograms.clear();
 	m_sprite.clear();
 	m_textures.clear();
+	m_soundMap.clear();
+	m_stateAnimation.clear();
 }
 
 //функция получения данных из файла
@@ -46,7 +48,7 @@ std::string ResourceManager::getFileString(const std::string& relativeFilePath) 
 std::shared_ptr<Renderer::ShaderProgram> ResourceManager::loadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath) {
 	std::string vertexString = getFileString(vertexPath);//Данные из вертексного шейдера
 	if (vertexString.empty()) {//Проверка наличия
-		std::cerr << "(!) No vertex" << std::endl;
+		std::cerr << "(!) No vertex" << std::endl;  
 		return nullptr;
 	}
 
@@ -169,7 +171,7 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::loadTextureAtlas(std::stri
 		const unsigned int textureHeight = pTexture->getHeight(); //Получение высоты
 		unsigned int currentTexOffsetX = 0;//Положение X Координаты
 		unsigned int currentTexOffsetY = textureHeight;//Положение Y координаты
-
+		 
 		for (auto& currentSubTexName : subTextures) {//Проходя по вектору названий для сабтекстур
 			//Отмеряем левую нижнюю и правую верхнюю координату подтекстур
 			glm::vec2 leftBottomUV(static_cast<float>(currentTexOffsetX+0.01f)/textureWidth,static_cast<float>(currentTexOffsetY-subHeigth + 0.01f)/textureHeight);
@@ -268,10 +270,10 @@ bool ResourceManager::loadJSONResurces(const std::string& JSONPath){
 			std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> framesVector;
 			framesVector.reserve(framesArray.Size());
 			for (const auto& currentFrame : framesArray) {
-				framesVector.emplace_back(std::make_pair<std::shared_ptr<Renderer::Sprite>,uint64_t>(getSprite(currentFrame["sprite"].GetString()), currentFrame["duration"].GetDouble()));
+				framesVector.emplace_back(std::make_pair<std::shared_ptr<Renderer::Sprite>, double>(getSprite(currentFrame["sprite"].GetString()), currentFrame["duration"].GetDouble()));
 			}
 
-			loadStateAnimation(nameState, framesVector, sourcesVector, nextState, uninterrupted);
+			loadStateAnimation(nameState, framesVector, sourcesVector, nextState, uninterrupted); 
 		}
 	}
 

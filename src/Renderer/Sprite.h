@@ -19,7 +19,7 @@ namespace Renderer {
 		Sprite(std::shared_ptr<Texture2D> pTexture, std::string initialSubTexture, std::shared_ptr<ShaderProgram> pShaderProgram);
 		Sprite& operator=(const Sprite&) = delete;
 		Sprite(const Sprite&) = delete;
-		~Sprite();
+		~Sprite() {};
 		
 		//отрисовка
 		void render(const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer)const;

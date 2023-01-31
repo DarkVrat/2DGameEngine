@@ -13,6 +13,9 @@ namespace Audio {
 			sndbuf = new SoundEffectsLibrary();
 		return sndbuf;
 	}
+	void SoundEffectsLibrary::Terminate(){
+		delete sndbuf;
+	}
 
 	ALuint SoundEffectsLibrary::Load(const std::string name){
 		if (p_SoundEffectBuffers.find(name) != p_SoundEffectBuffers.end())

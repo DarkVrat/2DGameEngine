@@ -21,7 +21,7 @@ namespace Audio {
 		AL_CheckAndThrow();
 	}
 	SoundEffectsPlayer::~SoundEffectsPlayer(){
-		//alDeleteSources(1, &p_Source);
+		alDeleteSources(1, &p_Source);
 	}
 
 	void SoundEffectsPlayer::Play() {

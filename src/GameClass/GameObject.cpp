@@ -10,14 +10,18 @@ GameObject::GameObject(std::string startState, glm::vec2& position, glm::vec2& s
 	m_rotation=rotation;
 	m_layer = layer;
 
-	Audio::SoundEffectsPlayer player(SOUND_LIBRARY->Load("sword"));
-	player.SetVec3Param(AL_POSITION, glm::vec3(position, 0.f));
-	player.SetFloatParam(AL_MAX_DISTANCE, 5.f);
-	m_mapPlayer.emplace("Attack1", std::move(player));
+	std::shared_ptr<Audio::SoundEffectsPlayer> player=std::make_shared<Audio::SoundEffectsPlayer>(SOUND_LIBRARY->Load("sword"));
+	player->SetVec3Param(AL_POSITION, glm::vec3(position, 0.f));
+	player->SetFloatParam(AL_MAX_DISTANCE, 5.f);
+	m_mapPlayer.emplace("Attack1", player);
+}
+
+GameObject::~GameObject(){
+	m_mapPlayer.clear();
 }
 
 void GameObject::attack(){
 	m_stateControll->setState("Attack1");
 	PRINT_TEXT->AddTextInTimeBuffer("I attack!", glm::vec3(m_position.x-abs(m_size.x)/6, m_position.y + m_size.y / 3, 100), 0.25, glm::vec3(1, 1, 1), 1000);
-	m_mapPlayer.at("Attack1").Play();
+	m_mapPlayer.at("Attack1")->Play();
 }

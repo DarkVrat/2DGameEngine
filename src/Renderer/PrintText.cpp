@@ -14,6 +14,10 @@ namespace Renderer {
         return printText;
     }
 
+    void PrintText::Terminate(){
+        delete printText;
+    }
+
     void PrintText::SetShader(std::shared_ptr<ShaderProgram> shader) {
         m_shader=std::move(shader);
 
@@ -58,14 +62,12 @@ namespace Renderer {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-            Character character = {
-                texture,
-                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-                static_cast<GLuint>(face->glyph->advance.x)
-            };
+            std::shared_ptr<Character> character = std::make_shared<Character>( texture,
+                                                                                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                                                                                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                                                                                static_cast<GLuint>(face->glyph->advance.x));
 
-            m_Characters.insert(std::pair<GLchar, Character>(c, character));
+            m_Characters.insert(std::pair<GLchar, std::shared_ptr<Character>>(c, character));
         }
         glBindTexture(GL_TEXTURE_2D, 0);
         FT_Done_Face(face);
@@ -98,13 +100,13 @@ namespace Renderer {
 
         for (char c: text)
         {
-            Character ch = m_Characters[c];
+            std::shared_ptr<Character> ch = m_Characters[c];
 
-            GLfloat xpos = position.x + ch.Bearing.x * scale;
-            GLfloat ypos = position.y - (ch.Size.y - ch.Bearing.y) * scale;
+            GLfloat xpos = position.x + ch->Bearing.x * scale;
+            GLfloat ypos = position.y - (ch->Size.y - ch->Bearing.y) * scale;
 
-            GLfloat w = ch.Size.x * scale;
-            GLfloat h = ch.Size.y * scale;
+            GLfloat w = ch->Size.x * scale;
+            GLfloat h = ch->Size.y * scale;
             GLfloat vertices[4][4] = {
                 { xpos,     ypos + h,   0.0, 0.0 },
                 { xpos,     ypos,       0.0, 1.0 },
@@ -112,13 +114,13 @@ namespace Renderer {
                 { xpos + w, ypos + h,   1.0, 0.0 }
             };
 
-            glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+            glBindTexture(GL_TEXTURE_2D, ch->TextureID);
 
             m_VertexBuffer.update(vertices, sizeof(vertices));
             m_VertexBuffer.unbind();
 
             glDrawElements(GL_TRIANGLES, m_IndexBuffer.getCount(), GL_UNSIGNED_INT, nullptr);
-            position.x += (ch.Advance >> 6) * scale;
+            position.x += (ch->Advance >> 6) * scale;
         }
         m_VertexArray.unbind();
 
@@ -178,5 +180,9 @@ namespace Renderer {
             if (m_timeBufferText.at(i).second < 0.0)
                 m_timeBufferText.erase(m_timeBufferText.begin()+i);
         }
+    }
+
+    PrintText::~PrintText(){
+        m_Characters.clear();
     }
 }

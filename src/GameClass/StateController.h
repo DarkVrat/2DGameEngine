@@ -1,6 +1,7 @@
 #pragma once
 
 #include"../Resources/ResourceManager.h"
+#include<iostream>
 
 class StateController {
 public:

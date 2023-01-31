@@ -3,6 +3,7 @@
 #include<vector>
 #include<string>
 #include<map>
+#include<iostream>
 #include"Sprite.h"
 
 namespace Renderer{
@@ -12,7 +13,7 @@ namespace Renderer{
 
 		StateAnimation& operator=(const StateAnimation&) = delete;
 		StateAnimation(const StateAnimation&) = delete;
-		
+
 		bool canChange(const std::string stateName);
 
 		bool getUninterrupted() { return m_uninterrupted; }

@@ -58,10 +58,6 @@ namespace Renderer {
         m_indexBuffer.unbind();
     }
 
-    Sprite::~Sprite()
-    {
-    }
-
     void Sprite::render(const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer) const
     {
         m_pShaderProgram->use();

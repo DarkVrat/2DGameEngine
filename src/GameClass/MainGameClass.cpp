@@ -25,16 +25,16 @@ void MainGameClass::Terminate(){
 }
 
 void MainGameClass::update(double duration){ 
-    for (auto current : m_GObject) {
-        current->update(duration);
+    for (auto current = m_GObject.begin(); current != m_GObject.end(); current++) {
+        current->get()->update(duration);
     }
     PRINT_TEXT->updateBuffer(duration);
     MOUSE->UpdatePosition();
 }
 
 void MainGameClass::render() {
-    for (auto current : m_GObject) {
-        current->render();
+    for (auto current = m_GObject.begin(); current != m_GObject.end(); current++) {
+        current->get()->render();
     }
     PRINT_TEXT->RenderText("Hello world! -> Привет мир!", glm::vec3(10, 400, 1), 0.5, glm::vec3(1, 1, 1));
     PRINT_TEXT->renderBuffer();
@@ -94,10 +94,10 @@ void MainGameClass::Events(){
     if (KEYBOARD->IfPressed(GLFW_KEY_3)) m_GObject[2]->attack();
     if (KEYBOARD->IfPressed(GLFW_KEY_4)) m_GObject[3]->attack();
     if (KEYBOARD->IfPressed(GLFW_KEY_5)) m_GObject[8]->attack();
-    if (KEYBOARD->IfPressed(GLFW_KEY_6)) m_GObject[4]->attack();
-    if (KEYBOARD->IfPressed(GLFW_KEY_7)) m_GObject[5]->attack();
-    if (KEYBOARD->IfPressed(GLFW_KEY_8)) m_GObject[6]->attack();
-    if (KEYBOARD->IfPressed(GLFW_KEY_9)) m_GObject[7]->attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_6)) m_GObject[7]->attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_7)) m_GObject[6]->attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_8)) m_GObject[5]->attack();
+    if (KEYBOARD->IfPressed(GLFW_KEY_9)) m_GObject[4]->attack();
     
 
     if (KEYBOARD->IfReleased(GLFW_KEY_1)) m_GObject[0]->idle();
@@ -105,10 +105,10 @@ void MainGameClass::Events(){
     if (KEYBOARD->IfReleased(GLFW_KEY_3)) m_GObject[2]->idle();
     if (KEYBOARD->IfReleased(GLFW_KEY_4)) m_GObject[3]->idle();
     if (KEYBOARD->IfReleased(GLFW_KEY_5)) m_GObject[8]->idle();
-    if (KEYBOARD->IfReleased(GLFW_KEY_6)) m_GObject[4]->idle();
-    if (KEYBOARD->IfReleased(GLFW_KEY_7)) m_GObject[5]->idle();
-    if (KEYBOARD->IfReleased(GLFW_KEY_8)) m_GObject[6]->idle();
-    if (KEYBOARD->IfReleased(GLFW_KEY_9)) m_GObject[7]->idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_6)) m_GObject[7]->idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_7)) m_GObject[6]->idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_8)) m_GObject[5]->idle();
+    if (KEYBOARD->IfReleased(GLFW_KEY_9)) m_GObject[4]->idle();
     
     if (KEYBOARD->IfPressed(GLFW_KEY_SPACE)) {
         PRINT_TEXT->AddTextInTimeBuffer("space it ok", glm::vec3(200, 600, 100), 0.5, glm::vec3(1, 1, 1), 5000.0);

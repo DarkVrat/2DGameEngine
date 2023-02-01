@@ -40,6 +40,8 @@ add_executable(${PROJECT}
 	src/Audio/OpenALErrorCheck.h
 	src/Audio/FileOfSound.cpp
 	src/Audio/FileOfSound.h
+	src/Audio/SoundManager.h
+	src/Audio/SoundManager.cpp
 	
 	src/Control/KeyboardControl.cpp
 	src/Control/KeyboardControl.h

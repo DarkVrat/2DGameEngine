@@ -2,13 +2,14 @@
 #include <AL\al.h>
 #include <glm/vec3.hpp>
 #include "SampleSourse.h"
+#include <iostream>
 
 namespace Audio {
 	class SoundEffectsPlayer{
 	public:
 		SoundEffectsPlayer();
-		SoundEffectsPlayer(const ALuint& buffer_to_play);
-		SoundEffectsPlayer(const ALuint& buffer_to_play, const SampleSourse sample);
+		SoundEffectsPlayer(const std::string soundEffect);
+		SoundEffectsPlayer(const std::string soundEffect, const SampleSourse sample);
 		~SoundEffectsPlayer();
 
 		void Play();
@@ -26,6 +27,7 @@ namespace Audio {
 		ALuint GetSource() { return p_Source; }
 
 	private:
+		std::string p_soundEffect;
 		ALuint p_Source;
 	};
 }

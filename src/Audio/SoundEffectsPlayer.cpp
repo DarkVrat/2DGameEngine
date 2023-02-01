@@ -2,6 +2,7 @@
 #include <iostream>
 #include "OpenALErrorCheck.h"
 #include "SoundDevice.h"
+#include "SoundEffectsLibrary.h"
 
 namespace Audio {
 	SoundEffectsPlayer::SoundEffectsPlayer(){
@@ -9,14 +10,16 @@ namespace Audio {
 		alSourcei(p_Source, AL_BUFFER, 0);
 		AL_CheckAndThrow();
 	}
-	SoundEffectsPlayer::SoundEffectsPlayer(const ALuint& buffer_to_play){
+	SoundEffectsPlayer::SoundEffectsPlayer(const std::string soundEffect){
+		p_soundEffect = soundEffect;
 		alGenSources(1, &p_Source);
-		alSourcei(p_Source, AL_BUFFER, buffer_to_play);
+		alSourcei(p_Source, AL_BUFFER, SOUND_LIBRARY->Load(soundEffect));
 		AL_CheckAndThrow();
 	}
-	SoundEffectsPlayer::SoundEffectsPlayer(const ALuint& buffer_to_play, const SampleSourse sample) {
+	SoundEffectsPlayer::SoundEffectsPlayer(const std::string soundEffect, const SampleSourse sample) {
+		p_soundEffect = soundEffect;
 		alGenSources(1, &p_Source);
-		alSourcei(p_Source, AL_BUFFER, buffer_to_play);
+		alSourcei(p_Source, AL_BUFFER, SOUND_LIBRARY->Load(soundEffect));
 		SetSampleSourse(sample);
 		AL_CheckAndThrow();
 	}

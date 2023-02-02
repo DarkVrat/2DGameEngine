@@ -5,6 +5,9 @@
 #include "SoundDevice.h"
 #include "SoundEffectsLibrary.h"
 #include "SoundEffectsPlayer.h"
+#include "../Renderer/RenderEngine.h"
+
+#define SOUND_MANAGER Audio::SoundManager::Get()
 
 namespace Audio {
 	class SoundManager {
@@ -13,6 +16,7 @@ namespace Audio {
 		static void Terminate();
 
 		void addPlayer(std::shared_ptr<Audio::SoundEffectsPlayer> player) { m_mapSoundPlayers.push_back(player); }
+		void deletePlayer(std::shared_ptr<Audio::SoundEffectsPlayer> player);
 		void UpdateSoundSystem();
 	private:
 		SoundManager() {};

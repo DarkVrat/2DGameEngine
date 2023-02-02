@@ -16,6 +16,7 @@ namespace Audio {
 	}
 	void SoundDevice::Terminate(){
 		delete soundDevice;
+		soundDevice = nullptr;
 	}
 
 	void SoundDevice::SetAttunation(int key){

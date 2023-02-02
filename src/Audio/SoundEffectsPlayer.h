@@ -3,13 +3,15 @@
 #include <glm/vec3.hpp>
 #include "SampleSourse.h"
 #include <iostream>
+#include <memory>
+
+#define MAKE_SOUND_PLAYER Audio::SoundEffectsPlayer::MakeSoundEffectPlayer
 
 namespace Audio {
 	class SoundEffectsPlayer{
 	public:
-		SoundEffectsPlayer();
+		static std::shared_ptr<Audio::SoundEffectsPlayer> MakeSoundEffectPlayer(const std::string soundEffect);
 		SoundEffectsPlayer(const std::string soundEffect);
-		SoundEffectsPlayer(const std::string soundEffect, const SampleSourse sample);
 		~SoundEffectsPlayer();
 
 		void Play();
@@ -21,6 +23,14 @@ namespace Audio {
 		void SetVec3Param(ALenum param, const glm::vec3& value);
 		void SetIntParam(ALenum param, const int& value);
 		void SetSampleSourse(const SampleSourse sample);
+
+		float GetFloatParam(ALenum param);
+		glm::vec3 GetVec3Param(ALenum param);
+		int GetIntParam(ALenum param);
+		Audio::SampleSourse GetSampleSourse();
+
+		void DeleteSourse();
+		void CreateEffect();
 
 		bool isStopped();
 

@@ -12,6 +12,7 @@
 #include <rapidjson/document.h>
 #include "../Control/MouseControl.h"
 #include "../Control/KeyboardControl.h"
+#include "../Audio/SoundManager.h"
 
 static MainGameClass* mainGameClass = nullptr;
 
@@ -120,6 +121,10 @@ void MainGameClass::Events(){
 
     if (KEYBOARD->IfPressed(GLFW_KEY_Y)) {
         KEYBOARD->startWritingText();
+    }
+
+    if (KEYBOARD->IfPressed(GLFW_KEY_Q)) {
+        SOUND_MANAGER->UpdateSoundSystem();
     }
 
     PRINT_TEXT->AddTextInCountBuffer("scroll x: " + std::to_string(MOUSE->GetScroll().x) + " scroll y: " + std::to_string(MOUSE->GetScroll().y), glm::vec3(10, 550, 0), 0.5, glm::vec3(1, 1, 1));

@@ -15,6 +15,7 @@ namespace Audio {
 	}
 	void SoundEffectsLibrary::Terminate(){
 		delete sndbuf;
+		sndbuf = nullptr;
 	}
 
 	ALuint SoundEffectsLibrary::Load(const std::string name){
@@ -58,6 +59,8 @@ namespace Audio {
 		}
 
 		p_SoundEffectBuffers.emplace(name, buffer);
+
+		RESOURCE_MANAGER->loadSound(name, file.getFileName());
 
 		return buffer;
 	}

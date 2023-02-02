@@ -149,6 +149,10 @@ std::shared_ptr<Renderer::StateAnimation> ResourceManager::getStateAnimation(con
 
 //-------------------------------Sound------------------------------------//
 Audio::FileOfSound ResourceManager::loadSound(const std::string& soundName, const std::string& soundPath){
+	SoundMap::const_iterator it = m_soundMap.find(soundName);
+	if (it != m_soundMap.end()) {
+		m_soundMap.erase(it);
+	}
 	Audio::FileOfSound File(soundPath);
 	m_soundMap.emplace(soundName, File);
 	return File;

@@ -40,7 +40,6 @@ namespace Audio{
 
 	FileOfSound::FileOfSound(){
 		m_sndFile=nullptr;
-		//m_sfInfo =nullptr;
 		m_format=AL_NONE;
 		m_memBuf=nullptr;
 		m_fileName="";

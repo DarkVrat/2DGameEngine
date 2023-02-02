@@ -22,7 +22,7 @@ public:
 	void SetProjectionMat(glm::ivec2 window);
 
 private:
-	MainGameClass():m_window(glm::ivec2(0,0)),m_GState(E_GAME_STATE::Pause) {};
+	MainGameClass():m_window(glm::ivec2(0,0)),m_GState(E_GAME_STATE::Pause){};
 	~MainGameClass();
 
 	std::vector<std::shared_ptr<GameObject>> m_GObject;

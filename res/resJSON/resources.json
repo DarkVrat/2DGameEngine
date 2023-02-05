@@ -142,5 +142,22 @@
 		"name" : "sword",
 		"path" : "../res/sound/effect/sword.wav"
 	}
+	],
+	
+	"sampleSourse" : [
+	{
+		"nameSample":"default",
+		
+		"AlPitch" : 1.0,
+		"AlMaxDistance" : 5.0,
+		"AlRolloffFactor" : 1.0,
+		"AlReferenceDistance" : 1.0,
+		"AlMinGain" : 0.0,
+		"AlMaxGain" : 1.0,
+		"AlGainOutCone" : 0.0,
+		"AlAngleInCone" : 360.0,
+		"AlAngleOutCone" : 360.0,
+		"GainString":"default"
+	}
 	]
 }

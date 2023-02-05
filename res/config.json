@@ -8,5 +8,9 @@
 	
 	"display" : 1,
 	
-	"volume" : 1.0
+	"volume" : 1.0,
+	
+	"volumeSample":{
+		"default":1.0
+	}
 }

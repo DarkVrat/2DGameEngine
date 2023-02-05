@@ -29,6 +29,16 @@ void MainGameClass::update(double duration){
     for (auto current = m_GObject.begin(); current != m_GObject.end(); current++) {
         current->get()->update(duration);
     }
+
+    time += duration;
+    PRINT_TEXT->AddTextInTimeBuffer(std::to_string(duration), glm::vec3(0, 20, 100), 0.25, glm::vec3(1, 1, 1), duration);
+    fps++;
+    if (time > 1000) {
+        PRINT_TEXT->AddTextInTimeBuffer(std::to_string(fps), glm::vec3(0, 0, 100), 0.25, glm::vec3(1, 1, 1), 1000);
+        fps = 0;
+        time -= 1000;
+    }
+
     PRINT_TEXT->updateBuffer(duration);
     MOUSE->UpdatePosition();
 }
@@ -51,6 +61,7 @@ void MainGameClass::sortGameObject(){
 bool MainGameClass::init() {
     RESOURCE_MANAGER->loadJSONResurces("res/resJSON/resources.json");
 
+    SOUND_DEVICE->SetGain(RENDER_ENGINE->getVolumeSounde());
     SOUND_DEVICE->SetAttunation(AL_INVERSE_DISTANCE_CLAMPED);
     SOUND_DEVICE->SetPosition(glm::vec3(420.f, 128.f, 0.f));
     SOUND_DEVICE->SetOrientation(glm::vec3(0.f, 1.f, 0.f), glm::vec3(0.f, 0.f, 1.f));

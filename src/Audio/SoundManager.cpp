@@ -22,11 +22,9 @@ namespace Audio {
 	}
 
 	void SoundManager::UpdateSoundSystem(){
-		std::map<std::shared_ptr<Audio::SoundEffectsPlayer>, Audio::SampleSourse> mapSampleSourse;
 		std::map<std::shared_ptr<Audio::SoundEffectsPlayer>, glm::vec3> position;
 		for (int i = 0; i < m_mapSoundPlayers.size();i++) {
 			std::shared_ptr<Audio::SoundEffectsPlayer> current = m_mapSoundPlayers.at(i);
-			mapSampleSourse.emplace(current, current->GetSampleSourse());
 			position.emplace(current, current->GetVec3Param(AL_POSITION));
 			current->DeleteSourse();
 		}
@@ -51,7 +49,13 @@ namespace Audio {
 			std::shared_ptr<Audio::SoundEffectsPlayer> current = m_mapSoundPlayers.at(i);
 			current->CreateEffect();
 			current->SetVec3Param(AL_POSITION,position.find(current)->second);
-			current->SetSampleSourse(mapSampleSourse.find(current)->second);
+		}
+	}
+
+	void SoundManager::UpdateGain(){
+		SOUND_DEVICE->SetGain(RENDER_ENGINE->getVolumeSounde());
+		for (auto It : m_mapSoundPlayers) {
+			It.get()->UpdateGain();
 		}
 	}
 }

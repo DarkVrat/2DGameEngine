@@ -12,7 +12,6 @@ GameObject::GameObject(std::string startState, glm::vec2& position, glm::vec2& s
 
 	std::shared_ptr<Audio::SoundEffectsPlayer> player = MAKE_SOUND_PLAYER("sword");
 	player->SetVec3Param(AL_POSITION, glm::vec3(position, 0.f));
-	player->SetFloatParam(AL_MAX_DISTANCE, 5.f);
 	m_mapPlayer.emplace("Attack1", player);
 }
 

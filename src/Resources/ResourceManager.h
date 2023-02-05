@@ -10,6 +10,7 @@
 #include "../Renderer/Sprite.h"
 #include "../Renderer/StateAnimation.h"
 #include "../Audio/FileOfSound.h"
+#include "../Audio/SampleSourse.h"
 
 #define RESOURCE_MANAGER ResourceManager::Get()
 
@@ -29,6 +30,10 @@ public:
 
 	//метод получающий argv[0] в main дл€ получени€ пути к игре
 	void setExecutablePath(const std::string& executablePath);
+	std::string getExecutablePath() { return m_path; }
+
+	std::string getFileString(const std::string& relativeFilePath);//функци€ получени€ данных из файла
+
 	void unloadAllRes();
 
 	//функции создани€ и получени€ указателей на ресурсы
@@ -47,6 +52,8 @@ public:
 	Audio::FileOfSound loadSound(const std::string& soundName, const std::string& soundPath);
 	Audio::FileOfSound getSound(const std::string& soundName);
 
+	Audio::SampleSourse getSampleSourse(const std::string& sampleName);
+
 	//создание текстурного атласа
 	std::shared_ptr<Renderer::Texture2D> loadTextureAtlas(std::string textureName,std::string texturePatn,std::vector<std::string> subTextures,const unsigned subWidth,const unsigned subHeigth);
 
@@ -54,15 +61,13 @@ public:
 	bool loadJSONResurces(const std::string& JSONPath);
 
 private:
-	//функци€ получени€ данных из файла
-	std::string getFileString(const std::string& relativeFilePath) ;
-
 	//ќбъ€вление типов Map дл€ хранени€ Shared_ptr указателей наших типов.
 	typedef std::map<const std::string, std::shared_ptr<Renderer::Sprite>> SpriteMap;
 	typedef std::map<const std::string, std::shared_ptr<Renderer::StateAnimation>> StateAnimationMap;
 	typedef std::map<const std::string, std::shared_ptr<Renderer::Texture2D>> TexturesMap;
 	typedef std::map<const std::string, std::shared_ptr<Renderer::ShaderProgram>> ShaderProgramsMap;
-	typedef std::map < const std::string, Audio::FileOfSound> SoundMap;
+	typedef std::map<const std::string, Audio::FileOfSound> SoundMap;
+	typedef std::map<const std::string, Audio::SampleSourse> SampleSourseMap;
 
 	//’ранение всех данных загруженных в программу
 	SpriteMap m_sprite;
@@ -70,6 +75,7 @@ private:
 	TexturesMap m_textures;
 	ShaderProgramsMap m_shaderPrograms;
 	SoundMap m_soundMap;
+	SampleSourseMap m_sampleSourseMap;
 
 	//путь к папке с игрой
 	std::string m_path;

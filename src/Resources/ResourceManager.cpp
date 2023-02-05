@@ -6,6 +6,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
 #include "stb_image.h"
+#include "../Renderer/RenderEngine.h"
 
 static ResourceManager* resourceManager = nullptr;
 
@@ -163,6 +164,13 @@ Audio::FileOfSound ResourceManager::getSound(const std::string& soundName){
 	std::cerr << "(!) Cant find the spriteName " << soundName << std::endl;
 	return Audio::FileOfSound();
 }
+
+Audio::SampleSourse ResourceManager::getSampleSourse(const std::string& sampleName){
+	SampleSourseMap::const_iterator it = m_sampleSourseMap.find(sampleName);
+	if (it != m_sampleSourseMap.end()) return it->second;
+	std::cerr << "(!) Cant find the spriteName " << sampleName << std::endl;
+	return Audio::SampleSourse();
+}
 //-------------------------------Sound------------------------------------//
 
 
@@ -288,6 +296,35 @@ bool ResourceManager::loadJSONResurces(const std::string& JSONPath){
 			const std::string path = currentSound["path"].GetString();
 
 			loadSound(name, path);
+		}
+	}
+
+	auto sampleSourseIt = JSONDoc.FindMember("sampleSourse");
+	if (sampleSourseIt != JSONDoc.MemberEnd()) {
+		for (const auto& currentSample : sampleSourseIt->value.GetArray()) {
+
+			Audio::SampleSourse sample = Audio::SampleSourse();
+			sample.AlPitch = currentSample["AlPitch"].GetDouble();
+			sample.AlRolloffFactor = currentSample["AlRolloffFactor"].GetDouble();
+			sample.AlReferenceDistance = currentSample["AlReferenceDistance"].GetDouble();
+			sample.AlMinGain = currentSample["AlMinGain"].GetDouble();
+			sample.AlMaxGain = currentSample["AlMaxGain"].GetDouble();
+			sample.AlGainOutCone = currentSample["AlGainOutCone"].GetDouble();
+			sample.AlAngleInCone = currentSample["AlAngleInCone"].GetDouble();
+			sample.AlAngleOutCone = currentSample["AlAngleOutCone"].GetDouble();
+
+			if (currentSample["AlMaxDistance"].GetDouble() < 0.0) {
+				sample.AlMaxDistance = std::numeric_limits<float>::max();
+			}
+			else {
+				sample.AlMaxDistance = currentSample["AlMaxDistance"].GetDouble();
+			}
+
+			sample.GainString= currentSample["GainString"].GetString();
+
+			const std::string name = currentSample["nameSample"].GetString();
+
+			m_sampleSourseMap.emplace(name, sample);
 		}
 	}
 

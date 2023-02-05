@@ -10,8 +10,8 @@
 namespace Audio {
 	class SoundEffectsPlayer{
 	public:
-		static std::shared_ptr<Audio::SoundEffectsPlayer> MakeSoundEffectPlayer(const std::string soundEffect);
-		SoundEffectsPlayer(const std::string soundEffect);
+		static std::shared_ptr<Audio::SoundEffectsPlayer> MakeSoundEffectPlayer(const std::string soundEffect, const std::string sampleName="default");
+		SoundEffectsPlayer(const std::string soundEffect, const std::string sampleName );
 		~SoundEffectsPlayer();
 
 		void Play();
@@ -19,25 +19,22 @@ namespace Audio {
 		void Pause();
 		void Rewind();
 
-		void SetFloatParam(ALenum param, const float& value);
-		void SetVec3Param(ALenum param, const glm::vec3& value);
-		void SetIntParam(ALenum param, const int& value);
-		void SetSampleSourse(const SampleSourse sample);
+		bool isStopped();
 
-		float GetFloatParam(ALenum param);
+		void SetVec3Param(ALenum param, const glm::vec3& value);
+		void SetSampleSourse();
+
+		void UpdateGain();
+
 		glm::vec3 GetVec3Param(ALenum param);
-		int GetIntParam(ALenum param);
-		Audio::SampleSourse GetSampleSourse();
+		ALuint GetSource() { return p_Source; }
 
 		void DeleteSourse();
 		void CreateEffect();
 
-		bool isStopped();
-
-		ALuint GetSource() { return p_Source; }
-
 	private:
 		std::string p_soundEffect;
+		Audio::SampleSourse p_sampleSource;
 		ALuint p_Source;
 	};
 }

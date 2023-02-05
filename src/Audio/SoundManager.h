@@ -18,6 +18,7 @@ namespace Audio {
 		void addPlayer(std::shared_ptr<Audio::SoundEffectsPlayer> player) { m_mapSoundPlayers.push_back(player); }
 		void deletePlayer(std::shared_ptr<Audio::SoundEffectsPlayer> player);
 		void UpdateSoundSystem();
+		void UpdateGain();
 	private:
 		SoundManager() {};
 		~SoundManager() { m_mapSoundPlayers.clear(); };

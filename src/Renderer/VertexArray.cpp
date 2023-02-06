@@ -1,4 +1,3 @@
-#include "VertexBuffer.h"
 #include "VertexArray.h"
 
 namespace Renderer {

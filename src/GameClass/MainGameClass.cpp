@@ -1,18 +1,15 @@
 #include "MainGameClass.h"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/vec2.hpp>
-#include "../Resources/ResourceManager.h"
-#include "../Audio/SoundDevice.h"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/vec2.hpp>
-#include <iostream>
+
 #include <algorithm>
-#include <rapidjson/document.h>
+#include <glad/glad.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include "../Audio/SoundDevice.h"
 #include "../Control/MouseControl.h"
 #include "../Control/KeyboardControl.h"
-#include "../Audio/SoundManager.h"
+#include "../Managers/SoundManager.h"
+#include "../Managers/ConfigManager.h"
+#include "../Managers/ResourceManager.h"
+#include "../Renderer/PrintText.h"
 
 static MainGameClass* mainGameClass = nullptr;
 
@@ -61,7 +58,7 @@ void MainGameClass::sortGameObject(){
 bool MainGameClass::init() {
     RESOURCE_MANAGER->loadJSONResurces("res/resJSON/resources.json");
 
-    SOUND_DEVICE->SetGain(RENDER_ENGINE->getVolumeSounde());
+    SOUND_DEVICE->SetGain(CONFIG_MANAGER->getVolumeSounde());
     SOUND_DEVICE->SetAttunation(AL_INVERSE_DISTANCE_CLAMPED);
     SOUND_DEVICE->SetPosition(glm::vec3(420.f, 128.f, 0.f));
     SOUND_DEVICE->SetOrientation(glm::vec3(0.f, 1.f, 0.f), glm::vec3(0.f, 0.f, 1.f));

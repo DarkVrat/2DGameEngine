@@ -1,9 +1,10 @@
 #pragma once
+
 #include <array>
 #include <iostream>
-#include <glm/vec2.hpp>
 
-#define KEYBOARD Control::KeyboardControl::Get()
+
+#define KEYBOARD Control::KeyboardControl::Get() 
 
 namespace Control {
 	class KeyboardControl {
@@ -18,16 +19,16 @@ namespace Control {
 		bool IfClamped(const int key);
 		bool IfNotClamped(const int key);
 
-		void startWritingText() { WriteText = true; }
+		void startWritingText();
+		bool GetWriteText();
 		void addCharInBuffer(unsigned int codepoint);
 		void deleteLastCharInBuffer();
-		bool GetWriteText() { return WriteText; }
-		std::string GetBuffer() { return buffer; }
+		std::string GetBuffer();
 		std::string GetBufferAndRemove();
 
 	private:
-		KeyboardControl() { m_keys.fill(BUTTON_ACTION::NotClamped); buffer = ""; WriteText = false; };
-		~KeyboardControl() {};
+		KeyboardControl();
+		~KeyboardControl() {}
 
 		enum class BUTTON_ACTION {
 			NotClamped,

@@ -2,8 +2,6 @@
 
 #include<vector>
 #include<string>
-#include<map>
-#include<iostream>
 #include"Sprite.h"
 
 namespace Renderer{
@@ -11,14 +9,11 @@ namespace Renderer{
 	public:
 		StateAnimation(std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> frames, std::vector<std::string> sources, std::string nextState, bool uninterrupted);
 
-		StateAnimation& operator=(const StateAnimation&) = delete;
-		StateAnimation(const StateAnimation&) = delete;
-
 		bool canChange(const std::string stateName);
 
-		bool getUninterrupted() { return m_uninterrupted; }
-		std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> getFrames() { return m_frames; }
-		std::string getNextStateName() { return m_nextState; }
+		bool getUninterrupted();
+		std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> getFrames();
+		std::string getNextStateName();
 
 	private:
 		std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> m_frames;

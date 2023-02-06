@@ -1,8 +1,8 @@
 #include "PrintText.h"
+
 #include "ft2build.h"
-#include "VertexBufferLayout.h"
 #include <GLFW/glfw3.h>
-#include <iostream>
+#include "../Managers/ResourceManager.h"
 #include FT_FREETYPE_H
 
 static Renderer::PrintText* printText = nullptr;
@@ -26,7 +26,7 @@ namespace Renderer {
             std::cerr << "(!) ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
 
         FT_Face face;
-        if (FT_New_Face(ft, "../res/Tkachevica.ttf", 0, &face))
+        if (FT_New_Face(ft, (RESOURCE_MANAGER->getExecutablePath() + "/res/Tkachevica.ttf").c_str(), 0, &face))
             std::cerr << "(!) ERROR::FREETYPE: Failed to load font" << std::endl;
 
         FT_Set_Pixel_Sizes(face, 0, 96);
@@ -162,7 +162,7 @@ namespace Renderer {
     }
 
     void PrintText::renderBuffer(){
-        for (auto It:m_timeBufferText) {
+        for (auto& It:m_timeBufferText) {
             RenderText(It.first.text, It.first.position, It.first.scale, It.first.color);
         }
         for (int i = m_countBufferText.size()-1; i >= 0; i--) {

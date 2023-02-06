@@ -1,8 +1,8 @@
 #pragma once
+
 #include <AL\al.h>
-#include <iostream>
+#include <string>
 #include <map>
-#include"FileOfSound.h"
 
 #define SOUND_LIBRARY Audio::SoundEffectsLibrary::Get()
 

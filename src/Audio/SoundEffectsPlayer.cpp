@@ -1,9 +1,11 @@
 #include "SoundEffectsPlayer.h"
-#include <iostream>
+
 #include "OpenALErrorCheck.h"
 #include "SoundDevice.h"
 #include "SoundEffectsLibrary.h"
-#include "SoundManager.h"
+#include "../Managers/SoundManager.h"
+#include "../Managers/ConfigManager.h"
+#include "../Managers/ResourceManager.h"
 
 namespace Audio {
 	std::shared_ptr<Audio::SoundEffectsPlayer> SoundEffectsPlayer::MakeSoundEffectPlayer(const std::string soundEffect, const std::string sampleName){
@@ -63,13 +65,17 @@ namespace Audio {
 	}
 
 	void SoundEffectsPlayer::UpdateGain(){
-		alSourcef(p_Source, AL_GAIN, RENDER_ENGINE->getVolumeSample(p_sampleSource.GainString));
+		alSourcef(p_Source, AL_GAIN, CONFIG_MANAGER->getVolumeSample(p_sampleSource.GainString));
 	}
 
 	glm::vec3 SoundEffectsPlayer::GetVec3Param(ALenum param){
 		glm::vec3 value(0,0,0);
 		alGetSource3f(p_Source, param, &value.x, &value.y, &value.z);
 		return value;
+	}
+
+	ALuint SoundEffectsPlayer::GetSource(){
+		return p_Source;
 	}
 
 

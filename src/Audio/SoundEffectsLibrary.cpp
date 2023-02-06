@@ -1,9 +1,11 @@
 #include "SoundEffectsLibrary.h"
-#include "../Resources/ResourceManager.h"
+
+#include <iostream>
 #include <sndfile.h>
 #include <inttypes.h>
 #include <AL/alext.h>
-#include <iostream>
+#include "FileOfSound.h"
+#include "../Managers/ResourceManager.h"
 
 Audio::SoundEffectsLibrary* sndbuf = nullptr;
 

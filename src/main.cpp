@@ -2,11 +2,13 @@
 
 #include "GameClass/MainGameClass.h"
 #include "Renderer/RenderEngine.h"
-#include "Resources/ResourceManager.h"
+#include "Managers/ResourceManager.h"
 #include "Control/MouseControl.h"
 #include "Control/KeyboardControl.h"
 #include "Audio/SoundDevice.h"
 #include "Audio/SoundEffectsLibrary.h"
+#include "Managers/ConfigManager.h"
+#include "Renderer/PrintText.h"
 
 //Проверить позже на ноутбуке
 //extern "C" {
@@ -17,16 +19,16 @@
 GLFWwindow* PWindow = nullptr;
 
 void GLFWWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
-    RENDER_ENGINE->setWindowSize(glm::vec2(width, height));
+    CONFIG_MANAGER->setWindowSize(glm::vec2(width, height));
     RENDER_ENGINE->setViewport(width, height);
     Control::MouseControl::Get()->SetHeight(height);
     MAIN_GAME_CLASS->SetProjectionMat(glm::vec2(width, height));
 }
 void GLFWMonitorCallBack(GLFWmonitor* monitor, int action) {
-    if (action == GLFW_DISCONNECTED && RENDER_ENGINE->getFullScreen()) {
+    if (action == GLFW_DISCONNECTED && CONFIG_MANAGER->getFullScreen()) {
         GLFWmonitor* new_monitor = RENDER_ENGINE->getMonitor();
         const  GLFWvidmode* mode = glfwGetVideoMode(new_monitor);
-        RENDER_ENGINE->setWindowSize(glm::vec2(mode->width, mode->height));
+        CONFIG_MANAGER->setWindowSize(glm::vec2(mode->width, mode->height));
         glfwSetWindowMonitor(PWindow, new_monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     }
 }
@@ -60,9 +62,9 @@ int main(int argc, char** argv){
 
     RESOURCE_MANAGER->setExecutablePath(argv[0]);
 
-    RENDER_ENGINE->loadConfig();
+    CONFIG_MANAGER->loadConfig();
 
-    glm::vec2 window = RENDER_ENGINE->getWindowSize();
+    glm::vec2 window = CONFIG_MANAGER->getWindowSize();
     PWindow = glfwCreateWindow(window.x, window.y, "Game", RENDER_ENGINE->getMonitor(), NULL);
 
     if (!PWindow){
@@ -122,7 +124,7 @@ int main(int argc, char** argv){
     }
     RESOURCE_MANAGER->unloadAllRes();
 
-    RENDER_ENGINE->saveConfig();
+    CONFIG_MANAGER->saveConfig();
 
     MainGameClass::Terminate();
     Renderer::PrintText::Terminate();

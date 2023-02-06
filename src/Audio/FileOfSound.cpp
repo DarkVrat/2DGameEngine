@@ -1,10 +1,14 @@
 #include "FileOfSound.h"
 
+#include <AL/alext.h>
+#include "../Managers/ResourceManager.h"
+
+
 namespace Audio{ 
 	FileOfSound::FileOfSound(const std::string filePath){
-		m_fileName = filePath;
-
-		m_sndFile = sf_open(filePath.c_str(), SFM_READ, &m_sfInfo);
+		m_fileName =  filePath;
+		 
+		m_sndFile = sf_open((RESOURCE_MANAGER->getExecutablePath()+filePath).c_str(), SFM_READ, &m_sfInfo);
 		if (!m_sndFile)
 			std::cerr << "(!) Could not open audio in " << filePath << ": " << sf_strerror(m_sndFile) << std::endl;
 
@@ -45,9 +49,31 @@ namespace Audio{
 		m_fileName="";
 	}
 
+	SNDFILE* FileOfSound::getSndFile(){
+		return m_sndFile;
+	}
+
+	SF_INFO FileOfSound::getSfInfo(){
+		return m_sfInfo;
+	}
+
+	ALenum FileOfSound::getFormat(){
+		return m_format;
+	}
+
+	short* FileOfSound::getMemBuf(){
+		return m_memBuf;
+	}
+
+	std::string FileOfSound::getFileName(){
+		return m_fileName;
+	}
+
 	bool FileOfSound::operator!()
 	{
-		if (m_sndFile != nullptr) return false;
+		if (m_sndFile != nullptr) {
+			return false; 
+		}
 		return true;
 	}
 

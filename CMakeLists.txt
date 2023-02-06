@@ -26,9 +26,13 @@ add_executable(${PROJECT}
 	src/Renderer/RenderEngine.cpp
 	src/Renderer/RenderEngine.h
 	
-	src/Resources/ResourceManager.cpp
-	src/Resources/ResourceManager.h
-	src/Resources/stb_image.h 
+	src/Managers/ResourceManager.cpp
+	src/Managers/ResourceManager.h
+	src/Managers/stb_image.h 
+	src/Managers/SoundManager.h
+	src/Managers/SoundManager.cpp
+	src/Managers/ConfigManager.h
+	src/Managers/ConfigManager.cpp
 	
 	src/Audio/SoundEffectsPlayer.cpp
 	src/Audio/SoundEffectsPlayer.h
@@ -40,8 +44,6 @@ add_executable(${PROJECT}
 	src/Audio/OpenALErrorCheck.h
 	src/Audio/FileOfSound.cpp
 	src/Audio/FileOfSound.h
-	src/Audio/SoundManager.h
-	src/Audio/SoundManager.cpp
 	
 	src/Control/KeyboardControl.cpp
 	src/Control/KeyboardControl.h

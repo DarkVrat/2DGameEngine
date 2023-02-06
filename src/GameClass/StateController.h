@@ -1,7 +1,7 @@
 #pragma once
 
-#include"../Resources/ResourceManager.h"
-#include<iostream>
+#include<string>
+#include"../Managers/ResourceManager.h"
 
 class StateController {
 public:
@@ -12,10 +12,10 @@ public:
 	void render(glm::vec2& position, glm::vec2& size, float rotation, float layer);
 
 private:
+	std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> m_Sprites;
+	std::shared_ptr<Renderer::StateAnimation> m_State;
 	std::string m_nameState;
 	std::string m_bufferState;
-	std::shared_ptr<Renderer::StateAnimation> m_State;
-	std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> m_Sprites;
 	size_t m_indexFrame;
 	double m_durationFrame;
 	double m_time;

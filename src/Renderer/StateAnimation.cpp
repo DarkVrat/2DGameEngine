@@ -12,4 +12,16 @@ namespace Renderer{
 		}
 		return false;
 	}
+
+	bool StateAnimation::getUninterrupted(){
+		return m_uninterrupted;
+	}
+
+	std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> StateAnimation::getFrames(){
+		return m_frames;
+	}
+
+	std::string StateAnimation::getNextStateName(){
+		return m_nextState;
+	}
 }

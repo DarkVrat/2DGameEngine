@@ -1,16 +1,12 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <string>
+#include <glad/glad.h>
 #include <glm/mat4x4.hpp>
 
 namespace Renderer {
 	class ShaderProgram {
 	public:
-		ShaderProgram() = delete;
-		ShaderProgram(ShaderProgram&) = delete;
-		ShaderProgram& operator=(const ShaderProgram&) = delete;
-
 		//Конструкторы и деструкторы
 		ShaderProgram(const std::string& vertexShader, const std::string& fragmentShader);
 		ShaderProgram& operator=(ShaderProgram&& shaderProgram)noexcept;
@@ -18,10 +14,11 @@ namespace Renderer {
 		~ShaderProgram();
 
 		//Проверка компиляции
-		bool isCompiled() const {return m_isCompiled;}
+		bool isCompiled();
 
 		//передача данных и использование шейдера
 		void use() const;
+
 		void setInt(const std::string& name, const GLint value);
 		void setFloat(const std::string& name, const GLfloat value);
 		void setMatrix4(const std::string& name, const glm::mat4& matrix);

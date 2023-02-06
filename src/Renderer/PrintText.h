@@ -1,7 +1,6 @@
 #pragma once
 
-#include <glm/vec2.hpp>
-#include <glad/glad.h>
+#include <glm/vec3.hpp>
 #include <map>
 #include <memory>
 #include <vector>
@@ -38,7 +37,9 @@ namespace Renderer {
 		static void Terminate();
 
 		void SetShader(std::shared_ptr<ShaderProgram> shader);
+
 		void RenderText(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color);
+
 		void AddTextInTimeBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time);
 		void AddTextInCountBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, int Count=1);
 		void renderBuffer();

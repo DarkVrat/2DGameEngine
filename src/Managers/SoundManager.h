@@ -2,10 +2,7 @@
 
 #include <memory>
 #include <vector>
-#include "SoundDevice.h"
-#include "SoundEffectsLibrary.h"
-#include "SoundEffectsPlayer.h"
-#include "../Renderer/RenderEngine.h"
+#include "../Audio/SoundEffectsPlayer.h"
 
 #define SOUND_MANAGER Audio::SoundManager::Get()
 

@@ -1,5 +1,9 @@
 #include "SoundManager.h"
+
 #include <glm/vec3.hpp>
+#include "../Audio/SoundDevice.h"
+#include "../Audio/SoundEffectsLibrary.h"
+#include "../Managers/ConfigManager.h"
 
 Audio::SoundManager* soundManager = nullptr;
 
@@ -38,7 +42,7 @@ namespace Audio {
 		SOUND_DEVICE->GetOrientation(OrientationAt, OrientationUp);
 		Audio::SoundDevice::Terminate();
 
-		SOUND_DEVICE->SetGain(RENDER_ENGINE->getVolumeSounde());
+		SOUND_DEVICE->SetGain(CONFIG_MANAGER->getVolumeSounde());
 		SOUND_DEVICE->SetAttunation(AL_INVERSE_DISTANCE_CLAMPED);
 		SOUND_DEVICE->SetPosition(positionDevice);
 		SOUND_DEVICE->SetOrientation(OrientationAt, OrientationUp);
@@ -53,8 +57,8 @@ namespace Audio {
 	}
 
 	void SoundManager::UpdateGain(){
-		SOUND_DEVICE->SetGain(RENDER_ENGINE->getVolumeSounde());
-		for (auto It : m_mapSoundPlayers) {
+		SOUND_DEVICE->SetGain(CONFIG_MANAGER->getVolumeSounde());
+		for (auto& It : m_mapSoundPlayers) {
 			It.get()->UpdateGain();
 		}
 	}

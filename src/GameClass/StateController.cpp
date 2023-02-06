@@ -1,5 +1,4 @@
 #include "StateController.h"
-#include <iostream>
 
 StateController::StateController(const std::string initState){
 	m_nameState=initState;

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <glad/glad.h>
-#include"VertexBuffer.h"
-#include"VertexBufferLayout.h"
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 
 namespace Renderer {
 
@@ -11,8 +11,6 @@ namespace Renderer {
 		VertexArray();
 		~VertexArray();
 
-		VertexArray(const VertexArray&) = delete;
-		VertexArray& operator=(const VertexArray&) = delete;
 		VertexArray& operator=(VertexArray&& vertexArray) noexcept;
 		VertexArray(VertexArray&& indexArray) noexcept;
 

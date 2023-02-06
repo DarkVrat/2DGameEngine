@@ -1,4 +1,5 @@
 #include "ShaderProgram.h"
+
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -64,6 +65,10 @@ namespace Renderer {
 	//Удаление шейдера
 	ShaderProgram::~ShaderProgram(){
 		glDeleteProgram(m_ID);
+	}
+
+	bool ShaderProgram::isCompiled(){
+		return m_isCompiled;
 	}
 
 	//установка таргета при отрисовке на наш шейдер

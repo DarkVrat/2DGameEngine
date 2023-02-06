@@ -1,7 +1,6 @@
 #include "SoundDevice.h"
+
 #include <AL\al.h>
-#include <stdio.h>
-#include <vector>
 #include <iostream>
 #include "OpenALErrorCheck.h"
 #include "SoundEffectsLibrary.h"

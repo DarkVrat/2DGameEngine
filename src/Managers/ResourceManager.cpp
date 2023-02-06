@@ -1,4 +1,5 @@
 #include "ResourceManager.h"
+
 #include <fstream>
 #include <sstream>
 #include <iostream>

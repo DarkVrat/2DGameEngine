@@ -24,6 +24,14 @@ namespace Control {
 		}
 	}
 
+	void MouseControl::SetWindow(GLFWwindow* pWindow){
+		m_PWindow = pWindow;
+	}
+
+	void MouseControl::SetHeight(double height){
+		m_height = height - 1;
+	}
+
 	void MouseControl::SetKey(const int key, const int action){
 		if (action == GLFW_PRESS)
 			m_keys[key] = BUTTON_ACTION::Pressed;
@@ -51,6 +59,18 @@ namespace Control {
 		if (m_keys[key] == BUTTON_ACTION::Released || m_keys[key] == BUTTON_ACTION::NotClamped)
 			return true;
 		return false;
+	}
+
+	void MouseControl::SetScroll(glm::vec2 scroll){
+		m_scroll = scroll;
+	}
+
+	glm::vec2 MouseControl::GetScroll(){
+		return m_scroll;
+	}
+
+	glm::vec2 MouseControl::GetPosition(){
+		return m_mousePosition;
 	}
 
 	MouseControl::MouseControl() {

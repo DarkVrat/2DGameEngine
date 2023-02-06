@@ -1,11 +1,10 @@
 #include "Sprite.h"
 
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "ShaderProgram.h"
 #include "Texture2D.h"
 #include "RenderEngine.h"
-
-#include <glm/mat4x4.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 namespace Renderer {
 
@@ -27,7 +26,7 @@ namespace Renderer {
             1.f, 0.f
         };
 
-        auto subTexture = m_pTexture->getSubTexture2D(std::move(initialSubTexture));
+        auto& subTexture = m_pTexture->getSubTexture2D(std::move(initialSubTexture));
 
         const GLfloat textureCoords[] = {
             // U                       //V
@@ -42,12 +41,12 @@ namespace Renderer {
             2, 3, 0
         };
 
-        m_vertexCoordsBuffer.init(vertexCoords, 2 * 4 * sizeof(GLfloat));
+        m_vertexCoordsBuffer.init(vertexCoords, 8 * sizeof(GLfloat));
         VertexBufferLayout vertexCoordsLayout;
         vertexCoordsLayout.addElementLayoutFloat(2, false);
         m_vertexArray.addBuffer(m_vertexCoordsBuffer, vertexCoordsLayout);
 
-        m_textureCoordsBuffer.init(textureCoords, 2 * 4 * sizeof(GLfloat));
+        m_textureCoordsBuffer.init(textureCoords, 8 * sizeof(GLfloat));
         VertexBufferLayout textureCoordsLayout;
         textureCoordsLayout.addElementLayoutFloat(2, false);
         m_vertexArray.addBuffer(m_textureCoordsBuffer, textureCoordsLayout);

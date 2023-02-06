@@ -1,9 +1,7 @@
 #pragma once
 
-
 #include<memory>
 #include<string>
-#include<glad/glad.h>
 #include<glm/vec2.hpp>
 #include"VertexBuffer.h"
 #include"VertexArray.h"
@@ -17,8 +15,6 @@ namespace Renderer {
 	public:
 		// онструкторы и деструкторы
 		Sprite(std::shared_ptr<Texture2D> pTexture, std::string initialSubTexture, std::shared_ptr<ShaderProgram> pShaderProgram);
-		Sprite& operator=(const Sprite&) = delete;
-		Sprite(const Sprite&) = delete;
 		~Sprite() {};
 		
 		//отрисовка

@@ -1,6 +1,5 @@
 #pragma once
-#include <cstdint>
-#include <array>
+
 #include <memory>
 #include <glm/vec2.hpp>
 #include "GameObject.h"
@@ -12,13 +11,13 @@ public:
 	static MainGameClass* Get();
 	static void Terminate();
 
+	bool init();
+
 	void update(double duration);
 	void render();
 
-	void sortGameObject();
-
-	bool init();
 	void Events();
+	void sortGameObject();
 	void SetProjectionMat(glm::ivec2 window);
 
 private:

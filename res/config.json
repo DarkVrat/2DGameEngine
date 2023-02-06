@@ -1,16 +1,19 @@
 {
 	"window size":{
-		"width" : 1600,
-		"height" : 900
+		"width" : 1000,
+		"height" : 800
 	},
 	
-	"full screen" : true,
+	"full screen" : false,
 	
-	"display" : 1,
+	"display" : 0,
 	
 	"volume" : 1.0,
 	
-	"volumeSample":{
-		"default":1.0
-	}
+	"volumeSample":[
+		{
+		"name":"default",
+		"volume":1.0
+		}
+	]
 }

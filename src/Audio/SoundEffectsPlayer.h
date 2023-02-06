@@ -1,9 +1,10 @@
 #pragma once
+
+#include <iostream>
+#include <memory>
 #include <AL\al.h>
 #include <glm/vec3.hpp>
 #include "SampleSourse.h"
-#include <iostream>
-#include <memory>
 
 #define MAKE_SOUND_PLAYER Audio::SoundEffectsPlayer::MakeSoundEffectPlayer
 
@@ -27,7 +28,7 @@ namespace Audio {
 		void UpdateGain();
 
 		glm::vec3 GetVec3Param(ALenum param);
-		ALuint GetSource() { return p_Source; }
+		ALuint GetSource();
 
 		void DeleteSourse();
 		void CreateEffect();

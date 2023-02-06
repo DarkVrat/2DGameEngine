@@ -9,8 +9,6 @@ namespace Renderer {
 		VertexBuffer();
 		~VertexBuffer();
 
-		VertexBuffer(const VertexBuffer&) = delete;
-		VertexBuffer& operator=(const VertexBuffer&) = delete;
 		VertexBuffer& operator=(VertexBuffer&& vertexBuffer) noexcept;
 		VertexBuffer(VertexBuffer&& indexBuffer) noexcept;
 

@@ -1,6 +1,6 @@
-#include <GLFW/glfw3.h>
 #include "KeyboardControl.h"
 
+#include <GLFW/glfw3.h>
 
 
 static Control::KeyboardControl* keyboardControl = nullptr;
@@ -50,6 +50,10 @@ namespace Control {
 		return false;
 	}
 
+	void KeyboardControl::startWritingText(){
+		WriteText = true;
+	}
+
 	void KeyboardControl::addCharInBuffer(unsigned int codepoint) {
 		if (WriteText) {
 			if (codepoint > 128) {codepoint -= 848;}
@@ -66,10 +70,22 @@ namespace Control {
 		}
 	}
 
+	bool KeyboardControl::GetWriteText(){
+		return WriteText;
+	}
+
+	std::string KeyboardControl::GetBuffer(){
+		return buffer;
+	}
+
 	std::string KeyboardControl::GetBufferAndRemove() {
 		WriteText = false;
 		std::string s = buffer;
 		buffer = "";
 		return s;
+	}
+
+	KeyboardControl::KeyboardControl() { 
+		m_keys.fill(BUTTON_ACTION::NotClamped); buffer = ""; WriteText = false; 
 	}
 }

@@ -12,7 +12,7 @@
 #include "../Audio/FileOfSound.h"
 #include "../Audio/SampleSourse.h"
 
-#define RESOURCE_MANAGER ResourceManager::Get()
+#define RESOURCE_MANAGER ResourceManager
 
 namespace Renderer {
 	class ShaderProgram;
@@ -26,57 +26,48 @@ namespace Audio {
 
 class ResourceManager {
 public:
-	static ResourceManager* Get();
-
 	//метод получающий argv[0] в main дл€ получени€ пути к игре
-	void setExecutablePath(const std::string& executablePath);
-	std::string getExecutablePath() { return m_path; }
+	static void setExecutablePath(const std::string& executablePath);
+	static std::string getExecutablePath();
 
-	std::string getFileString(const std::string& relativeFilePath);//функци€ получени€ данных из файла
+	static std::string getFileString(const std::string& relativeFilePath);//функци€ получени€ данных из файла
 
-	void unloadAllRes();
+	static void unloadAllRes();
 
 	//функции создани€ и получени€ указателей на ресурсы
-	std::shared_ptr<Renderer::ShaderProgram> loadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
-	std::shared_ptr<Renderer::ShaderProgram> getShader(const std::string& shaderName);
+	static void loadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
+	static void loadTexture(std::string textureName, std::string texturePatn, std::vector<std::string> subTextures, const unsigned subWidth, const unsigned subHeigth);
+	static void loadSprite(const std::string& spriteName, const std::string& textureName, const std::string& shaderName, const std::string& subTextureName = "Default");
+	static void loadStateAnimation(const std::string& spriteName, std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> frames, std::vector<std::string> sources, std::string nextState, bool uninterrupted);
+	static void loadSound(const std::string& soundName, const std::string& soundPath);
+	
+	static std::shared_ptr<Renderer::ShaderProgram> getShader(const std::string& shaderName);
+	static std::shared_ptr<Renderer::Texture2D> getTexture(const std::string& textureName);
+	static std::shared_ptr<Renderer::Sprite> getSprite(const std::string& spriteName);
+	static std::shared_ptr<Renderer::StateAnimation> getStateAnimation(const std::string& spriteName);
+	static std::shared_ptr<Audio::FileOfSound> getSound(const std::string& soundName);
+	static std::shared_ptr<Audio::SampleSourse> getSampleSourse(const std::string& sampleName);
 
-	std::shared_ptr<Renderer::Texture2D> loadTexture(const std::string& textureName, const std::string& texturePatn);
-	std::shared_ptr<Renderer::Texture2D> getTexture(const std::string& textureName);
-
-	std::shared_ptr<Renderer::Sprite> loadSprite(const std::string& spriteName, const std::string& textureName, const std::string& shaderName, const std::string& subTextureName = "Default");
-	std::shared_ptr<Renderer::Sprite> getSprite(const std::string& spriteName);
-
-	std::shared_ptr<Renderer::StateAnimation> loadStateAnimation(const std::string& spriteName, std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> frames, std::vector<std::string> sources, std::string nextState, bool uninterrupted);
-	std::shared_ptr<Renderer::StateAnimation> getStateAnimation(const std::string& spriteName);
-
-	Audio::FileOfSound loadSound(const std::string& soundName, const std::string& soundPath);
-	Audio::FileOfSound getSound(const std::string& soundName);
-
-	Audio::SampleSourse getSampleSourse(const std::string& sampleName);
-
-	//создание текстурного атласа
-	std::shared_ptr<Renderer::Texture2D> loadTextureAtlas(std::string textureName,std::string texturePatn,std::vector<std::string> subTextures,const unsigned subWidth,const unsigned subHeigth);
-
-	rapidjson::Document loadJSONDoc(const std::string& JSONPath);
-	bool loadJSONResurces(const std::string& JSONPath);
+	static rapidjson::Document loadJSONDoc(const std::string& JSONPath);
+	static bool loadJSONResurces(const std::string& JSONPath);
 
 private:
 	//ќбъ€вление типов Map дл€ хранени€ Shared_ptr указателей наших типов.
-	typedef std::map<const std::string, std::shared_ptr<Renderer::Sprite>> SpriteMap;
 	typedef std::map<const std::string, std::shared_ptr<Renderer::StateAnimation>> StateAnimationMap;
-	typedef std::map<const std::string, std::shared_ptr<Renderer::Texture2D>> TexturesMap;
 	typedef std::map<const std::string, std::shared_ptr<Renderer::ShaderProgram>> ShaderProgramsMap;
-	typedef std::map<const std::string, Audio::FileOfSound> SoundMap;
-	typedef std::map<const std::string, Audio::SampleSourse> SampleSourseMap;
+	typedef std::map<const std::string, std::shared_ptr<Renderer::Texture2D>> TexturesMap;
+	typedef std::map<const std::string, std::shared_ptr<Renderer::Sprite>> SpriteMap;
+	typedef std::map<const std::string, std::shared_ptr<Audio::FileOfSound>> SoundMap;
+	typedef std::map<const std::string, std::shared_ptr<Audio::SampleSourse>> SampleSourseMap;
 
 	//’ранение всех данных загруженных в программу
-	SpriteMap m_sprite;
-	StateAnimationMap m_stateAnimation;
-	TexturesMap m_textures;
-	ShaderProgramsMap m_shaderPrograms;
-	SoundMap m_soundMap;
-	SampleSourseMap m_sampleSourseMap;
+	static StateAnimationMap m_stateAnimation;
+	static ShaderProgramsMap m_shaderPrograms;
+	static TexturesMap m_textures;
+	static SpriteMap m_sprite;
+	static SoundMap m_soundMap;
+	static SampleSourseMap m_sampleSourseMap;
 
 	//путь к папке с игрой
-	std::string m_path;
+	static std::string m_path;
 };

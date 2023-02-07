@@ -4,23 +4,28 @@
 #include <sstream>
 #include <iostream>
 #include <rapidjson/error/en.h>
-#define STB_IMAGE_IMPLEMENTATION
-#define STBI_ONLY_PNG
+#define  STB_IMAGE_IMPLEMENTATION
+#define  STBI_ONLY_PNG
 #include "stb_image.h"
 #include "../Renderer/RenderEngine.h"
+#include "../Renderer/PrintText.h"
 
-static ResourceManager* resourceManager = nullptr;
-
-ResourceManager* ResourceManager::Get() {
-	if (resourceManager == nullptr)
-		resourceManager = new ResourceManager();
-	return resourceManager;
-}
+ResourceManager::StateAnimationMap ResourceManager::m_stateAnimation;
+ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
+ResourceManager::TexturesMap ResourceManager::m_textures;
+ResourceManager::SpriteMap ResourceManager::m_sprite;
+ResourceManager::SoundMap ResourceManager::m_soundMap;
+ResourceManager::SampleSourseMap ResourceManager::m_sampleSourseMap;
+std::string ResourceManager::m_path;
 
 //Метод получающий argv[0] в main для получения пути к игре
 void ResourceManager::setExecutablePath(const std::string& executablePath){
 	size_t found = executablePath.find_last_of("/\\");
 	m_path = executablePath.substr(0, found);
+}
+
+std::string ResourceManager::getExecutablePath(){
+	return m_path;
 }
 
 void ResourceManager::unloadAllRes(){
@@ -29,12 +34,13 @@ void ResourceManager::unloadAllRes(){
 	m_textures.clear();
 	m_soundMap.clear();
 	m_stateAnimation.clear();
+	m_sampleSourseMap.clear();
 }
 
 //функция получения данных из файла
 std::string ResourceManager::getFileString(const std::string& relativeFilePath)  {
 	std::ifstream f;
-	f.open(m_path + "/" + relativeFilePath.c_str(), std::ios::in | std::ios::binary);
+	f.open(m_path + "/" + relativeFilePath.c_str());
 	if (!f.is_open()) {
 		std::cerr << "(!) Failed to open: " << relativeFilePath << std::endl;
 		return std::string{};
@@ -47,25 +53,19 @@ std::string ResourceManager::getFileString(const std::string& relativeFilePath) 
 
  //-------------------------------Shader------------------------------------//
 //Загрузка шейдера в память
-std::shared_ptr<Renderer::ShaderProgram> ResourceManager::loadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath) {
+void ResourceManager::loadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath) {
 	std::string vertexString = getFileString(vertexPath);//Данные из вертексного шейдера
-	if (vertexString.empty()) {//Проверка наличия
-		std::cerr << "(!) No vertex" << std::endl;  
-		return nullptr;
-	}
-
 	std::string fragmentString = getFileString(fragmentPath);//Данные из фрагментного шейдера
-	if (fragmentString.empty()) {//Проверка наличия
-		std::cerr << "(!) No fragment" << std::endl;
-		return nullptr;
+	if (vertexString.empty()|| fragmentString.empty()) {//Проверка наличия
+		std::cerr << "(!) Vertex or fragment is empty" << std::endl;  
+		return;
 	}
 
 	//Создание в куче объекта шейдера и помещение в MAP
 	std::shared_ptr<Renderer::ShaderProgram>&newShader = m_shaderPrograms.emplace(shaderName, std::make_shared<Renderer::ShaderProgram>(vertexString, fragmentString)).first->second;
-	if (newShader->isCompiled()) return newShader;//Проверка и возврат шейдера при успешном выполнении
-
-	std::cerr << "(!) Can't load shader" << std::endl;
-	return nullptr;
+	if (!newShader->isCompiled()) { //Проверка и возврат шейдера при успешном выполнении
+		std::cerr << "(!) Can't load shader" << std::endl;
+	}
 }
 
 //загрузка шейдера из памяти
@@ -81,21 +81,43 @@ std::shared_ptr<Renderer::ShaderProgram>  ResourceManager::getShader(const std::
 
  //-------------------------------Texture-----------------------------------//
 //Загрузка текстуры в память
-std::shared_ptr<Renderer::Texture2D> ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePatn) {
-	int channels = 0;
-	int widht = 0;
-	int height = 0;
+void ResourceManager::loadTexture(std::string textureName, std::string texturePatn, std::vector<std::string> subTextures, const unsigned subWidth, const unsigned subHeigth) {
+	int channels, widht, height;
 	stbi_set_flip_vertically_on_load(true);//Для загрузки текстуры в правильном ориентривании, при false изображение будет перевёрнуто
 	unsigned char* pixels=stbi_load(std::string(m_path + "/" + texturePatn).c_str(), &widht, &height, &channels, 0);//загрузка пикселей, а так же заполнение иформации
 	if (!pixels) { //Проверка успешности
 		std::cerr << "(!) ERROR TEXTUR LOAD" << textureName <<std::endl;
-		return nullptr;
+		return ;
 	}
 
 	//Создание текстуры в куче и возврат ссылки
-	std::shared_ptr<Renderer::Texture2D> newTexture = m_textures.emplace(textureName, std::make_shared<Renderer::Texture2D>(widht, height,pixels, channels,GL_NEAREST,GL_CLAMP_TO_EDGE)).first->second;
+	std::shared_ptr<Renderer::Texture2D> newTexture = std::make_shared<Renderer::Texture2D>(widht, height,pixels, channels,GL_NEAREST,GL_CLAMP_TO_EDGE);
 	stbi_image_free(pixels);//Освобождение памяти
-	return newTexture;//передача текстуры
+
+	if (newTexture) {
+		const unsigned int textureWidth = newTexture->getWidth();	//получение ширины
+		const unsigned int textureHeight = newTexture->getHeight(); //Получение высоты
+		unsigned int currentTexOffsetX = 0;//Положение X Координаты
+		unsigned int currentTexOffsetY = textureHeight;//Положение Y координаты
+
+		for (auto& currentSubTexName : subTextures) {//Проходя по вектору названий для сабтекстур
+			//Отмеряем левую нижнюю и правую верхнюю координату подтекстур
+			glm::vec2 leftBottomUV(static_cast<float>(currentTexOffsetX + 0.01f) / textureWidth, static_cast<float>(currentTexOffsetY - subHeigth + 0.01f) / textureHeight);
+			glm::vec2 rightTopUV(static_cast<float>(currentTexOffsetX + subHeigth - 0.01f) / textureWidth, static_cast<float>(currentTexOffsetY - 0.01f) / textureHeight);
+
+			//помещаем текстуру в подтекстуры 
+			newTexture->addSubTexture(std::move(currentSubTexName), leftBottomUV, rightTopUV);
+
+			currentTexOffsetX += subWidth; //Двигаем X
+
+			if (currentTexOffsetX >= textureWidth) {//При проходе по всем X координатам возвращаемся в 0 и уменьшаем Y
+				currentTexOffsetX = 0;
+				currentTexOffsetY -= subHeigth;
+			}
+		}
+	}
+
+	m_textures.emplace(textureName, newTexture);
 }
 
 //загрузка текстуры из памяти
@@ -111,7 +133,7 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const std::stri
 
  //-------------------------------Sprite------------------------------------//
 //Загрузка спрайта в память
-std::shared_ptr<Renderer::Sprite> ResourceManager::loadSprite(const std::string& spriteName, const std::string& textureName, const std::string& shaderName,const std::string& subTextureName){
+void ResourceManager::loadSprite(const std::string& spriteName, const std::string& textureName, const std::string& shaderName,const std::string& subTextureName){
 	//Поиск и проверка текстуры
 	auto pTexture = getTexture(textureName);
 	if (!pTexture) std::cerr << "(!) Cant find the textureName " << textureName << " for sprite " << spriteName << std::endl;
@@ -121,8 +143,7 @@ std::shared_ptr<Renderer::Sprite> ResourceManager::loadSprite(const std::string&
 	if (!pShader) std::cerr << "(!) Cant find the shaderName " << shaderName << " for sprite " << spriteName << std::endl;
 	
 	//создание спрайта и возврат указателя на спрайт
-	std::shared_ptr<Renderer::Sprite> newSprite = m_sprite.emplace(spriteName,std::make_shared<Renderer::Sprite>(pTexture,subTextureName,pShader)).first->second;
-	return newSprite;
+	m_sprite.emplace(spriteName,std::make_shared<Renderer::Sprite>(pTexture,subTextureName,pShader));
 }
 
 //загрузка спрайта из памяти
@@ -136,9 +157,8 @@ std::shared_ptr<Renderer::Sprite> ResourceManager::getSprite(const std::string& 
 
 
 //-------------------------------StateAnimation------------------------------------//
-std::shared_ptr<Renderer::StateAnimation> ResourceManager::loadStateAnimation(const std::string& stateName, std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> frames, std::vector<std::string> sources, std::string nextState, bool uninterrupted) {
-	std::shared_ptr<Renderer::StateAnimation> newStateAnimation = m_stateAnimation.emplace(stateName, std::make_shared<Renderer::StateAnimation>(frames, sources,nextState, uninterrupted)).first->second;
-	return nullptr;
+void ResourceManager::loadStateAnimation(const std::string& stateName, std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> frames, std::vector<std::string> sources, std::string nextState, bool uninterrupted) {
+	m_stateAnimation.emplace(stateName, std::make_shared<Renderer::StateAnimation>(frames, sources,nextState, uninterrupted));
 }
 
 std::shared_ptr<Renderer::StateAnimation> ResourceManager::getStateAnimation(const std::string& stateName) {
@@ -150,56 +170,28 @@ std::shared_ptr<Renderer::StateAnimation> ResourceManager::getStateAnimation(con
 //-------------------------------StateAnimation------------------------------------//
 
 //-------------------------------Sound------------------------------------//
-Audio::FileOfSound ResourceManager::loadSound(const std::string& soundName, const std::string& soundPath){
-	SoundMap::const_iterator it = m_soundMap.find(soundName);
+void ResourceManager::loadSound(const std::string& soundName, const std::string& soundPath){
+	auto it = m_soundMap.find(soundName);
 	if (it != m_soundMap.end()) {
 		m_soundMap.erase(it);
 	}
-	Audio::FileOfSound File(soundPath);
-	m_soundMap.emplace(soundName, File);
-	return File;
+	m_soundMap.emplace(soundName, std::make_shared<Audio::FileOfSound>(soundPath));
 }
-Audio::FileOfSound ResourceManager::getSound(const std::string& soundName){
+
+std::shared_ptr<Audio::FileOfSound> ResourceManager::getSound(const std::string& soundName){
 	SoundMap::const_iterator it = m_soundMap.find(soundName);
 	if (it != m_soundMap.end()) return it->second;
 	std::cerr << "(!) Cant find the spriteName " << soundName << std::endl;
-	return Audio::FileOfSound();
+	return nullptr;
 }
 
-Audio::SampleSourse ResourceManager::getSampleSourse(const std::string& sampleName){
+std::shared_ptr<Audio::SampleSourse> ResourceManager::getSampleSourse(const std::string& sampleName){
 	SampleSourseMap::const_iterator it = m_sampleSourseMap.find(sampleName);
 	if (it != m_sampleSourseMap.end()) return it->second;
 	std::cerr << "(!) Cant find the spriteName " << sampleName << std::endl;
-	return Audio::SampleSourse();
+	return nullptr;
 }
 //-------------------------------Sound------------------------------------//
-
-
-
-//загрузка текстурного атласа, текстурный атлас не привязывается к уже загруженым текстурам
-std::shared_ptr<Renderer::Texture2D> ResourceManager::loadTextureAtlas(std::string textureName,std::string texturePatn,std::vector<std::string> subTextures,const unsigned subWidth,const unsigned subHeigth) {
-	auto pTexture = loadTexture(std::move(textureName), std::move(texturePatn));//Загрузка текстуры
-	if (pTexture) {
-		const unsigned int textureWidth = pTexture->getWidth();	//получение ширины
-		const unsigned int textureHeight = pTexture->getHeight(); //Получение высоты
-		unsigned int currentTexOffsetX = 0;//Положение X Координаты
-		unsigned int currentTexOffsetY = textureHeight;//Положение Y координаты
-		 
-		for (auto& currentSubTexName : subTextures) {//Проходя по вектору названий для сабтекстур
-			//Отмеряем левую нижнюю и правую верхнюю координату подтекстур
-			glm::vec2 leftBottomUV(static_cast<float>(currentTexOffsetX+0.01f)/textureWidth,static_cast<float>(currentTexOffsetY-subHeigth + 0.01f)/textureHeight);
-			glm::vec2 rightTopUV  (static_cast<float>(currentTexOffsetX+subHeigth-0.01f)/textureWidth,static_cast<float>(currentTexOffsetY - 0.01f)/textureHeight);
-			//помещаем текстуру в подтекстуры 
-			pTexture->addSubTexture(std::move(currentSubTexName), leftBottomUV, rightTopUV);
-			currentTexOffsetX += subWidth; //Двигаем X
-			if (currentTexOffsetX >= textureWidth) {//При проходе по всем X координатам возвращаемся в 0 и уменьшаем Y
-				currentTexOffsetX = 0;
-				currentTexOffsetY -= subHeigth;
-			}
-		}
-	}
-	return pTexture;//Возврат тектуры
-}
 
 rapidjson::Document ResourceManager::loadJSONDoc(const std::string& JSONPath){
 	const std::string JSONString = getFileString(JSONPath);
@@ -217,7 +209,7 @@ rapidjson::Document ResourceManager::loadJSONDoc(const std::string& JSONPath){
 	return JSONDoc;
 }
 
-bool ResourceManager::loadJSONResurces(const std::string& JSONPath){
+bool ResourceManager::loadJSONResurces(const std::string& JSONPath) {
 	const rapidjson::Document JSONDoc = loadJSONDoc(JSONPath);
 
 	auto shadersIt = JSONDoc.FindMember("shader");
@@ -238,15 +230,15 @@ bool ResourceManager::loadJSONResurces(const std::string& JSONPath){
 			const std::string filePath = currentTextureAtlases["filePath"].GetString();
 			const unsigned int subTextureWidth = currentTextureAtlases["subTextureWidth"].GetUint();
 			const unsigned int subTextureHeight = currentTextureAtlases["subTextureHeight"].GetUint();
-			
-			const auto subTexturesArray=currentTextureAtlases["subTextures"].GetArray();
+
+			const auto subTexturesArray = currentTextureAtlases["subTextures"].GetArray();
 			std::vector<std::string> subTexturesVector;
 			subTexturesVector.reserve(subTexturesArray.Size());
 			for (const auto& currentSubTexture : subTexturesArray) {
 				subTexturesVector.emplace_back(currentSubTexture.GetString());
 			}
 
-			loadTextureAtlas(name, filePath, std::move(subTexturesVector), subTextureWidth, subTextureHeight);
+			loadTexture(name, filePath, std::move(subTexturesVector), subTextureWidth, subTextureHeight);
 		}
 	}
 
@@ -255,7 +247,7 @@ bool ResourceManager::loadJSONResurces(const std::string& JSONPath){
 		for (const auto& currentSprite : spriteIt->value.GetArray()) {
 			const std::string textureAtlas = currentSprite["textureAtlas"].GetString();
 			const std::string shader = currentSprite["shader"].GetString();
-			
+
 			for (const auto& current : currentSprite["createSprites"].GetArray()) {
 				const std::string nameSprite = current["nameSprite"].GetString();
 				const std::string subTexture = current["subTexture"].GetString();
@@ -286,7 +278,7 @@ bool ResourceManager::loadJSONResurces(const std::string& JSONPath){
 				framesVector.emplace_back(std::make_pair<std::shared_ptr<Renderer::Sprite>, double>(getSprite(currentFrame["sprite"].GetString()), currentFrame["duration"].GetDouble()));
 			}
 
-			loadStateAnimation(nameState, framesVector, sourcesVector, nextState, uninterrupted); 
+			loadStateAnimation(nameState, framesVector, sourcesVector, nextState, uninterrupted);
 		}
 	}
 
@@ -321,13 +313,16 @@ bool ResourceManager::loadJSONResurces(const std::string& JSONPath){
 				sample.AlMaxDistance = currentSample["AlMaxDistance"].GetDouble();
 			}
 
-			sample.GainString= currentSample["GainString"].GetString();
+			sample.GainString = currentSample["GainString"].GetString();
 
 			const std::string name = currentSample["nameSample"].GetString();
 
-			m_sampleSourseMap.emplace(name, sample);
+			m_sampleSourseMap.emplace(name, std::make_shared<Audio::SampleSourse>(sample));
 		}
 	}
+
+	auto& textSettings = JSONDoc.FindMember("textSettings")->value;
+	PRINT_TEXT::createSymbols(getShader(textSettings["shader"].GetString()), textSettings["fontSize"].GetInt(), textSettings["fontPath"].GetString());
 
 	return true;
 }

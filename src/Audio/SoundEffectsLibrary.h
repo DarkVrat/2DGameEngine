@@ -4,21 +4,18 @@
 #include <string>
 #include <map>
 
-#define SOUND_LIBRARY Audio::SoundEffectsLibrary::Get()
+#define SOUND_LIBRARY Audio::SoundEffectsLibrary//::Get()
 
 namespace Audio {
 	class SoundEffectsLibrary{
 	public:
-		static SoundEffectsLibrary* Get();
-		static void Terminate();
+		//static SoundEffectsLibrary* Get();
+		static void init();
+		static void terminate();
 
-		ALuint Load(const std::string name);
-		void UnLoad(const std::string name);
-
+		static ALuint load(const std::string name);
+		static void unLoad(const std::string name);
 	private:
-		SoundEffectsLibrary();
-		~SoundEffectsLibrary();
-
-		std::map<std::string, ALuint> p_SoundEffectBuffers;
+		static std::map<std::string, ALuint> m_SoundEffectBuffers;
 	};
 }

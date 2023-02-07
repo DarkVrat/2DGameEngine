@@ -5,20 +5,27 @@
 #include "../Managers/ResourceManager.h"
 #include FT_FREETYPE_H
 
-static Renderer::PrintText* printText = nullptr;
+std::map<GLchar, std::shared_ptr<Renderer::PrintText::Character>> Renderer::PrintText::m_characters;
+std::vector<std::pair<Renderer::PrintText::Text, double>> Renderer::PrintText::m_timeBufferText;
+std::vector<std::pair<Renderer::PrintText::Text, int>> Renderer::PrintText::m_countBufferText;
+std::shared_ptr<Renderer::ShaderProgram> Renderer::PrintText::m_shader;
+Renderer::VertexArray* Renderer::PrintText::m_vertexArray;
+Renderer::VertexBuffer Renderer::PrintText::m_vertexBuffer;
+Renderer::IndexBuffer Renderer::PrintText::m_indexBuffer;
+int Renderer::PrintText::m_fontSize;
 
 namespace Renderer {
-    PrintText* PrintText::Get() {
-        if (printText == nullptr)
-            printText = new PrintText();
-        return printText;
+    PrintText::PrintText() {
+        m_shader = nullptr;
+        m_characters.clear();
+        m_timeBufferText.clear();
+        m_countBufferText.clear();
+        m_vertexArray=nullptr;
+        m_fontSize = 1;
     }
 
-    void PrintText::Terminate(){
-        delete printText;
-    }
-
-    void PrintText::SetShader(std::shared_ptr<ShaderProgram> shader) {
+    void PrintText::createSymbols(std::shared_ptr<ShaderProgram> shader, int fontSize, std::string fontPath) {
+        m_fontSize = fontSize;
         m_shader=std::move(shader);
 
         FT_Library ft;
@@ -26,10 +33,10 @@ namespace Renderer {
             std::cerr << "(!) ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
 
         FT_Face face;
-        if (FT_New_Face(ft, (RESOURCE_MANAGER->getExecutablePath() + "/res/Tkachevica.ttf").c_str(), 0, &face))
+        if (FT_New_Face(ft, (RESOURCE_MANAGER::getExecutablePath() + fontPath).c_str(), 0, &face))
             std::cerr << "(!) ERROR::FREETYPE: Failed to load font" << std::endl;
 
-        FT_Set_Pixel_Sizes(face, 0, 96);
+        FT_Set_Pixel_Sizes(face, 0, m_fontSize);
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -67,46 +74,48 @@ namespace Renderer {
                                                                                 glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
                                                                                 static_cast<GLuint>(face->glyph->advance.x));
 
-            m_Characters.insert(std::pair<GLchar, std::shared_ptr<Character>>(c, character));
+            m_characters.insert(std::pair<GLchar, std::shared_ptr<Character>>(c, character));
         }
         glBindTexture(GL_TEXTURE_2D, 0);
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
 
+        m_vertexArray = new VertexArray();
+
         VertexBufferLayout VBL;
         VBL.addElementLayoutFloat(4, false);
-        m_VertexBuffer.init(NULL, sizeof(GLfloat) * 6 * 4);
-        m_VertexArray.bind();
-        m_VertexArray.addBuffer(m_VertexBuffer, VBL);
-        m_VertexBuffer.unbind();
-        m_VertexArray.unbind();
+        m_vertexBuffer.init(NULL, sizeof(GLfloat) * 6 * 4);
+        m_vertexArray->bind();
+        m_vertexArray->addBuffer(m_vertexBuffer, VBL);
+        m_vertexBuffer.unbind();
+        m_vertexArray->unbind();
 
         const GLuint indices[] = {
             0, 1, 2,
             2, 3, 0
         };
 
-        m_IndexBuffer.init(indices, 6);
+        m_indexBuffer.init(indices, 6);
     }
 
-    void PrintText::RenderText(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color) {
+    void PrintText::renderText(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color) {
         m_shader->use();
         m_shader->setVec3("textColor", color);
         m_shader->setFloat("layer", position.z);
 
         glActiveTexture(GL_TEXTURE0);
-        m_VertexArray.bind();
-        m_IndexBuffer.bind();
+        m_vertexArray->bind();
+        m_indexBuffer.bind();
 
         for (char c: text)
         {
-            std::shared_ptr<Character> ch = m_Characters[c];
+            std::shared_ptr<Character> ch = m_characters[c];
 
-            GLfloat xpos = position.x + ch->Bearing.x * scale;
-            GLfloat ypos = position.y - (ch->Size.y - ch->Bearing.y) * scale;
+            GLfloat xpos = position.x + ch->ms_bearing.x * scale;
+            GLfloat ypos = position.y - (ch->ms_size.y - ch->ms_bearing.y) * scale;
 
-            GLfloat w = ch->Size.x * scale;
-            GLfloat h = ch->Size.y * scale;
+            GLfloat w = ch->ms_size.x * scale;
+            GLfloat h = ch->ms_size.y * scale;
             GLfloat vertices[4][4] = {
                 { xpos,     ypos + h,   0.0, 0.0 },
                 { xpos,     ypos,       0.0, 1.0 },
@@ -114,23 +123,23 @@ namespace Renderer {
                 { xpos + w, ypos + h,   1.0, 0.0 }
             };
 
-            glBindTexture(GL_TEXTURE_2D, ch->TextureID);
+            glBindTexture(GL_TEXTURE_2D, ch->ms_textureID);
 
-            m_VertexBuffer.update(vertices, sizeof(vertices));
-            m_VertexBuffer.unbind();
+            m_vertexBuffer.update(vertices, sizeof(vertices));
+            m_vertexBuffer.unbind();
 
-            glDrawElements(GL_TRIANGLES, m_IndexBuffer.getCount(), GL_UNSIGNED_INT, nullptr);
-            position.x += (ch->Advance >> 6) * scale;
+            glDrawElements(GL_TRIANGLES, m_indexBuffer.getCount(), GL_UNSIGNED_INT, nullptr);
+            position.x += (ch->ms_advance >> 6) * scale;
         }
-        m_VertexArray.unbind();
+        m_vertexArray->unbind();
 
         glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-    void PrintText::AddTextInTimeBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time){
+    void PrintText::addTextInTimeBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time){
         std::vector<std::pair<Text, double>>::iterator It;
         for (It = m_timeBufferText.begin(); It != m_timeBufferText.end(); It++) {
-            if (It->first.text == text && It->first.position == position) {
+            if (It->first.ms_text == text && It->first.ms_position == position) {
                 It->second = Time;
                 return;
             }
@@ -144,10 +153,10 @@ namespace Renderer {
         m_timeBufferText.emplace_back(std::make_pair<>(textInBuffer,Time));
     }
 
-    void PrintText::AddTextInCountBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, int Count){
+    void PrintText::addTextInCountBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, int Count){
         std::vector<std::pair<Text, int>>::iterator It;
         for (It = m_countBufferText.begin(); It != m_countBufferText.end(); It++) {
-            if (It->first.text == text && It->first.position == position) {
+            if (It->first.ms_text == text && It->first.ms_position == position) {
                 It->second = Count;
                 return;
             }
@@ -163,11 +172,11 @@ namespace Renderer {
 
     void PrintText::renderBuffer(){
         for (auto& It:m_timeBufferText) {
-            RenderText(It.first.text, It.first.position, It.first.scale, It.first.color);
+            renderText(It.first.ms_text, It.first.ms_position, It.first.ms_scale, It.first.ms_color);
         }
         for (int i = m_countBufferText.size()-1; i >= 0; i--) {
             Text t = m_countBufferText.at(i).first;
-            RenderText(t.text, t.position, t.scale, t.color);
+            renderText(t.ms_text, t.ms_position, t.ms_scale, t.ms_color);
             m_countBufferText.at(i).second--;
             if (m_countBufferText.at(i).second < 1)
                 m_countBufferText.erase(m_countBufferText.begin() + i);
@@ -183,6 +192,6 @@ namespace Renderer {
     }
 
     PrintText::~PrintText(){
-        m_Characters.clear();
+        m_characters.clear();
     }
 }

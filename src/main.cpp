@@ -19,35 +19,18 @@
 GLFWwindow* PWindow = nullptr;
 
 void GLFWWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
-    CONFIG_MANAGER->setWindowSize(glm::vec2(width, height));
-    RENDER_ENGINE->setViewport(width, height);
-    Control::MouseControl::Get()->SetHeight(height);
-    MAIN_GAME_CLASS->SetProjectionMat(glm::vec2(width, height));
+    CONFIG_MANAGER::setWindowSize(glm::vec2(width, height));
+    RENDER_ENGINE::setViewport(width, height);
+    Control::MouseControl::setHeight(height);
+    MAIN_GAME_CLASS::setProjectionMat(glm::vec2(width, height));
 }
 void GLFWMonitorCallBack(GLFWmonitor* monitor, int action) {
-    if (action == GLFW_DISCONNECTED && CONFIG_MANAGER->getFullScreen()) {
-        GLFWmonitor* new_monitor = RENDER_ENGINE->getMonitor();
+    if (action == GLFW_DISCONNECTED && CONFIG_MANAGER::getFullScreen()) {
+        GLFWmonitor* new_monitor = RENDER_ENGINE::getMonitor();
         const  GLFWvidmode* mode = glfwGetVideoMode(new_monitor);
-        CONFIG_MANAGER->setWindowSize(glm::vec2(mode->width, mode->height));
+        CONFIG_MANAGER::setWindowSize(glm::vec2(mode->width, mode->height));
         glfwSetWindowMonitor(PWindow, new_monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     }
-}
-
-void GLFWKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mode) {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-        glfwSetWindowShouldClose(pWindow, GL_TRUE);
-    }
-    KEYBOARD->SetKey(key, action);
-}
-void GLFWCharCallback(GLFWwindow* окно, unsigned int codepoint) {
-    KEYBOARD->addCharInBuffer(codepoint);
-}
-
-void GLFWMouseCallback(GLFWwindow* pWindow, int button, int action, int mods) {
-    MOUSE->SetKey(button, action); 
-}
-void GLFWMouseScrollCallback(GLFWwindow* окно, double x, double y){
-    MOUSE->SetScroll(glm::vec2(x, y));
 }
 
 int main(int argc, char** argv){
@@ -56,16 +39,20 @@ int main(int argc, char** argv){
         return -1;
     }
 
+    Audio::SampleSourse s;
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    RESOURCE_MANAGER->setExecutablePath(argv[0]);
+    RESOURCE_MANAGER::setExecutablePath(argv[0]);
 
-    CONFIG_MANAGER->loadConfig();
+    CONFIG_MANAGER::loadConfig();
 
-    glm::vec2 window = CONFIG_MANAGER->getWindowSize();
-    PWindow = glfwCreateWindow(window.x, window.y, "Game", RENDER_ENGINE->getMonitor(), NULL);
+    
+
+    glm::vec2 window = CONFIG_MANAGER::getWindowSize();
+    PWindow = glfwCreateWindow(window.x, window.y, "Game", RENDER_ENGINE::getMonitor(), NULL);
 
     if (!PWindow){
         glfwTerminate();
@@ -76,15 +63,15 @@ int main(int argc, char** argv){
     glfwSetWindowSizeCallback(PWindow, GLFWWindowSizeCallback);
     glfwSetMonitorCallback(GLFWMonitorCallBack);
 
-    glfwSetKeyCallback(PWindow, GLFWKeyCallback);
-    glfwSetCharCallback(PWindow, GLFWCharCallback);
+    glfwSetKeyCallback(PWindow, KEYBOARD::setKey);
+    glfwSetCharCallback(PWindow, KEYBOARD::addCharInBuffer);
 
-    glfwSetMouseButtonCallback(PWindow, GLFWMouseCallback);
-    glfwSetScrollCallback(PWindow, GLFWMouseScrollCallback);
+    glfwSetMouseButtonCallback(PWindow, MOUSE::setButton);
+    glfwSetScrollCallback(PWindow, MOUSE::setScroll);
 
     glfwMakeContextCurrent(PWindow);
 
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
 	
 	if(!gladLoadGL()){
         glfwTerminate();
@@ -92,18 +79,23 @@ int main(int argc, char** argv){
 		return -1;
 	}
 
-    std::cout << "Renderer: " << RENDER_ENGINE->getRender() << std::endl;
-    std::cout << "OpenGL version: " << RENDER_ENGINE->getVersion() << std::endl;
+    std::cout << "Renderer: " << RENDER_ENGINE::getRender() << std::endl;
+    std::cout << "OpenGL version: " << RENDER_ENGINE::getVersion() << std::endl;
 
-    MOUSE->SetWindow(PWindow);
-    MOUSE->SetHeight(window.y);
+    MOUSE::setWindow(PWindow);
+    MOUSE::setHeight(window.y);
 
-    RENDER_ENGINE->enableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    RENDER_ENGINE->setClearColor(0.2f, 0.2f, 0.2f, 1.f);
-    RENDER_ENGINE->setDetphTest(true);
+    RENDER_ENGINE::enableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    RENDER_ENGINE::setClearColor(0.2f, 0.2f, 0.2f, 1.f);
+    RENDER_ENGINE::setDetphTest(true);
        
-    MAIN_GAME_CLASS->init();
-    MAIN_GAME_CLASS->SetProjectionMat(window);
+    SOUND_DEVICE::init();
+    SOUND_LIBRARY::init();
+
+    MAIN_GAME_CLASS::init();
+    MAIN_GAME_CLASS::setProjectionMat(window);
+
+    
 
     double lastTime = glfwGetTime();
     while (!glfwWindowShouldClose(PWindow)) {
@@ -111,25 +103,23 @@ int main(int argc, char** argv){
         double dura = (currTime - lastTime)*1000;
         lastTime = currTime;
 
-        MAIN_GAME_CLASS->update(dura);
+        MAIN_GAME_CLASS::update(dura);
 
-        RENDER_ENGINE->clear();
+        RENDER_ENGINE::clear();
 
-        MAIN_GAME_CLASS->render();
+        MAIN_GAME_CLASS::render();
 
         glfwSwapBuffers(PWindow);
 
         glfwPollEvents();
-        MAIN_GAME_CLASS->Events();
+        MAIN_GAME_CLASS::events();
     }
-    RESOURCE_MANAGER->unloadAllRes();
+    RESOURCE_MANAGER::unloadAllRes();
 
-    CONFIG_MANAGER->saveConfig();
+    CONFIG_MANAGER::saveConfig();
 
-    MainGameClass::Terminate();
-    Renderer::PrintText::Terminate();
-    Audio::SoundDevice::Terminate();
-    Audio::SoundEffectsLibrary::Terminate();
+    SOUND_DEVICE::terminate();
+    SOUND_LIBRARY::terminate();
     glfwTerminate();
 
     return 0;

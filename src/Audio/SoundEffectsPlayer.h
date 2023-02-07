@@ -15,27 +15,27 @@ namespace Audio {
 		SoundEffectsPlayer(const std::string soundEffect, const std::string sampleName );
 		~SoundEffectsPlayer();
 
-		void Play();
-		void Stop();
-		void Pause();
-		void Rewind();
+		void play();
+		void stop();
+		void pause();
+		void rewind();
 
 		bool isStopped();
 
-		void SetVec3Param(ALenum param, const glm::vec3& value);
-		void SetSampleSourse();
+		void setVec3Param(ALenum param, const glm::vec3& value);
+		void setSampleSourse();
 
-		void UpdateGain();
+		void updateGain();
 
-		glm::vec3 GetVec3Param(ALenum param);
-		ALuint GetSource();
+		glm::vec3 getVec3Param(ALenum param);
+		ALuint getSource();
 
-		void DeleteSourse();
-		void CreateEffect();
+		void deleteSourse();
+		void createEffect();
 
 	private:
-		std::string p_soundEffect;
-		Audio::SampleSourse p_sampleSource;
-		ALuint p_Source;
+		std::string m_soundEffect;
+		std::shared_ptr<Audio::SampleSourse> m_sampleSource;
+		ALuint m_source;
 	};
 }

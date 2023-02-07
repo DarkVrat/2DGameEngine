@@ -1,91 +1,92 @@
 #include "KeyboardControl.h"
 
-#include <GLFW/glfw3.h>
-
-
-static Control::KeyboardControl* keyboardControl = nullptr;
+std::array<Control::KeyboardControl::E_BUTTON_ACTION, 349> Control::KeyboardControl::m_keys;
+std::string Control::KeyboardControl::m_buffer;
+bool Control::KeyboardControl::m_writeText;
 
 namespace Control {
-	KeyboardControl* KeyboardControl::Get(){
-		if (keyboardControl == nullptr)
-			keyboardControl = new KeyboardControl();
-		return keyboardControl;
-	}
-
-	void KeyboardControl::UpdateButton(){
+	void KeyboardControl::updateButton(){
 		for (int i = 0; i < m_keys.size(); i++) {
-			if (m_keys[i] == BUTTON_ACTION::Pressed)
-				m_keys[i] = BUTTON_ACTION::Clamped;
-			if (m_keys[i] == BUTTON_ACTION::Released)
-				m_keys[i] = BUTTON_ACTION::NotClamped;
+			if (m_keys[i] == E_BUTTON_ACTION::Pressed)
+				m_keys[i] = E_BUTTON_ACTION::Clamped;
+			if (m_keys[i] == E_BUTTON_ACTION::Released)
+				m_keys[i] = E_BUTTON_ACTION::NotClamped;
 		}
 	}
 
-	void KeyboardControl::SetKey(const int key, const int action) {
-		if (action == GLFW_PRESS)
-			m_keys[key] = BUTTON_ACTION::Pressed;
-		else
-			m_keys[key] = BUTTON_ACTION::Released;
+	void KeyboardControl::setKey(GLFWwindow* pWindow, int key, int scancode, int action, int mode) {
+		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+			glfwSetWindowShouldClose(pWindow, GL_TRUE);
+		}
+		if (key < 0 || key>348) {
+			return; 
+		}
+		if (action == GLFW_PRESS) {
+			m_keys[key] = E_BUTTON_ACTION::Pressed;
+		}
+		else {
+			m_keys[key] = E_BUTTON_ACTION::Released;
+		}
 	}
 
-	bool KeyboardControl::IfPressed(const int key) {
-		if (m_keys[key] == BUTTON_ACTION::Pressed)
+	bool KeyboardControl::ifPressed(const int key) {
+		if (m_keys[key] == E_BUTTON_ACTION::Pressed)
 			return true;
 		return false;
 	}
-	bool KeyboardControl::IfReleased(const int key) {
-		if (m_keys[key] == BUTTON_ACTION::Released)
+	bool KeyboardControl::ifReleased(const int key) {
+		if (m_keys[key] == E_BUTTON_ACTION::Released)
 			return true;
 		return false;
 	}
-	bool KeyboardControl::IfClamped(const int key) {
-		if (m_keys[key] == BUTTON_ACTION::Pressed || m_keys[key] == BUTTON_ACTION::Clamped)
+	bool KeyboardControl::ifClamped(const int key) {
+		if (m_keys[key] == E_BUTTON_ACTION::Pressed || m_keys[key] == E_BUTTON_ACTION::Clamped)
 			return true;
 		return false;
 	}
 
-	bool KeyboardControl::IfNotClamped(const int key) {
-		if (m_keys[key] == BUTTON_ACTION::Released || m_keys[key] == BUTTON_ACTION::NotClamped)
+	bool KeyboardControl::ifNotClamped(const int key) {
+		if (m_keys[key] == E_BUTTON_ACTION::Released || m_keys[key] == E_BUTTON_ACTION::NotClamped)
 			return true;
 		return false;
 	}
 
 	void KeyboardControl::startWritingText(){
-		WriteText = true;
+		m_writeText = true;
 	}
 
-	void KeyboardControl::addCharInBuffer(unsigned int codepoint) {
-		if (WriteText) {
+	void KeyboardControl::addCharInBuffer(GLFWwindow* окно, unsigned int codepoint) {
+		if (m_writeText) {
 			if (codepoint > 128) {codepoint -= 848;}
 			if (codepoint == 7622) { codepoint = 185; }
 			if (codepoint == 257) { codepoint = 184; }
 			if (codepoint == 177) { codepoint = 168; }
-			buffer += (char)codepoint;
+			m_buffer += (char)codepoint;
 		} 
 	}
 
 	void KeyboardControl::deleteLastCharInBuffer(){
-		if (!buffer.empty()) {
-			buffer.pop_back();
+		if (!m_buffer.empty()) {
+			m_buffer.pop_back();
 		}
 	}
 
-	bool KeyboardControl::GetWriteText(){
-		return WriteText;
+	bool KeyboardControl::getWriteText(){
+		return m_writeText;
 	}
 
-	std::string KeyboardControl::GetBuffer(){
-		return buffer;
+	std::string KeyboardControl::getBuffer(){
+		return m_buffer;
 	}
 
-	std::string KeyboardControl::GetBufferAndRemove() {
-		WriteText = false;
-		std::string s = buffer;
-		buffer = "";
+	std::string KeyboardControl::getBufferAndRemove() {
+		m_writeText = false;
+		std::string s = m_buffer;
+		m_buffer = "";
 		return s;
 	}
 
 	KeyboardControl::KeyboardControl() { 
-		m_keys.fill(BUTTON_ACTION::NotClamped); buffer = ""; WriteText = false; 
+		m_keys.fill(E_BUTTON_ACTION::NotClamped); m_buffer = ""; m_writeText = false; 
 	}
 }

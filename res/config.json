@@ -1,10 +1,10 @@
 {
 	"window size":{
-		"width" : 1000,
-		"height" : 800
+		"width" : 1680,
+		"height" : 1050
 	},
 	
-	"full screen" : false,
+	"full screen" : true,
 	
 	"display" : 0,
 	

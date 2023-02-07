@@ -8,15 +8,7 @@
 #include "../Managers/SoundManager.h"
 #include "../Managers/ConfigManager.h"
 
-static Renderer::RenderEngine* renderEngine = nullptr;
-
 namespace Renderer {
-	RenderEngine* RenderEngine::Get() {
-		if (renderEngine == nullptr)
-			renderEngine = new RenderEngine();
-		return renderEngine;
-	}
-
 	void RenderEngine::draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shader){
 		shader.use();
 		vertexArray.bind();
@@ -51,16 +43,25 @@ namespace Renderer {
 		glBlendFunc(sfactor, dfactor);
 	}
 
+	std::string RenderEngine::getRender(){
+		return (char*)glGetString(GL_RENDERER);
+	}
+
+	std::string RenderEngine::getVersion(){
+		return (char*)glGetString(GL_VERSION);
+	}
+
 	GLFWmonitor* RenderEngine::getMonitor() {
-		if (!CONFIG_MANAGER->getFullScreen()) { 
+		if (!CONFIG_MANAGER::getFullScreen()) { 
 			return NULL; 
 		}
+
 		int count;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
 
-		if (count <= CONFIG_MANAGER->getDisplayNumber()) {
-			CONFIG_MANAGER->setDisplayNumber();
+		if (count <= CONFIG_MANAGER::getDisplayNumber()) {
+			CONFIG_MANAGER::setDisplayNumber();
 		}
-		return monitors[CONFIG_MANAGER->getDisplayNumber()];
+		return monitors[CONFIG_MANAGER::getDisplayNumber()];
 	}
 }

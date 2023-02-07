@@ -1,8 +1,8 @@
 #pragma once
 
-#include<vector>
-#include<string>
-#include"Sprite.h"
+#include <vector>
+#include <string>
+#include "Sprite.h"
 
 namespace Renderer{
 	class StateAnimation {

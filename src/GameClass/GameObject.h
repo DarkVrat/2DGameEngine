@@ -1,9 +1,9 @@
 #pragma once
 
-#include<glm/vec2.hpp>
-#include<memory>
-#include"StateController.h"
-#include"../Audio/SoundEffectsPlayer.h"
+#include <glm/vec2.hpp>
+#include <memory>
+#include "StateController.h"
+#include "../Audio/SoundEffectsPlayer.h"
 
 class GameObject {
 public:

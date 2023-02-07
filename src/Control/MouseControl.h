@@ -4,42 +4,40 @@
 #include <glm/vec2.hpp>
 #include <GLFW/glfw3.h>
 
-#define MOUSE Control::MouseControl::Get()
+#define MOUSE Control::MouseControl
 
 namespace Control {
 	class MouseControl {
 	public:
-		static MouseControl* Get();
+		static void updatePosition();
+		static void updateButton();
 
-		void UpdatePosition();
-		void UpdateButton();
+		static void setWindow(GLFWwindow* pWindow);
+		static void setHeight(double height);
+		static void setScroll(GLFWwindow* окно, double x, double y);
+		static void setButton(GLFWwindow* pWindow, int button, int action, int mods);
 
-		void SetWindow(GLFWwindow* pWindow);
-		void SetHeight(double height);
-		void SetScroll(glm::vec2 scroll);
-		void SetKey(const int key, const int action);
+		static bool ifPressed(const int key);
+		static bool ifReleased(const int key);
+		static bool ifClamped(const int key);
+		static bool ifNotClamped(const int key);
 
-		bool IfPressed(const int key);
-		bool IfReleased(const int key);
-		bool IfClamped(const int key);
-		bool IfNotClamped(const int key);
-		glm::vec2 GetScroll();
-		glm::vec2 GetPosition();
+		static glm::vec2 getScroll();
+		static glm::vec2 getPosition();
 
 	private:
 		MouseControl();
-		~MouseControl() {};
 
-		enum class BUTTON_ACTION {
+		enum class E_BUTTON_ACTION {
 			NotClamped,
 			Pressed,
 			Clamped,
 			Released
 		};
-		std::array<BUTTON_ACTION, 8> m_keys;
-		GLFWwindow* m_PWindow;
-		double m_height;
-		glm::vec2 m_mousePosition;
-		glm::vec2 m_scroll;
+		static std::array<E_BUTTON_ACTION, 8> m_keys;
+		static GLFWwindow* m_PWindow;
+		static double m_height;
+		static glm::vec2 m_mousePosition;
+		static glm::vec2 m_scroll;
 	};
 }

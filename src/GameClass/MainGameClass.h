@@ -4,34 +4,31 @@
 #include <glm/vec2.hpp>
 #include "GameObject.h"
 
-#define MAIN_GAME_CLASS MainGameClass::Get()
+#define MAIN_GAME_CLASS MainGameClass
 
 class MainGameClass {
 public:
-	static MainGameClass* Get();
-	static void Terminate();
+	static bool init();
 
-	bool init();
+	static void update(double duration);
+	static void render();
 
-	void update(double duration);
-	void render();
-
-	void Events();
-	void sortGameObject();
-	void SetProjectionMat(glm::ivec2 window);
+	static void events();
+	static void sortGameObject();
+	static void setProjectionMat(glm::ivec2 window);
 
 private:
-	MainGameClass():m_window(glm::ivec2(0,0)),m_GState(E_GAME_STATE::Pause), time(0.0),fps(0) {};
+	MainGameClass();
 	~MainGameClass();
 
-	std::vector<std::shared_ptr<GameObject>> m_GObject;
+	static std::vector<std::shared_ptr<GameObject>> m_vectorGameObject;
 
 	enum class E_GAME_STATE {
 		Active,
 		Pause
 	};
-	glm::ivec2 m_window;
-	E_GAME_STATE m_GState;
-	double time;
-	int fps;
+	static glm::ivec2 m_window;
+	static E_GAME_STATE m_GameState;
+	static double m_time;
+	static int m_fps;
 };

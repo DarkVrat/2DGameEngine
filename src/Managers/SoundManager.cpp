@@ -5,18 +5,9 @@
 #include "../Audio/SoundEffectsLibrary.h"
 #include "../Managers/ConfigManager.h"
 
-Audio::SoundManager* soundManager = nullptr;
+std::vector<std::shared_ptr<Audio::SoundEffectsPlayer>> Audio::SoundManager::m_mapSoundPlayers;
 
 namespace Audio {
-	SoundManager* SoundManager::Get() {
-		if (soundManager == nullptr)
-			soundManager = new SoundManager();
-		return soundManager;
-	}
-	void SoundManager::Terminate() {
-		delete soundManager;
-	}
-
 	void SoundManager::deletePlayer(std::shared_ptr<Audio::SoundEffectsPlayer> player){
 		for (int i = 0; i < m_mapSoundPlayers.size(); i++) {
 			if (m_mapSoundPlayers.at(i) == player) {
@@ -25,41 +16,42 @@ namespace Audio {
 		}
 	}
 
-	void SoundManager::UpdateSoundSystem(){
+	void SoundManager::updateSoundSystem(){
 		std::map<std::shared_ptr<Audio::SoundEffectsPlayer>, glm::vec3> position;
 		for (int i = 0; i < m_mapSoundPlayers.size();i++) {
 			std::shared_ptr<Audio::SoundEffectsPlayer> current = m_mapSoundPlayers.at(i);
-			position.emplace(current, current->GetVec3Param(AL_POSITION));
-			current->DeleteSourse();
+			position.emplace(current, current->getVec3Param(AL_POSITION));
+			current->deleteSourse();
 		}
 
-		Audio::SoundEffectsLibrary::Terminate();
+		SOUND_LIBRARY::terminate();
 
 		glm::vec3 positionDevice;
 		glm::vec3 OrientationAt;
 		glm::vec3 OrientationUp;
-		SOUND_DEVICE->GetPosition(positionDevice);
-		SOUND_DEVICE->GetOrientation(OrientationAt, OrientationUp);
-		Audio::SoundDevice::Terminate();
+		SOUND_DEVICE::getPosition(positionDevice);
+		SOUND_DEVICE::getOrientation(OrientationAt, OrientationUp);
+		SOUND_DEVICE::terminate();
 
-		SOUND_DEVICE->SetGain(CONFIG_MANAGER->getVolumeSounde());
-		SOUND_DEVICE->SetAttunation(AL_INVERSE_DISTANCE_CLAMPED);
-		SOUND_DEVICE->SetPosition(positionDevice);
-		SOUND_DEVICE->SetOrientation(OrientationAt, OrientationUp);
+		SOUND_DEVICE::init();
+		SOUND_DEVICE::setGain(CONFIG_MANAGER::getVolumeSounde());
+		SOUND_DEVICE::setAttunation(AL_INVERSE_DISTANCE_CLAMPED);
+		SOUND_DEVICE::setPosition(positionDevice);
+		SOUND_DEVICE::setOrientation(OrientationAt, OrientationUp);
 
-		SOUND_LIBRARY;
+		SOUND_LIBRARY::init();
 
 		for (int i = 0; i < m_mapSoundPlayers.size(); i++) {
 			std::shared_ptr<Audio::SoundEffectsPlayer> current = m_mapSoundPlayers.at(i);
-			current->CreateEffect();
-			current->SetVec3Param(AL_POSITION,position.find(current)->second);
+			current->createEffect();
+			current->setVec3Param(AL_POSITION,position.find(current)->second);
 		}
 	}
 
-	void SoundManager::UpdateGain(){
-		SOUND_DEVICE->SetGain(CONFIG_MANAGER->getVolumeSounde());
+	void SoundManager::updateGain(){
+		SOUND_DEVICE::setGain(CONFIG_MANAGER::getVolumeSounde());
 		for (auto& It : m_mapSoundPlayers) {
-			It.get()->UpdateGain();
+			It.get()->updateGain();
 		}
 	}
 }

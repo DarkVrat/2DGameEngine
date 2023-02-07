@@ -4,27 +4,25 @@
 #include <rapidjson/document.h>
 #include <glm/vec2.hpp>
 
-#define CONFIG_MANAGER ConfigManager::Get()
+#define CONFIG_MANAGER ConfigManager
 
 class ConfigManager {
 public:
-	static ConfigManager* Get();
+	static void loadConfig();
+	static void saveConfig();
 
-	void loadConfig();
-	void saveConfig();
+	static void setWindowSize(glm::vec2 windowSize = glm::vec2(800, 600));
+	static void setDisplayNumber(int monitorNumber = 0);
+	static void setFullScreen(bool fullScreen = true);
+	static void setVolumeSounde(double volume = 1.0);
+	static void setVolumeSample(std::string name, double volume = 1.0);
 
-	void setWindowSize(glm::vec2 windowSize = glm::vec2(800, 600));
-	void setDisplayNumber(int monitorNumber = 0);
-	void setFullScreen(bool fullScreen = true);
-	void setVolumeSounde(double volume = 1.0);
-	void setVolumeSample(std::string name, double volume = 1.0);
-
-	glm::vec2 getWindowSize();
-	int getDisplayNumber();
-	bool getFullScreen();
-	double getVolumeSounde();
-	double getVolumeSample(std::string name);
+	static glm::vec2 getWindowSize();
+	static int getDisplayNumber();
+	static bool getFullScreen();
+	static double getVolumeSounde();
+	static double getVolumeSample(std::string name);
 
 private:
-	rapidjson::Document JSONDoc;
+	static rapidjson::Document m_configDoc;
 };

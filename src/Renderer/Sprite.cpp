@@ -11,8 +11,8 @@ namespace Renderer {
     Sprite::Sprite(std::shared_ptr<Texture2D> pTexture,
         std::string initialSubTexture,
         std::shared_ptr<ShaderProgram> pShaderProgram)
-        : m_pTexture(std::move(pTexture))
-        , m_pShaderProgram(std::move(pShaderProgram))
+        : m_texture(std::move(pTexture))
+        , m_shaderProgram(std::move(pShaderProgram))
     {
         const GLfloat vertexCoords[] = {
             // 1---2
@@ -26,7 +26,7 @@ namespace Renderer {
             1.f, 0.f
         };
 
-        auto& subTexture = m_pTexture->getSubTexture2D(std::move(initialSubTexture));
+        auto& subTexture = m_texture->getSubTexture2D(std::move(initialSubTexture));
 
         const GLfloat textureCoords[] = {
             // U                       //V
@@ -59,7 +59,7 @@ namespace Renderer {
 
     void Sprite::render(const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer) const
     {
-        m_pShaderProgram->use();
+        m_shaderProgram->use();
 
         glm::mat4 model(1.f);
 
@@ -69,12 +69,12 @@ namespace Renderer {
         model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.f));
         model = glm::scale(model, glm::vec3(size, 1.f));
 
-        m_pShaderProgram->setMatrix4("modelMat", model);
-        m_pShaderProgram->setFloat("layer", layer);
+        m_shaderProgram->setMatrix4("modelMat", model);
+        m_shaderProgram->setFloat("layer", layer);
 
         glActiveTexture(GL_TEXTURE0);
-        m_pTexture->bind();
+        m_texture->bind();
 
-        RENDER_ENGINE->Get()->draw(m_vertexArray, m_indexBuffer, *m_pShaderProgram);
+        RENDER_ENGINE::draw(m_vertexArray, m_indexBuffer, *m_shaderProgram);
     }
 }

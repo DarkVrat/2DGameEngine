@@ -159,5 +159,11 @@
 		"AlAngleOutCone" : 360.0,
 		"GainString":"default"
 	}
-	]
+	],
+	
+	"textSettings":{
+		"shader":"textShader",
+		"fontSize":96,
+		"fontPath":"/res/Tkachevica.ttf"
+	}
 }

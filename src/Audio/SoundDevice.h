@@ -3,32 +3,30 @@
 #include <AL\alc.h>
 #include <glm/vec3.hpp>
 
-#define SOUND_DEVICE Audio::SoundDevice::Get()
+#define SOUND_DEVICE Audio::SoundDevice
 
 namespace Audio {
 	class SoundDevice{
 	public:
-		static SoundDevice* Get();
-		static void Terminate();
+		static void init();
+		static void terminate();
 
-		void SetAttunation(int key);
+		static void setAttunation(int key);
 
-		void GetPosition(glm::vec3& posit);
-		void GetVelocity(glm::vec3& velos);
-		void GetOrientation(glm::vec3& at, glm::vec3& up);
-		void GetGain(float& gain);
+		static void getPosition(glm::vec3& posit);
+		static void getVelocity(glm::vec3& velos);
+		static void getOrientation(glm::vec3& at, glm::vec3& up);
+		static void getGain(float& gain);
 
-		void SetPosition(const glm::vec3& posit);
-		void SetVelocity(const glm::vec3& velos);
-		void SetOrientation(const glm::vec3& at, const glm::vec3& up);
-		void SetGain(const float& gain);
+		static void setPosition(const glm::vec3& posit);
+		static void setVelocity(const glm::vec3& velos);
+		static void setOrientation(const glm::vec3& at, const glm::vec3& up);
+		static void setGain(const float& gain);
 
 	private:
-		SoundDevice();
-		~SoundDevice();
 
-		ALCdevice* p_ALCDevice;
-		ALCcontext* p_ALCContext;
+		static ALCdevice* m_ALCDevice;
+		static ALCcontext* m_ALCContext;
 
 	};
 }

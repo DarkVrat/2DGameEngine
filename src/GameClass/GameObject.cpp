@@ -1,9 +1,9 @@
 #include "GameObject.h"
 
-#include<glad/glad.h>
-#include"../Audio/SoundEffectsLibrary.h"
-#include"../Managers/ResourceManager.h"
-#include"../Renderer/PrintText.h"
+#include <glad/glad.h>
+#include "../Audio/SoundEffectsLibrary.h"
+#include "../Managers/ResourceManager.h"
+#include "../Renderer/PrintText.h"
 
 GameObject::GameObject(std::string startState, glm::vec2& position, glm::vec2& size, float rotation, float layer){
 	m_stateControll = std::make_shared<StateController>(startState);
@@ -13,7 +13,7 @@ GameObject::GameObject(std::string startState, glm::vec2& position, glm::vec2& s
 	m_layer = layer;
 
 	std::shared_ptr<Audio::SoundEffectsPlayer> player = MAKE_SOUND_PLAYER("sword");
-	player->SetVec3Param(AL_POSITION, glm::vec3(position, 0.f));
+	player->setVec3Param(AL_POSITION, glm::vec3(position, 0.f));
 	m_mapPlayer.emplace("Attack1", player);
 }
 
@@ -31,8 +31,8 @@ void GameObject::render(){
 
 void GameObject::attack(){
 	m_stateControll->setState("Attack1");
-	PRINT_TEXT->AddTextInTimeBuffer("I attack!", glm::vec3(m_position.x-abs(m_size.x)/6, m_position.y + m_size.y / 3, 100), 0.25, glm::vec3(1, 1, 1), 1000);
-	m_mapPlayer.at("Attack1")->Play();
+	PRINT_TEXT::addTextInTimeBuffer("I attack!", glm::vec3(m_position.x-abs(m_size.x)/6, m_position.y + m_size.y / 3, 100), 0.25, glm::vec3(1, 1, 1), 1000);
+	m_mapPlayer.at("Attack1")->play();
 }
 
 void GameObject::idle(){

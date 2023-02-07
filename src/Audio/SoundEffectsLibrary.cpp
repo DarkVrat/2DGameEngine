@@ -9,27 +9,19 @@
 
 Audio::SoundEffectsLibrary* sndbuf = nullptr;
 
+std::map<std::string, ALuint> Audio::SoundEffectsLibrary::m_SoundEffectBuffers;
+
 namespace Audio {
-	SoundEffectsLibrary* SoundEffectsLibrary::Get(){
-		if(sndbuf==nullptr)
-			sndbuf = new SoundEffectsLibrary();
-		return sndbuf;
-	}
-	void SoundEffectsLibrary::Terminate(){
-		delete sndbuf;
-		sndbuf = nullptr;
-	}
+	ALuint SoundEffectsLibrary::load(const std::string name){
+		if (m_SoundEffectBuffers.find(name) != m_SoundEffectBuffers.end())
+			return m_SoundEffectBuffers.at(name);
 
-	ALuint SoundEffectsLibrary::Load(const std::string name){
-		if (p_SoundEffectBuffers.find(name) != p_SoundEffectBuffers.end())
-			return p_SoundEffectBuffers.at(name);
+		std::shared_ptr<FileOfSound> file = RESOURCE_MANAGER::getSound(name);
 
-		FileOfSound file = RESOURCE_MANAGER->getSound(name);
-
-		ALenum format=file.getFormat();
-		SNDFILE* sndfile= file.getSndFile();
-		SF_INFO sfinfo=file.getSfInfo();
-		short* membuf=file.getMemBuf();
+		ALenum format=file->getFormat();
+		SNDFILE* sndfile= file->getSndFile();
+		SF_INFO sfinfo=file->getSfInfo();
+		short* membuf=file->getMemBuf();
 
 		ALenum err;
 		ALuint buffer;
@@ -40,7 +32,7 @@ namespace Audio {
 		if (num_frames < 1){
 			free(membuf);
 			sf_close(sndfile);
-			std::cerr << "(!) Failed to read samples in " << file.getFileName() << "(" << num_frames << ")" << std::endl;
+			std::cerr << "(!) Failed to read samples in " << file->getFileName() << "(" << num_frames << ")" << std::endl;
 			return 0;
 		}
 		num_bytes = (ALsizei)(num_frames * sfinfo.channels) * (ALsizei)sizeof(short);
@@ -60,31 +52,31 @@ namespace Audio {
 			return 0;
 		}
 
-		p_SoundEffectBuffers.emplace(name, buffer);
+		m_SoundEffectBuffers.emplace(name, buffer);
 
-		RESOURCE_MANAGER->loadSound(name, file.getFileName());
+		RESOURCE_MANAGER::loadSound(name, file->getFileName());
 
 		return buffer;
 	}
 
-	void SoundEffectsLibrary::UnLoad(const std::string name){
-		auto It = p_SoundEffectBuffers.find(name);
-		if (It != p_SoundEffectBuffers.end()) {
+	void SoundEffectsLibrary::unLoad(const std::string name){
+		auto It = m_SoundEffectBuffers.find(name);
+		if (It != m_SoundEffectBuffers.end()) {
 			alDeleteBuffers(1, &It->second);
-			p_SoundEffectBuffers.erase(It);
+			m_SoundEffectBuffers.erase(It);
 		}
 	}
 
-	SoundEffectsLibrary::SoundEffectsLibrary(){
-		p_SoundEffectBuffers.clear();
+	void SoundEffectsLibrary::init(){
+		m_SoundEffectBuffers.clear();
 	}
 
-	SoundEffectsLibrary::~SoundEffectsLibrary(){
-		auto It = p_SoundEffectBuffers.begin();
-		while (It != p_SoundEffectBuffers.end()) {
+	void SoundEffectsLibrary::terminate(){
+		auto It = m_SoundEffectBuffers.begin();
+		while (It != m_SoundEffectBuffers.end()) {
 			alDeleteBuffers(1, &It->second);
 			It++;
 		}
-		p_SoundEffectBuffers.clear();
+		m_SoundEffectBuffers.clear();
 	}
 }

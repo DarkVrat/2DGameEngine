@@ -10,89 +10,89 @@
 namespace Audio {
 	std::shared_ptr<Audio::SoundEffectsPlayer> SoundEffectsPlayer::MakeSoundEffectPlayer(const std::string soundEffect, const std::string sampleName){
 		std::shared_ptr<Audio::SoundEffectsPlayer> player = std::make_shared<Audio::SoundEffectsPlayer>(soundEffect, sampleName);
-		SOUND_MANAGER->addPlayer(player);
+		SOUND_MANAGER::addPlayer(player);
 		return player;
 	}
 
 	SoundEffectsPlayer::SoundEffectsPlayer(const std::string soundEffect, const std::string sampleName){
-		p_soundEffect = soundEffect;
-		p_sampleSource = RESOURCE_MANAGER->getSampleSourse(sampleName);
+		m_soundEffect = soundEffect;
+		m_sampleSource = RESOURCE_MANAGER::getSampleSourse(sampleName);
 
-		CreateEffect();
+		createEffect();
 
 		
 	}
 	SoundEffectsPlayer::~SoundEffectsPlayer(){
-		alDeleteSources(1, &p_Source);
+		alDeleteSources(1, &m_source);
 	}
 
 
-	void SoundEffectsPlayer::Play() {
+	void SoundEffectsPlayer::play() {
 		ALint playState;
-		alGetSourcei(p_Source, AL_SOURCE_STATE, &playState);
+		alGetSourcei(m_source, AL_SOURCE_STATE, &playState);
 		if(playState!=AL_PLAYING)
-			alSourcePlay(p_Source);
+			alSourcePlay(m_source);
 		AL_CheckAndThrow();
 	}
-	void SoundEffectsPlayer::Stop(){
-		alSourceStop(p_Source);
+	void SoundEffectsPlayer::stop(){
+		alSourceStop(m_source);
 		AL_CheckAndThrow();
 	}
-	void SoundEffectsPlayer::Pause(){
-		alSourcePause(p_Source);
+	void SoundEffectsPlayer::pause(){
+		alSourcePause(m_source);
 		AL_CheckAndThrow();
 	}
-	void SoundEffectsPlayer::Rewind() {
-		alSourceRewind(p_Source);
-		AL_CheckAndThrow();
-	}
-
-	void SoundEffectsPlayer::SetVec3Param(ALenum param, const glm::vec3& value){
-		alSource3f(p_Source, param, value.x, value.y, value.z);
-		AL_CheckAndThrow();
-	}
-	void SoundEffectsPlayer::SetSampleSourse(){
-		alSourcef(p_Source, AL_PITCH, p_sampleSource.AlPitch);
-		alSourcef(p_Source, AL_MAX_DISTANCE, p_sampleSource.AlMaxDistance);
-		alSourcef(p_Source, AL_ROLLOFF_FACTOR, p_sampleSource.AlRolloffFactor);
-		alSourcef(p_Source, AL_REFERENCE_DISTANCE, p_sampleSource.AlReferenceDistance);
-		alSourcef(p_Source, AL_MIN_GAIN, p_sampleSource.AlMinGain);
-		alSourcef(p_Source, AL_MAX_GAIN, p_sampleSource.AlMaxGain);
-		alSourcef(p_Source, AL_CONE_OUTER_GAIN, p_sampleSource.AlGainOutCone);
-		alSourcef(p_Source, AL_CONE_INNER_ANGLE, p_sampleSource.AlAngleInCone);
-		alSourcef(p_Source, AL_CONE_OUTER_ANGLE, p_sampleSource.AlAngleOutCone);
+	void SoundEffectsPlayer::rewind() {
+		alSourceRewind(m_source);
 		AL_CheckAndThrow();
 	}
 
-	void SoundEffectsPlayer::UpdateGain(){
-		alSourcef(p_Source, AL_GAIN, CONFIG_MANAGER->getVolumeSample(p_sampleSource.GainString));
+	void SoundEffectsPlayer::setVec3Param(ALenum param, const glm::vec3& value){
+		alSource3f(m_source, param, value.x, value.y, value.z);
+		AL_CheckAndThrow();
+	}
+	void SoundEffectsPlayer::setSampleSourse(){
+		alSourcef(m_source, AL_PITCH, m_sampleSource->AlPitch);
+		alSourcef(m_source, AL_MAX_DISTANCE, m_sampleSource->AlMaxDistance);
+		alSourcef(m_source, AL_ROLLOFF_FACTOR, m_sampleSource->AlRolloffFactor);
+		alSourcef(m_source, AL_REFERENCE_DISTANCE, m_sampleSource->AlReferenceDistance);
+		alSourcef(m_source, AL_MIN_GAIN, m_sampleSource->AlMinGain);
+		alSourcef(m_source, AL_MAX_GAIN, m_sampleSource->AlMaxGain);
+		alSourcef(m_source, AL_CONE_OUTER_GAIN, m_sampleSource->AlGainOutCone);
+		alSourcef(m_source, AL_CONE_INNER_ANGLE, m_sampleSource->AlAngleInCone);
+		alSourcef(m_source, AL_CONE_OUTER_ANGLE, m_sampleSource->AlAngleOutCone);
+		AL_CheckAndThrow();
 	}
 
-	glm::vec3 SoundEffectsPlayer::GetVec3Param(ALenum param){
+	void SoundEffectsPlayer::updateGain(){
+		alSourcef(m_source, AL_GAIN, CONFIG_MANAGER::getVolumeSample(m_sampleSource->GainString));
+	}
+
+	glm::vec3 SoundEffectsPlayer::getVec3Param(ALenum param){
 		glm::vec3 value(0,0,0);
-		alGetSource3f(p_Source, param, &value.x, &value.y, &value.z);
+		alGetSource3f(m_source, param, &value.x, &value.y, &value.z);
 		return value;
 	}
 
-	ALuint SoundEffectsPlayer::GetSource(){
-		return p_Source;
+	ALuint SoundEffectsPlayer::getSource(){
+		return m_source;
 	}
 
 
-	void SoundEffectsPlayer::DeleteSourse(){
-		alDeleteSources(1, &p_Source);
+	void SoundEffectsPlayer::deleteSourse(){
+		alDeleteSources(1, &m_source);
 	}
-	void SoundEffectsPlayer::CreateEffect(){
-		alGenSources(1, &p_Source);
-		alSourcei(p_Source, AL_BUFFER, SOUND_LIBRARY->Load(p_soundEffect));
-		SetSampleSourse();
-		UpdateGain();
+	void SoundEffectsPlayer::createEffect(){
+		alGenSources(1, &m_source);
+		alSourcei(m_source, AL_BUFFER, SOUND_LIBRARY::load(m_soundEffect));
+		setSampleSourse();
+		updateGain();
 		AL_CheckAndThrow();
 	}
 
 	bool SoundEffectsPlayer::isStopped(){
 		ALint playState;
-		alGetSourcei(p_Source, AL_SOURCE_STATE, &playState);
+		alGetSourcei(m_source, AL_SOURCE_STATE, &playState);
 		return (playState == AL_STOPPED);
 	}
 }

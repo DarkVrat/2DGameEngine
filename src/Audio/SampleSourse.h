@@ -2,6 +2,9 @@
 
 #include <string>
 
+ //(RUS) Образец источника звука, содержит параметры, для их установки в Audio::SoundEffectPlayer
+//(ENG) Sound source sample, contains options to set them in Audio::SoundEffectPlayer
+
 namespace Audio {
 	struct SampleSourse {
 	public:

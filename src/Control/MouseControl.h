@@ -6,11 +6,13 @@
 
 #define MOUSE Control::MouseControl
 
+ //(RUS) Класс для управления с  мыши, отслеживание состояний кнопок и позиции мыши
+//(ENG) Class for mouse control, tracking button states and mouse position
+
 namespace Control {
 	class MouseControl {
 	public:
-		static void updatePosition();
-		static void updateButton();
+		static void updatePositionAndScroll();
 
 		static void setWindow(GLFWwindow* pWindow);
 		static void setHeight(double height);
@@ -20,7 +22,6 @@ namespace Control {
 		static bool ifPressed(const int key);
 		static bool ifReleased(const int key);
 		static bool ifClamped(const int key);
-		static bool ifNotClamped(const int key);
 
 		static glm::vec2 getScroll();
 		static glm::vec2 getPosition();
@@ -28,7 +29,7 @@ namespace Control {
 	private:
 		MouseControl();
 
-		enum class E_BUTTON_ACTION {
+		enum E_BUTTON_ACTION : int8_t {
 			NotClamped,
 			Pressed,
 			Clamped,

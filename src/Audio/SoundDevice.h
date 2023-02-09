@@ -5,6 +5,9 @@
 
 #define SOUND_DEVICE Audio::SoundDevice
 
+ //(RUS) Устройство для воспроизведения звука
+//(ENG) Audio playback device
+
 namespace Audio {
 	class SoundDevice{
 	public:
@@ -23,6 +26,7 @@ namespace Audio {
 		static void setOrientation(const glm::vec3& at, const glm::vec3& up);
 		static void setGain(const float& gain);
 
+		static void AL_CheckAndThrow();
 	private:
 
 		static ALCdevice* m_ALCDevice;

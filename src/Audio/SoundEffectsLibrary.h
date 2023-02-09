@@ -4,12 +4,14 @@
 #include <string>
 #include <map>
 
-#define SOUND_LIBRARY Audio::SoundEffectsLibrary//::Get()
+#define SOUND_LIBRARY Audio::SoundEffectsLibrary
+
+ //(RUS) Библиотека звуковых эффектов
+//(ENG) Sound effects library
 
 namespace Audio {
 	class SoundEffectsLibrary{
 	public:
-		//static SoundEffectsLibrary* Get();
 		static void init();
 		static void terminate();
 

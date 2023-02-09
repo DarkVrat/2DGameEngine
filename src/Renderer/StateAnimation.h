@@ -4,6 +4,13 @@
 #include <string>
 #include "Sprite.h"
 
+     //(RUS) Состояние анимации, описывает кадры из спрайтов и длительности, 
+    //       списка источников из которых можно перейти в эту анимацию, 
+   //        стандартное следующее состояние, и можно ли прерывать эту анимацию
+  //(ENG) Animation state, describes frames from sprites and duration, 
+ //       a list of sources from which this animation can jump, 
+//        the default next state, and whether this animation can be interrupted
+
 namespace Renderer{
 	class StateAnimation {
 	public:

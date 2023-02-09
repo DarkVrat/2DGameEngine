@@ -6,6 +6,9 @@
 
 #define MAIN_GAME_CLASS MainGameClass
 
+ //(RUS) Главный игровой класс, отвечет за работу с игровыми объектами, их рендеринг и обновление, а так же работает с нажатиями
+//(ENG) The main game class, responsible for working with game objects, rendering and updating them, and also works with clicks
+
 class MainGameClass {
 public:
 	static bool init();
@@ -17,13 +20,15 @@ public:
 	static void sortGameObject();
 	static void setProjectionMat(glm::ivec2 window);
 
+	static void terminate();
+
 private:
 	MainGameClass();
-	~MainGameClass();
+	~MainGameClass() {};
 
 	static std::vector<std::shared_ptr<GameObject>> m_vectorGameObject;
 
-	enum class E_GAME_STATE {
+	enum E_GAME_STATE : int8_t{
 		Active,
 		Pause
 	};

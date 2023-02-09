@@ -12,9 +12,13 @@
 
 #define PRINT_TEXT Renderer::PrintText
 
+ //(RUS)  ласс дл€ рендеринга текста
+//(ENG) Text rendering class
+
 namespace Renderer {
 	class PrintText {
-
+		 //(RUS) структура описывающа€ символы, хранит id текстуры, и параметры
+		//(ENG) structure describing symbols, stores texture id, and parameters
 		struct Character {
 			GLuint ms_textureID;   
 			glm::ivec2 ms_size;    
@@ -25,13 +29,14 @@ namespace Renderer {
 			~Character() {glDeleteTextures(1, &ms_textureID);}
 		};
 
+		 //(RUS) —труктура описывающа€ текст дл€ рендеринга из буферов
+		//(ENG) Structure describing text to render from buffers
 		struct Text {
 			std::string ms_text;
 			glm::vec3 ms_position;
 			GLfloat ms_scale;
 			glm::vec3 ms_color;
 		};
-
 	public:
 		static void createSymbols(std::shared_ptr<ShaderProgram> shader, int fontSize, std::string fontPath);
 
@@ -42,9 +47,10 @@ namespace Renderer {
 		static void renderBuffer();
 		static void updateBuffer(double duration);
 
+		static void terminate();
 	private:
 		PrintText();
-		~PrintText();
+		~PrintText() {};
 
 		static std::shared_ptr<ShaderProgram> m_shader;
 		static std::map<GLchar, std::shared_ptr<Character>> m_characters;

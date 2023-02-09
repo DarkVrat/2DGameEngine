@@ -8,11 +8,14 @@
 
 #define MAKE_SOUND_PLAYER Audio::SoundEffectsPlayer::MakeSoundEffectPlayer
 
+ //(RUS) Плеер для звукового эффекта, управление параметрами источника
+//(ENG) Sound effect player, source control
+
 namespace Audio {
 	class SoundEffectsPlayer{
 	public:
 		static std::shared_ptr<Audio::SoundEffectsPlayer> MakeSoundEffectPlayer(const std::string soundEffect, const std::string sampleName="default");
-		SoundEffectsPlayer(const std::string soundEffect, const std::string sampleName );
+		SoundEffectsPlayer(const std::string soundEffect, const std::string sampleName);
 		~SoundEffectsPlayer();
 
 		void play();
@@ -28,7 +31,6 @@ namespace Audio {
 		void updateGain();
 
 		glm::vec3 getVec3Param(ALenum param);
-		ALuint getSource();
 
 		void deleteSourse();
 		void createEffect();

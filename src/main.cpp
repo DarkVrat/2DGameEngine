@@ -9,6 +9,7 @@
 #include "Audio/SoundEffectsLibrary.h"
 #include "Managers/ConfigManager.h"
 #include "Renderer/PrintText.h"
+#include "Managers/SoundManager.h"
 
 //Проверить позже на ноутбуке
 //extern "C" {
@@ -20,14 +21,14 @@ GLFWwindow* PWindow = nullptr;
 
 void GLFWWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
     CONFIG_MANAGER::setWindowSize(glm::vec2(width, height));
-    RENDER_ENGINE::setViewport(width, height);
+    RENDER_ENGINE::setViewport(width, height); 
     Control::MouseControl::setHeight(height);
     MAIN_GAME_CLASS::setProjectionMat(glm::vec2(width, height));
 }
 void GLFWMonitorCallBack(GLFWmonitor* monitor, int action) {
     if (action == GLFW_DISCONNECTED && CONFIG_MANAGER::getFullScreen()) {
         GLFWmonitor* new_monitor = RENDER_ENGINE::getMonitor();
-        const  GLFWvidmode* mode = glfwGetVideoMode(new_monitor);
+        const GLFWvidmode* mode = glfwGetVideoMode(new_monitor);
         CONFIG_MANAGER::setWindowSize(glm::vec2(mode->width, mode->height));
         glfwSetWindowMonitor(PWindow, new_monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     }
@@ -48,8 +49,6 @@ int main(int argc, char** argv){
     RESOURCE_MANAGER::setExecutablePath(argv[0]);
 
     CONFIG_MANAGER::loadConfig();
-
-    
 
     glm::vec2 window = CONFIG_MANAGER::getWindowSize();
     PWindow = glfwCreateWindow(window.x, window.y, "Game", RENDER_ENGINE::getMonitor(), NULL);
@@ -117,9 +116,13 @@ int main(int argc, char** argv){
     RESOURCE_MANAGER::unloadAllRes();
 
     CONFIG_MANAGER::saveConfig();
+     
+    PRINT_TEXT::terminate();
+    SOUND_MANAGER::terminate();
+    MAIN_GAME_CLASS::terminate();
 
-    SOUND_DEVICE::terminate();
-    SOUND_LIBRARY::terminate();
+    glfwDestroyWindow(PWindow);
+
     glfwTerminate();
 
     return 0;

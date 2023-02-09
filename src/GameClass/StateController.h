@@ -3,6 +3,9 @@
 #include <string>
 #include "../Managers/ResourceManager.h"
 
+ //(RUS) Контроллер состояний анимации, управляет её переключением, и логикой
+//(ENG) Animation state controller, controls its switching, and logic
+
 class StateController {
 public:
 	StateController(const std::string initState);

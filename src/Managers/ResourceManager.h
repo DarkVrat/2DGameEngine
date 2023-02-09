@@ -24,17 +24,18 @@ namespace Audio {
 	class FileOfSound;
 }
 
+ //(RUS) ћенеджер ресурсов, загрузка данных, и передача их в объекты
+//(ENG) Resource manager, loading data, and passing it to objects
+
 class ResourceManager {
 public:
-	//метод получающий argv[0] в main дл€ получени€ пути к игре
 	static void setExecutablePath(const std::string& executablePath);
 	static std::string getExecutablePath();
 
-	static std::string getFileString(const std::string& relativeFilePath);//функци€ получени€ данных из файла
+	static std::string getFileString(const std::string& relativeFilePath);
 
 	static void unloadAllRes();
 
-	//функции создани€ и получени€ указателей на ресурсы
 	static void loadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
 	static void loadTexture(std::string textureName, std::string texturePatn, std::vector<std::string> subTextures, const unsigned subWidth, const unsigned subHeigth);
 	static void loadSprite(const std::string& spriteName, const std::string& textureName, const std::string& shaderName, const std::string& subTextureName = "Default");
@@ -52,7 +53,6 @@ public:
 	static bool loadJSONResurces(const std::string& JSONPath);
 
 private:
-	//ќбъ€вление типов Map дл€ хранени€ Shared_ptr указателей наших типов.
 	typedef std::map<const std::string, std::shared_ptr<Renderer::StateAnimation>> StateAnimationMap;
 	typedef std::map<const std::string, std::shared_ptr<Renderer::ShaderProgram>> ShaderProgramsMap;
 	typedef std::map<const std::string, std::shared_ptr<Renderer::Texture2D>> TexturesMap;
@@ -60,7 +60,6 @@ private:
 	typedef std::map<const std::string, std::shared_ptr<Audio::FileOfSound>> SoundMap;
 	typedef std::map<const std::string, std::shared_ptr<Audio::SampleSourse>> SampleSourseMap;
 
-	//’ранение всех данных загруженных в программу
 	static StateAnimationMap m_stateAnimation;
 	static ShaderProgramsMap m_shaderPrograms;
 	static TexturesMap m_textures;
@@ -68,6 +67,5 @@ private:
 	static SoundMap m_soundMap;
 	static SampleSourseMap m_sampleSourseMap;
 
-	//путь к папке с игрой
 	static std::string m_path;
 };

@@ -17,6 +17,8 @@ glm::ivec2 MainGameClass::m_window;
 double MainGameClass::m_time;
 int MainGameClass::m_fps;
 
+ //(RUS) первоначальная инициализация переменных
+//(ENG) initial initialization of variables
 MainGameClass::MainGameClass() {
     m_window=glm::ivec2(0, 0);
     m_GameState=E_GAME_STATE::Pause;
@@ -24,6 +26,8 @@ MainGameClass::MainGameClass() {
     m_time = 0.0;
 }
 
+ //(RUS) обновление объектов, буферов текста, позиции мыши
+//(ENG) updating objects, text buffers, mouse positions
 void MainGameClass::update(double duration){ 
     for (auto current = m_vectorGameObject.begin(); current != m_vectorGameObject.end(); current++) {
         current->get()->update(duration);
@@ -38,9 +42,11 @@ void MainGameClass::update(double duration){
     }
 
     PRINT_TEXT::updateBuffer(duration);
-    MOUSE::updatePosition();
+    MOUSE::updatePositionAndScroll();
 }
 
+ //(RUS) отрисовка объектов и текста
+//(ENG) drawing objects and text
 void MainGameClass::render() {
     for (auto current = m_vectorGameObject.begin(); current != m_vectorGameObject.end(); current++) {
         current->get()->render();
@@ -51,11 +57,15 @@ void MainGameClass::render() {
     PRINT_TEXT::renderText("x: " + std::to_string(MOUSE::getPosition().x) + " y: " + std::to_string(MOUSE::getPosition().y), glm::vec3(10, 500, 0), 0.5, glm::vec3(1, 1, 1));
 }
 
+ //(RUS) сортировка объектов по их layer, для отрисовки
+//(ENG) sorting objects by their layer, for rendering
 void MainGameClass::sortGameObject(){
     auto comp = [](std::shared_ptr<GameObject> a, std::shared_ptr<GameObject> b) {return a->getLayer() < b->getLayer();};
     std::sort(m_vectorGameObject.begin(), m_vectorGameObject.end(), comp);
 }
 
+ //(RUS) Инициализация, загрузка ресурсов, установка параметров для Аудио::SoundDevice, создание объектов
+//(ENG) Initialization, loading resources, setting parameters for Audio::SoundDevice, creating objects
 bool MainGameClass::init() {
     RESOURCE_MANAGER::loadJSONResurces("res/resJSON/resources.json");
 
@@ -83,6 +93,8 @@ bool MainGameClass::init() {
     return true;
 }
 
+ //(RUS) Обработка нажатий
+//(ENG) Handling clicks
 void MainGameClass::events(){
     if (KEYBOARD::getWriteText()) {
         if (KEYBOARD::ifPressed(GLFW_KEY_ENTER)) {
@@ -91,15 +103,12 @@ void MainGameClass::events(){
         if (KEYBOARD::ifPressed(GLFW_KEY_BACKSPACE)) {
             KEYBOARD::deleteLastCharInBuffer();
         }
-
-        MOUSE::updateButton();
-        KEYBOARD::updateButton();
         return;
     }
 
     if (KEYBOARD::ifPressed(GLFW_KEY_1)) m_vectorGameObject[0]->attack();
-    if (KEYBOARD::ifPressed(GLFW_KEY_2)) m_vectorGameObject[1]->attack();
-    if (KEYBOARD::ifPressed(GLFW_KEY_3)) m_vectorGameObject[2]->attack();
+    if (KEYBOARD::ifClamped(GLFW_KEY_2)) m_vectorGameObject[1]->attack();
+    if (KEYBOARD::ifReleased(GLFW_KEY_3)) m_vectorGameObject[2]->attack();
     if (KEYBOARD::ifPressed(GLFW_KEY_4)) m_vectorGameObject[3]->attack();
     if (KEYBOARD::ifPressed(GLFW_KEY_5)) m_vectorGameObject[8]->attack();
     if (KEYBOARD::ifPressed(GLFW_KEY_6)) m_vectorGameObject[7]->attack();
@@ -134,11 +143,10 @@ void MainGameClass::events(){
     }
 
     PRINT_TEXT::addTextInCountBuffer("scroll x: " + std::to_string(MOUSE::getScroll().x) + " scroll y: " + std::to_string(MOUSE::getScroll().y), glm::vec3(10, 550, 0), 0.5, glm::vec3(1, 1, 1));
-
-    MOUSE::updateButton();
-    KEYBOARD::updateButton();
 }
 
+ //(RUS) Установка матрицы проекции для отрисовки
+//(ENG) Setting the projection matrix for rendering
 void MainGameClass::setProjectionMat(glm::ivec2 window){
     m_window = window;
 
@@ -154,6 +162,8 @@ void MainGameClass::setProjectionMat(glm::ivec2 window){
     pTextShaderProgram->setMatrix4("projection", projectionMatrix);
 }
 
-MainGameClass::~MainGameClass(){
+ //(RUS) Уничтожение игровых объектов
+//(ENG) Destruction of game objects
+void MainGameClass::terminate(){
     m_vectorGameObject.clear();
 }

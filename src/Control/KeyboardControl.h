@@ -6,17 +6,16 @@
 
 #define KEYBOARD Control::KeyboardControl 
 
+ //(RUS) Класс для управления с  клавиатуры, отслеживание состояний кнопок, и ввода текста 
+//(ENG) Class for keyboard control, tracking button states, and text input
+
 namespace Control {
 	class KeyboardControl {
 	public:
-
-		static void updateButton();
-
 		static void setKey(GLFWwindow* pWindow, int key, int scancode, int action, int mode);
 		static bool ifPressed(const int key);
 		static bool ifReleased(const int key);
 		static bool ifClamped(const int key);
-		static bool ifNotClamped(const int key);
 
 		static void startWritingText();
 		static bool getWriteText();
@@ -24,11 +23,10 @@ namespace Control {
 		static void deleteLastCharInBuffer();
 		static std::string getBuffer();
 		static std::string getBufferAndRemove();
-
 	private:
 		KeyboardControl();
 
-		enum class E_BUTTON_ACTION {
+		enum E_BUTTON_ACTION : int8_t {
 			NotClamped,
 			Pressed,
 			Clamped,

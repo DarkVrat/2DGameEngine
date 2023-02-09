@@ -4,16 +4,15 @@
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Renderer {
-	//создание и компиляция шейдерной программы
+	 //(RUS) Конструктор создающий шейдер
+	//(ENG) Constructor creating shader
 	ShaderProgram::ShaderProgram(const std::string& vertexShader, const std::string& fragmentShader){
-		//Комтиляция вертексного шейдера в и сохранение ID в vertexShaderID
 		GLuint vertexShaderID;
 		if (!createShader(vertexShader, GL_VERTEX_SHADER, vertexShaderID)) {
 			std::cerr << "(!) VERTEX SHADER Compile-time error" << std::endl;
 			return;
 		}
 
-		//Комтиляция фрагментного шейдера в и сохранение ID в fragmentShaderID
 		GLuint fragmentShaderID;
 		if (!createShader(fragmentShader, GL_FRAGMENT_SHADER, fragmentShaderID)) {
 			std::cerr << "(!) FRAGMENT SHADER Compile-time error" << std::endl;
@@ -21,12 +20,11 @@ namespace Renderer {
 			return;
 		}
 
-		m_ID = glCreateProgram();				//создание адреса шейдерной программы
-		glAttachShader(m_ID, vertexShaderID);	//Присоединение к программе вертексного шейдера
-		glAttachShader(m_ID, fragmentShaderID);	//Присоединение к программе фрагментного шейдера
-		glLinkProgram(m_ID);					//Линковка программы шейдера по m_ID адресу
+		m_ID = glCreateProgram();				
+		glAttachShader(m_ID, vertexShaderID);	
+		glAttachShader(m_ID, fragmentShaderID);	
+		glLinkProgram(m_ID);					
 
-		//Проверка успешности линковки, и вывод ифо об ошибке, или установка m_isCompiled на истину
 		GLint success;
 		glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
 		if (!success) {
@@ -38,21 +36,21 @@ namespace Renderer {
 
 		glDeleteShader(vertexShaderID);
 		glDeleteShader(fragmentShaderID);
+
 	}
 
-	//компиляция шейдеров из передаваемой строки взятой из файла, указаного типа, и сохранение ID шейдера в shaderID
+	 //(RUS) Компиляция шейдера
+	//(ENG) Shader compilation
 	bool ShaderProgram::createShader(const std::string& source, const GLenum shaderType, GLuint& shaderID) {
 		
-		shaderID = glCreateShader(shaderType);					//создание ID для шейдера определённого типа
-		const char* code = source.c_str();						//получение кода шейдера из строки
-		glShaderSource(shaderID, 1, std::move(&code), nullptr); //получает ID куда записать, кол-во элементов(У нас один массив символов), передача кода, длинна строк
-		glCompileShader(shaderID);								//компиляция шейдера
+		shaderID = glCreateShader(shaderType);					
+		const char* code = source.c_str();						
+		glShaderSource(shaderID, 1, std::move(&code), nullptr); 
+		glCompileShader(shaderID);								
 		
-		//Сохранение информации об успехе/провале компиляции
 		GLint success;
 		glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success); 
 		
-		//проверка, и вывод сообщения об ошибке, или успешное завершение компиляции
 		if (!success) {
 			GLchar infoLog[1024];
 			glGetShaderInfoLog(shaderID, 1024, nullptr, infoLog); 
@@ -62,42 +60,39 @@ namespace Renderer {
 		return true;
 	}
 
-	//Удаление шейдера
+	 //(RUS) Удаление шейдера
+    //(ENG) Removing a shader
 	ShaderProgram::~ShaderProgram(){
 		glDeleteProgram(m_ID);
 	}
 
-	bool ShaderProgram::isCompiled(){
-		return m_isCompiled;
-	}
+	 //(RUS) Получение флага компиляции
+	//(ENG) Getting the compilation flag
+	bool ShaderProgram::isCompiled() { return m_isCompiled; }
 
-	//установка таргета при отрисовке на наш шейдер
+	 //(RUS) использование шейдера
+	//(ENG) shader usage
 	void ShaderProgram::use() const{
 		glUseProgram(m_ID);
 	}
 
-
-	void ShaderProgram::setInt(const std::string& name, const GLint value){
-		//Получение адреса юниформ переменной шейдера по name, и установка ей значения
+	 //(RUS) Установка определённых параметров в Uniform  переменные шейдеров
+	//(ENG) Setting certain parameters in uniform shader variables
+	void ShaderProgram::setInt(const std::string& name, const GLint value) { 
 		glUniform1i(glGetUniformLocation(m_ID, name.c_str()), value); 
 	}
-
-	void ShaderProgram::setFloat (const std::string& name, const GLfloat value) {
-		//Получение адреса юниформ переменной шейдера по name, и установка ей значения
- 		glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value);
+	void ShaderProgram::setFloat (const std::string& name, const GLfloat value) { 
+		glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value); 
 	}
-
-	void ShaderProgram::setMatrix4(const std::string& name, const glm::mat4& matrix){
-		//Получение адреса юниформ переменной шейдера по name, указание количества mat4 матриц, указание о ненадобности транспоритрования матриц, и загрузка матрицы в переменную
-		glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()),1,GL_FALSE, glm::value_ptr(matrix));
+	void ShaderProgram::setMatrix4(const std::string& name, const glm::mat4& matrix) { 
+		glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()),1,GL_FALSE, glm::value_ptr(matrix));	
 	}
-
 	void ShaderProgram::setVec3(const std::string& name, const glm::vec3 vec3) {
-		//Получение адреса юниформ переменной шейдера по name, и установка ей значения
 		glUniform3f(glGetUniformLocation(m_ID, name.c_str()), vec3.x,vec3.y,vec3.z);
 	}
 
-	//Передача данных програмного шейдера с удалением передаваемого
+	 //(RUS) Конструктор переноса шейдера
+	//(ENG) Shader transfer constructor
 	ShaderProgram& ShaderProgram::operator=(ShaderProgram&& shaderProgram) noexcept {
 		glDeleteProgram(m_ID);
 		m_ID = shaderProgram.m_ID;
@@ -106,8 +101,6 @@ namespace Renderer {
 		shaderProgram.m_isCompiled = false;
 		return *this;
 	}
-
-	//Передача данных програмного шейдера с удалением передаваемого
 	ShaderProgram::ShaderProgram(ShaderProgram && shaderProgram) noexcept {
 		m_ID = shaderProgram.m_ID;
 		m_isCompiled = shaderProgram.m_isCompiled;

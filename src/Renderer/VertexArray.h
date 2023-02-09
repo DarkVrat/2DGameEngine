@@ -5,7 +5,6 @@
 #include "VertexBufferLayout.h"
 
 namespace Renderer {
-
 	class VertexArray {
 	public:
 		VertexArray();

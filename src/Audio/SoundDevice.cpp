@@ -2,21 +2,20 @@
 
 #include <AL\al.h>
 #include <iostream>
-#include "OpenALErrorCheck.h"
-#include "SoundEffectsLibrary.h"
 
 ALCdevice* Audio::SoundDevice::m_ALCDevice;
 ALCcontext* Audio::SoundDevice::m_ALCContext;
 
 namespace Audio {
+	 //(RUS) Установка модели высчитывания громкости от дистанции
+	//(ENG) Setting the model for calculating loudness from distance
 	void SoundDevice::setAttunation(int key){
-		if (key < 0xD001 || key > 0xD006)
-			std::cerr << "(!) bad attunation key" << std::endl;
-
 		alDistanceModel(key);
 		AL_CheckAndThrow();
 	}
 
+	 //(RUS) Получение параметров девайса
+	//(ENG) Get device settings
 	void SoundDevice::getPosition(glm::vec3& posit) {
 		alGetListener3f(AL_POSITION, &posit.x, &posit.y, &posit.z);
 		AL_CheckAndThrow();
@@ -41,6 +40,8 @@ namespace Audio {
 		AL_CheckAndThrow();
 	}
 
+	 //(RUS) Установка параметров девайса
+	//(ENG) Setting device parameters
 	void SoundDevice::setPosition(const glm::vec3& posit){
 		alListener3f(AL_POSITION, posit.x, posit.y, posit.z);
 		AL_CheckAndThrow();
@@ -59,6 +60,15 @@ namespace Audio {
 		AL_CheckAndThrow();
 	}
 
+	 //(RUS) Проверка наличия ошибок при работе с OpenAL 
+	//(ENG) Checking for errors when working with OpenAL
+	void SoundDevice::AL_CheckAndThrow(){
+		if (alGetError() != AL_NO_ERROR)
+			throw("error with al");
+	}
+
+	 //(RUS) Инициализация устройства
+	//(ENG) Device initialization
 	void SoundDevice::init(){
 		m_ALCDevice = alcOpenDevice(nullptr);
 		if (!m_ALCDevice)
@@ -79,6 +89,8 @@ namespace Audio {
 		std::cout << "Opened " <<name<< std::endl;
 	}
 
+	 //(RUS) Уничтожение устройства
+	//(ENG) Device destruction
 	void SoundDevice::terminate(){
 		alcMakeContextCurrent(nullptr);
 		alcDestroyContext(m_ALCContext);

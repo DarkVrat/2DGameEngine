@@ -4,19 +4,19 @@
 #include <sndfile.h>
 #include <AL/al.h>
 
+ //(RUS) необходим для загрузки аудиофайлов, и передачи их в Audio::SoundEffectLibrary
+//(ENG) needed to load audio files and pass them to Audio::SoundEffectLibrary
+
 namespace Audio {
 	class FileOfSound {
 	public:
-		FileOfSound(const std::string filePath);
-		FileOfSound();
+		FileOfSound(std::string filePath); 
 
 		SNDFILE* getSndFile();
 		SF_INFO getSfInfo();
 		ALenum getFormat();
 		short* getMemBuf();
 		std::string getFileName();
-
-		bool operator!();
 
 	private:
 		SNDFILE* m_sndFile;

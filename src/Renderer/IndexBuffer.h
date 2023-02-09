@@ -2,15 +2,17 @@
 
 #include <glad/glad.h>
 
-namespace Renderer {
+ //(RUS) объект для хранения и работы с массивом индексов, для отрисовки в openGL 
+//(ENG) an object for storing and working with an array of indices, for rendering in openGL
 
+namespace Renderer {
 	class IndexBuffer {
 	public:
 		IndexBuffer();
 		~IndexBuffer();
 
-		void init(const void* data, const unsigned int count);
-		void bind() const;
+		void init(const void* data, unsigned int count);
+		void bind()const;
 		void unbind() const;
 
 		unsigned int getCount() const;

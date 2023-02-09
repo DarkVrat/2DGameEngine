@@ -7,7 +7,8 @@
 #include "RenderEngine.h"
 
 namespace Renderer {
-
+     //(RUS) создание спрайта, заполнение буферов
+    //(ENG) creating a sprite, filling buffers
     Sprite::Sprite(std::shared_ptr<Texture2D> pTexture,
         std::string initialSubTexture,
         std::shared_ptr<ShaderProgram> pShaderProgram)
@@ -15,15 +16,11 @@ namespace Renderer {
         , m_shaderProgram(std::move(pShaderProgram))
     {
         const GLfloat vertexCoords[] = {
-            // 1---2
-            // | / |
-            // 0---3
-
-            // X  Y
-            0.f, 0.f,
-            0.f, 1.f,
-            1.f, 1.f,
-            1.f, 0.f
+            // X  Y     //1---2
+            0.f, 0.f,   //|  /|
+            0.f, 1.f,   //| / |
+            1.f, 1.f,   //|/  |
+            1.f, 0.f    //0---3
         };
 
         auto& subTexture = m_texture->getSubTexture2D(std::move(initialSubTexture));
@@ -57,6 +54,8 @@ namespace Renderer {
         m_indexBuffer.unbind();
     }
 
+     //(RUS) Отрисовка спрайта
+    //(ENG) Drawing a sprite
     void Sprite::render(const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer) const
     {
         m_shaderProgram->use();
@@ -75,6 +74,6 @@ namespace Renderer {
         glActiveTexture(GL_TEXTURE0);
         m_texture->bind();
 
-        RENDER_ENGINE::draw(m_vertexArray, m_indexBuffer, *m_shaderProgram);
+        RENDER_ENGINE::draw(m_vertexArray, m_indexBuffer);
     }
 }

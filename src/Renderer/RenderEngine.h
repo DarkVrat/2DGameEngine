@@ -12,10 +12,13 @@
 
 #define RENDER_ENGINE Renderer::RenderEngine
 
+ //(RUS) Класс для установки параметров OpenGL 
+//(ENG) Class for setting OpenGL options
+
 namespace Renderer {
 	class RenderEngine {
 	public:
-		static void draw(const VertexArray& vertexArray, const IndexBuffer& indesBuffer, const ShaderProgram& shader);
+		static void draw(const VertexArray& vertexArray, const IndexBuffer& indesBuffer);
 		static void setClearColor(float r, float g, float b, float a);
 		static void setDetphTest(bool flag);
 		

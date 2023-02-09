@@ -5,7 +5,9 @@
 #include "../Managers/ResourceManager.h"
 #include "../Renderer/PrintText.h"
 
-GameObject::GameObject(std::string startState, glm::vec2& position, glm::vec2& size, float rotation, float layer){
+ //(RUS) Создание игрового объекта со всеми параметрами
+//(ENG) Creating a game object with all parameters
+GameObject::GameObject(std::string startState, const glm::vec2& position, const  glm::vec2& size, float rotation, float layer){
 	m_stateControll = std::make_shared<StateController>(startState);
 	m_position=position;
 	m_size=size;
@@ -17,44 +19,44 @@ GameObject::GameObject(std::string startState, glm::vec2& position, glm::vec2& s
 	m_mapPlayer.emplace("Attack1", player);
 }
 
+ //(RUS) удаление игрового объекта
+//(ENG) game object removal
 GameObject::~GameObject(){
 	m_mapPlayer.clear();
 }
 
+ //(RUS) обновление игрового объекта
+//(ENG) game object update
 void GameObject::update(double duration){
 	m_stateControll->update(duration);
 }
 
+ //(RUS) отрисовка игрового объекта
+//(ENG) game object rendering
 void GameObject::render(){
 	m_stateControll->render(m_position, m_size, m_rotation, m_layer);
 }
 
+ //(RUS) событие атаки, запуск анимации, и воспроихведение звука
+//(ENG) attack event, start animation, and play sound
 void GameObject::attack(){
 	m_stateControll->setState("Attack1");
-	PRINT_TEXT::addTextInTimeBuffer("I attack!", glm::vec3(m_position.x-abs(m_size.x)/6, m_position.y + m_size.y / 3, 100), 0.25, glm::vec3(1, 1, 1), 1000);
 	m_mapPlayer.at("Attack1")->play();
 }
 
+ //(RUS) событие бездействия
+//(ENG) idle event
 void GameObject::idle(){
 	m_stateControll->setState("Idle");
 }
 
-void GameObject::setPosition(const glm::vec2& position){
-	m_position = position;
-}
-
-void GameObject::setSize(const glm::vec2& size){
-	m_size = size;
-}
-
-void GameObject::setRotation(const float rotation){
-	m_rotation = rotation;
-}
-
-glm::vec2 GameObject::getPosition(){
-	return m_position;
-}
-
-float GameObject::getLayer(){
-	return m_layer;
-}
+ //(RUS) геттеры и сеттеры
+//(ENG) getters and setters
+void GameObject::setPosition(const glm::vec2& position) { m_position = position; }
+void GameObject::setSize(const glm::vec2& size) { m_size = size; }
+void GameObject::setRotation(const float& rotation) { m_rotation = rotation; }
+void GameObject::setLayer(const float& layer) { m_layer = layer; }
+glm::vec2 GameObject::getPosition() { return m_position; }
+glm::vec2 GameObject::getSize() { return m_size; }
+float GameObject::getRotation() { return m_rotation; }
+float GameObject::getLayer() { return m_layer; }

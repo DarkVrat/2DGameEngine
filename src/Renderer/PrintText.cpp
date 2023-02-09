@@ -15,6 +15,8 @@ Renderer::IndexBuffer Renderer::PrintText::m_indexBuffer;
 int Renderer::PrintText::m_fontSize;
 
 namespace Renderer {
+     //(RUS) Создание и заполнение начальными параметрами
+    //(ENG) Creation and filling with initial parameters
     PrintText::PrintText() {
         m_shader = nullptr;
         m_characters.clear();
@@ -24,6 +26,8 @@ namespace Renderer {
         m_fontSize = 1;
     }
 
+     //(RUS) Создание символов, и установка параметров
+    //(ENG) Creating Symbols and Setting Parameters
     void PrintText::createSymbols(std::shared_ptr<ShaderProgram> shader, int fontSize, std::string fontPath) {
         m_fontSize = fontSize;
         m_shader=std::move(shader);
@@ -98,6 +102,8 @@ namespace Renderer {
         m_indexBuffer.init(indices, 6);
     }
 
+     //(RUS) Отрисовка текста
+    //(ENG) Text rendering
     void PrintText::renderText(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color) {
         m_shader->use();
         m_shader->setVec3("textColor", color);
@@ -136,6 +142,8 @@ namespace Renderer {
         glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
+     //(RUS) Добавление текста в буфер на какое то время
+    //(ENG) Adding text to the buffer for a while
     void PrintText::addTextInTimeBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time){
         std::vector<std::pair<Text, double>>::iterator It;
         for (It = m_timeBufferText.begin(); It != m_timeBufferText.end(); It++) {
@@ -153,6 +161,8 @@ namespace Renderer {
         m_timeBufferText.emplace_back(std::make_pair<>(textInBuffer,Time));
     }
 
+     //(RUS) Добавление текста в буфер на определённое количество отрисовок
+    //(ENG) Adding text to the buffer for a certain number of renders
     void PrintText::addTextInCountBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, int Count){
         std::vector<std::pair<Text, int>>::iterator It;
         for (It = m_countBufferText.begin(); It != m_countBufferText.end(); It++) {
@@ -170,6 +180,8 @@ namespace Renderer {
         m_countBufferText.emplace_back(std::make_pair<>(textInBuffer, Count));
     }
 
+     //(RUS) Отрисовка текстов из буферов, и возможно удаление из Count буфера
+    //(ENG) Drawing texts from buffers, and possibly deleting from the Count buffer
     void PrintText::renderBuffer(){
         for (auto& It:m_timeBufferText) {
             renderText(It.first.ms_text, It.first.ms_position, It.first.ms_scale, It.first.ms_color);
@@ -183,6 +195,8 @@ namespace Renderer {
         }
     }
 
+     //(RUS) обновление Time буфера, возможно удаление
+    //(ENG) updating Time buffer, possibly deleting
     void PrintText::updateBuffer(double duration){
         for (int i = m_timeBufferText.size() - 1; i >= 0; i--) {
             m_timeBufferText.at(i).second -= duration;
@@ -191,7 +205,13 @@ namespace Renderer {
         }
     }
 
-    PrintText::~PrintText(){
+     //(RUS) Очистка и удаление
+    //(ENG) Cleanup and removal
+    void PrintText::terminate(){
         m_characters.clear();
+        m_timeBufferText.clear();
+        m_countBufferText.clear();
+        m_shader.~shared_ptr();
+        delete m_vertexArray;
     }
 }

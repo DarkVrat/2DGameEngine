@@ -6,6 +6,9 @@
 
 #define CONFIG_MANAGER ConfigManager
 
+ //(RUS) Необходим для работы с файлом "res/config.json", загрузки, изменения и сохранения
+//(ENG) Required to work with the "res/config.json" file, load, modify and save
+
 class ConfigManager {
 public:
 	static void loadConfig();

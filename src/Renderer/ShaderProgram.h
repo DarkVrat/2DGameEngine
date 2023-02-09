@@ -4,19 +4,19 @@
 #include <glad/glad.h>
 #include <glm/mat4x4.hpp>
 
+ //(RUS) Образец источника звука, содержит параметры, для их установки в Audio::SoundEffectPlayer
+//(ENG) Sound source sample, contains options to set them in Audio::SoundEffectPlayer
+
 namespace Renderer {
 	class ShaderProgram {
 	public:
-		//Конструкторы и деструкторы
 		ShaderProgram(const std::string& vertexShader, const std::string& fragmentShader);
 		ShaderProgram& operator=(ShaderProgram&& shaderProgram)noexcept;
 		ShaderProgram(ShaderProgram&& shaderProgram)noexcept;
 		~ShaderProgram();
 
-		//Проверка компиляции
 		bool isCompiled();
 
-		//передача данных и использование шейдера
 		void use() const;
 
 		void setInt(const std::string& name, const GLint value);
@@ -25,10 +25,9 @@ namespace Renderer {
 		void setVec3(const std::string& name, const glm::vec3 vec3);
 
 	private:
-		GLuint m_ID = 0; //ID шейдера
-		bool m_isCompiled = false; //Статус
+		GLuint m_ID = 0; 
+		bool m_isCompiled = false; 
 
-		//Компиляция шейдеров
 		bool createShader(const std::string& source, const GLenum shaderType, GLuint& shaderID); 
 	};
 }

@@ -14,7 +14,6 @@ namespace Renderer {
 		vertexArray.m_id = 0;
 		return *this;
 	}
-
 	VertexArray::VertexArray(VertexArray&& vertexArray) noexcept {
 		m_id = vertexArray.m_id;
 		vertexArray.m_id = 0;

@@ -7,24 +7,24 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 
+ //(RUS) Класс спрайта, хранит буферы, ссылку на шейдер, и ссылку на текстуру, необходимые для отрисовки
+//(ENG) Sprite class, stores the buffers, shader reference, and texture reference required for rendering
+
 namespace Renderer {
 	class Texture2D;
 	class ShaderProgram;
 
 	class Sprite {
 	public:
-		//Конструкторы и деструкторы
 		Sprite(std::shared_ptr<Texture2D> pTexture, std::string initialSubTexture, std::shared_ptr<ShaderProgram> pShaderProgram);
 		~Sprite() {};
 		
-		//отрисовка
 		void render(const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer)const;
 
 	protected:
-		std::shared_ptr<Texture2D> m_texture; //текстура
-		std::shared_ptr<ShaderProgram> m_shaderProgram; //Шейдерная программа
+		std::shared_ptr<Texture2D> m_texture; 
+		std::shared_ptr<ShaderProgram> m_shaderProgram; 
 
-		//буферы
 		VertexArray m_vertexArray;
 		VertexBuffer m_vertexCoordsBuffer;
 		VertexBuffer m_textureCoordsBuffer;

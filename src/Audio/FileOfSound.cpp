@@ -5,7 +5,9 @@
 
 
 namespace Audio{ 
-	FileOfSound::FileOfSound(const std::string filePath){
+	 //(RUS) загрузка и проверка аудиофайла, определение параметров
+	//(ENG) loading and checking an audio file, defining parameters
+	FileOfSound::FileOfSound(std::string filePath){
 		m_fileName =  filePath;
 		 
 		m_sndFile = sf_open((RESOURCE_MANAGER::getExecutablePath()+filePath).c_str(), SFM_READ, &m_sfInfo);
@@ -42,40 +44,11 @@ namespace Audio{
 		m_memBuf = static_cast<short*>(malloc((size_t)(m_sfInfo.frames * m_sfInfo.channels) * sizeof(short)));
 	}
 
-	FileOfSound::FileOfSound(){
-		m_sndFile=nullptr;
-		m_format=AL_NONE;
-		m_memBuf=nullptr;
-		m_fileName="";
-	}
-
-	SNDFILE* FileOfSound::getSndFile(){
-		return m_sndFile;
-	}
-
-	SF_INFO FileOfSound::getSfInfo(){
-		return m_sfInfo;
-	}
-
-	ALenum FileOfSound::getFormat(){
-		return m_format;
-	}
-
-	short* FileOfSound::getMemBuf(){
-		return m_memBuf;
-	}
-
-	std::string FileOfSound::getFileName(){
-		return m_fileName;
-	}
-
-	bool FileOfSound::operator!()
-	{
-		if (m_sndFile != nullptr) {
-			return false; 
-		}
-		return true;
-	}
-
-
+	 //(RUS) получение параметров
+	//(ENG) getting parameters
+	SNDFILE* FileOfSound::getSndFile() { return m_sndFile; }
+	SF_INFO FileOfSound::getSfInfo() { return m_sfInfo; }
+	ALenum FileOfSound::getFormat() { return m_format; }
+	short* FileOfSound::getMemBuf() { return m_memBuf; }
+	std::string FileOfSound::getFileName() { return m_fileName; }
 }

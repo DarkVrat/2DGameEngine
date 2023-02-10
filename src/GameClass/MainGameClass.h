@@ -13,12 +13,12 @@ class MainGameClass {
 public:
 	static bool init();
 
-	static void update(double duration);
+	static void update(const double& duration);
 	static void render();
 
 	static void events();
 	static void sortGameObject();
-	static void setProjectionMat(glm::ivec2 window);
+	static void setProjectionMat(const glm::ivec2& window);
 
 	static void terminate();
 
@@ -29,8 +29,12 @@ private:
 	static std::vector<std::shared_ptr<GameObject>> m_vectorGameObject;
 
 	enum E_GAME_STATE : int8_t{
-		Active,
-		Pause
+		MAIN_MENU,
+		NEW_GAME,
+		PAUSE,
+		SAVE_AND_LOAD,
+		SETTINGS,
+		EXIT
 	};
 	static glm::ivec2 m_window;
 	static E_GAME_STATE m_GameState;

@@ -12,8 +12,8 @@ namespace Renderer {
 		VertexBuffer& operator=(VertexBuffer&& vertexBuffer) noexcept;
 		VertexBuffer(VertexBuffer&& indexBuffer) noexcept;
 
-		void init(const void* data, const unsigned int size);
-		void update(const void* data, const unsigned int size) const;
+		void init(const void* data, const unsigned& size);
+		void update(const void* data, const unsigned& size) const;
 		void bind() const;
 		void unbind() const;
 

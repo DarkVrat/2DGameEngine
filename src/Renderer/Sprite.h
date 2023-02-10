@@ -16,10 +16,10 @@ namespace Renderer {
 
 	class Sprite {
 	public:
-		Sprite(std::shared_ptr<Texture2D> pTexture, std::string initialSubTexture, std::shared_ptr<ShaderProgram> pShaderProgram);
+		Sprite(const std::shared_ptr<Texture2D>& pTexture, const std::string& initialSubTexture, const std::shared_ptr<ShaderProgram>& pShaderProgram);
 		~Sprite() {};
 		
-		void render(const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer)const;
+		void render(const glm::vec2& position, const glm::vec2& size, const float& rotation, const float& layer);
 
 	protected:
 		std::shared_ptr<Texture2D> m_texture; 

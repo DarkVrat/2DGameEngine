@@ -28,7 +28,9 @@ namespace Audio {
 		std::map<std::shared_ptr<Audio::SoundEffectsPlayer>, glm::vec3> position;
 		for (int i = 0; i < m_vectorSoundPlayers.size();i++) {
 			std::shared_ptr<Audio::SoundEffectsPlayer> current = m_vectorSoundPlayers.at(i);
-			position.emplace(current, current->getVec3Param(AL_POSITION));
+			glm::vec3 val;
+			current->getVec3Param(AL_POSITION,val);
+			position.emplace(current, val);
 			current->deleteSourse();
 		}
 

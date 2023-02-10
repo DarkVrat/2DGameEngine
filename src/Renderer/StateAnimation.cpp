@@ -3,12 +3,12 @@
 namespace Renderer{
 	 //(RUS)  онструктор, заполн€ющий параметры
 	//(ENG) Constructor that populates parameters
-	StateAnimation::StateAnimation(std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> frames, std::vector<std::string> sources, std::string nextState, bool uninterrupted)
-		:m_frames(std::move(frames)),m_sources(std::move(sources)),m_nextState(nextState), m_uninterrupted(uninterrupted) {}
+	StateAnimation::StateAnimation(const std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>>& frames, const std::vector<std::string>& sources, const std::string& nextState, const bool& uninterrupted)
+		:m_frames(frames),m_sources(sources),m_nextState(nextState), m_uninterrupted(uninterrupted) {}
 
 	 //(RUS) ‘ункци€, позвол€юща€ определить можно ли перейти с stateName, на this 
 	//(ENG) A function that allows you to determine whether it is possible to switch from stateName to this
-	bool StateAnimation::canChange(const std::string stateName) {
+	bool StateAnimation::canChange(const std::string& stateName) {
 		for (std::string current : m_sources) {
 			if (current == stateName) return true;
 		}

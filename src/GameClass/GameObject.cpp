@@ -7,7 +7,7 @@
 
  //(RUS) Создание игрового объекта со всеми параметрами
 //(ENG) Creating a game object with all parameters
-GameObject::GameObject(std::string startState, const glm::vec2& position, const  glm::vec2& size, float rotation, float layer){
+GameObject::GameObject(const std::string& startState, const glm::vec2& position, const glm::vec2& size, const float& rotation, const float& layer){
 	m_stateControll = std::make_shared<StateController>(startState);
 	m_position=position;
 	m_size=size;
@@ -27,7 +27,7 @@ GameObject::~GameObject(){
 
  //(RUS) обновление игрового объекта
 //(ENG) game object update
-void GameObject::update(double duration){
+void GameObject::update(const double& duration){
 	m_stateControll->update(duration);
 }
 
@@ -39,9 +39,10 @@ void GameObject::render(){
 
  //(RUS) событие атаки, запуск анимации, и воспроихведение звука
 //(ENG) attack event, start animation, and play sound
-void GameObject::attack(){
+void GameObject::attack() {
 	m_stateControll->setState("Attack1");
-	m_mapPlayer.at("Attack1")->play();
+	m_mapPlayer["Attack1"]->play();
+	idle();
 }
 
  //(RUS) событие бездействия

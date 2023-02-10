@@ -11,7 +11,7 @@ namespace Renderer {
 
 	 //(RUS) инициализация буфера в OpenGL, для count переменных и помещение data 
 	//(ENG) buffer initialization in OpenGL, for count variables and putting data
-	void IndexBuffer::init(const void* data, unsigned int count) {
+	void IndexBuffer::init(const void* data, const unsigned& count) {
 		m_count = count;
 		glGenBuffers(1, &m_id); 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);

@@ -14,17 +14,17 @@ public:
 	static void loadConfig();
 	static void saveConfig();
 
-	static void setWindowSize(glm::vec2 windowSize = glm::vec2(800, 600));
-	static void setDisplayNumber(int monitorNumber = 0);
-	static void setFullScreen(bool fullScreen = true);
-	static void setVolumeSounde(double volume = 1.0);
-	static void setVolumeSample(std::string name, double volume = 1.0);
+	static void setWindowSize(const int& x=800, const int& y = 600);
+	static void setDisplayNumber(const unsigned& monitorNumber = 0);
+	static void setFullScreen(const bool& fullScreen = true);
+	static void setVolumeSounde(const double& volume = 1.0);
+	static void setVolumeSample(const std::string& name, const double& volume = 1.0);
 
-	static glm::vec2 getWindowSize();
+	static glm::ivec2 getWindowSize();
 	static int getDisplayNumber();
 	static bool getFullScreen();
 	static double getVolumeSounde();
-	static double getVolumeSample(std::string name);
+	static double getVolumeSample(const std::string& name);
 
 private:
 	static rapidjson::Document m_configDoc;

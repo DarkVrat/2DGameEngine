@@ -19,12 +19,12 @@ namespace Renderer {
 	class RenderEngine {
 	public:
 		static void draw(const VertexArray& vertexArray, const IndexBuffer& indesBuffer);
-		static void setClearColor(float r, float g, float b, float a);
-		static void setDetphTest(bool flag);
+		static void setClearColor(const int& r, const int& g, const int& b, const int& a);
+		static void setDetphTest(const bool& flag);
 		
 		static void clear();
-		static void setViewport(unsigned int width, unsigned int height, unsigned intleftOffset=0, unsigned int bottomOffset=0);
-		static void enableBlend(GLenum sfactor, GLenum dfactor);
+		static void setViewport(const unsigned& width, const unsigned& height, const unsigned& intleftOffset=0, const unsigned& bottomOffset=0);
+		static void enableBlend(const GLenum& sfactor, const GLenum& dfactor);
 
 		static std::string getRender();
 		static std::string getVersion();

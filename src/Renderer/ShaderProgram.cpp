@@ -41,7 +41,7 @@ namespace Renderer {
 
 	 //(RUS) Компиляция шейдера
 	//(ENG) Shader compilation
-	bool ShaderProgram::createShader(const std::string& source, const GLenum shaderType, GLuint& shaderID) {
+	bool ShaderProgram::createShader(const std::string& source, const GLenum& shaderType, GLuint& shaderID) {
 		
 		shaderID = glCreateShader(shaderType);					
 		const char* code = source.c_str();						
@@ -78,16 +78,16 @@ namespace Renderer {
 
 	 //(RUS) Установка определённых параметров в Uniform  переменные шейдеров
 	//(ENG) Setting certain parameters in uniform shader variables
-	void ShaderProgram::setInt(const std::string& name, const GLint value) { 
+	void ShaderProgram::setInt(const std::string& name, const GLint& value) { 
 		glUniform1i(glGetUniformLocation(m_ID, name.c_str()), value); 
 	}
-	void ShaderProgram::setFloat (const std::string& name, const GLfloat value) { 
+	void ShaderProgram::setFloat (const std::string& name, const GLfloat& value) { 
 		glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value); 
 	}
 	void ShaderProgram::setMatrix4(const std::string& name, const glm::mat4& matrix) { 
 		glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()),1,GL_FALSE, glm::value_ptr(matrix));	
 	}
-	void ShaderProgram::setVec3(const std::string& name, const glm::vec3 vec3) {
+	void ShaderProgram::setVec3(const std::string& name, const glm::vec3& vec3) {
 		glUniform3f(glGetUniformLocation(m_ID, name.c_str()), vec3.x,vec3.y,vec3.z);
 	}
 

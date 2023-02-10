@@ -14,10 +14,10 @@
 
 class GameObject {
 public:
-	GameObject(std::string startState, const glm::vec2& position, const glm::vec2& size,  float rotation,  float layer=0.f);
+	GameObject(const std::string& startState, const glm::vec2& position, const glm::vec2& size, const float& rotation, const float& layer=0.f);
 	~GameObject();
 
-	void update(double duration);
+	void update(const double& duration);
 	void render();
 
 	void attack();

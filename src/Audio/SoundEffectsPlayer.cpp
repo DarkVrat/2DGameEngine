@@ -11,7 +11,7 @@ namespace Audio {
 	  //   (!) создание плеера не через MakeSoundEffectPlayer —делает его невозможным дл€ перезагрузки звука, и обновлени€ громкости
 	 //(ENG) Creating a sound effect, placing it in the sound manager
 	//   (!) making a player not via MakeSoundEffectPlayer Will make it impossible to reload the sound, and volume updates
-	std::shared_ptr<Audio::SoundEffectsPlayer> SoundEffectsPlayer::MakeSoundEffectPlayer(const std::string soundEffect, const std::string sampleName){
+	std::shared_ptr<Audio::SoundEffectsPlayer> SoundEffectsPlayer::MakeSoundEffectPlayer(const std::string& soundEffect, const std::string& sampleName){
 		std::shared_ptr<Audio::SoundEffectsPlayer> player = std::make_shared<Audio::SoundEffectsPlayer>(soundEffect, sampleName);
 		SOUND_MANAGER::addPlayer(player);
 		return player;
@@ -19,7 +19,7 @@ namespace Audio {
 
 	 //(RUS)  онструктор звукового плеера
 	//(ENG) Sound player constructor
-	SoundEffectsPlayer::SoundEffectsPlayer(const std::string soundEffect, const std::string sampleName){
+	SoundEffectsPlayer::SoundEffectsPlayer(const std::string& soundEffect, const std::string& sampleName){
 		m_soundEffect = soundEffect;
 		m_sampleSource = RESOURCE_MANAGER::getSampleSourse(sampleName);
 		createEffect();
@@ -55,7 +55,7 @@ namespace Audio {
 
 	 //(RUS) ”становка параметров источника
 	//(ENG) Setting Source Options
-	void SoundEffectsPlayer::setVec3Param(ALenum param, const glm::vec3& value){
+	void SoundEffectsPlayer::setVec3Param(const ALenum& param, const glm::vec3& value){
 		alSource3f(m_source, param, value.x, value.y, value.z);
 		SOUND_DEVICE::AL_CheckAndThrow();
 	}
@@ -80,10 +80,8 @@ namespace Audio {
 
  	 //(RUS) ѕолучение параметра плеера
 	//(ENG) Getting the player parameter
-	glm::vec3 SoundEffectsPlayer::getVec3Param(ALenum param){
-		glm::vec3 value(0,0,0);
+	void SoundEffectsPlayer::getVec3Param(const ALenum& param, glm::vec3& value){
 		alGetSource3f(m_source, param, &value.x, &value.y, &value.z);
-		return value;
 	}
 
 	 //(RUS) ”даление звукового источника

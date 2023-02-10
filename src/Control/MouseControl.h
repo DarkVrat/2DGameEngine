@@ -15,13 +15,13 @@ namespace Control {
 		static void updatePositionAndScroll();
 
 		static void setWindow(GLFWwindow* pWindow);
-		static void setHeight(double height);
+		static void setHeight(const double& height);
 		static void setScroll(GLFWwindow* окно, double x, double y);
 		static void setButton(GLFWwindow* pWindow, int button, int action, int mods);
 
-		static bool ifPressed(const int key);
-		static bool ifReleased(const int key);
-		static bool ifClamped(const int key);
+		static bool ifPressed(const int& key);
+		static bool ifReleased(const int& key);
+		static bool ifClamped(const int& key);
 
 		static glm::vec2 getScroll();
 		static glm::vec2 getPosition();
@@ -30,10 +30,10 @@ namespace Control {
 		MouseControl();
 
 		enum E_BUTTON_ACTION : int8_t {
-			NotClamped,
-			Pressed,
-			Clamped,
-			Released
+			NOT_CLAMPED,
+			PRESSED,
+			CLAMPED,
+			RELEASED
 		};
 		static std::array<E_BUTTON_ACTION, 8> m_keys;
 		static GLFWwindow* m_PWindow;

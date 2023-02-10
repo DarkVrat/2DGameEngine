@@ -9,28 +9,24 @@
 namespace Renderer {
      //(RUS) создание спрайта, заполнение буферов
     //(ENG) creating a sprite, filling buffers
-    Sprite::Sprite(std::shared_ptr<Texture2D> pTexture,
-        std::string initialSubTexture,
-        std::shared_ptr<ShaderProgram> pShaderProgram)
-        : m_texture(std::move(pTexture))
-        , m_shaderProgram(std::move(pShaderProgram))
-    {
+    Sprite::Sprite(const std::shared_ptr<Texture2D>& pTexture, const std::string& initialSubTexture, const std::shared_ptr<ShaderProgram>& pShaderProgram)
+        : m_texture(pTexture), m_shaderProgram(pShaderProgram){
         const GLfloat vertexCoords[] = {
-            // X  Y     //1---2
-            0.f, 0.f,   //|  /|
-            0.f, 1.f,   //| / |
-            1.f, 1.f,   //|/  |
-            1.f, 0.f    //0---3
+            // X  Y     //      1---2
+            0.f, 0.f,   //0     |  /|
+            0.f, 1.f,   //1     | / |
+            1.f, 1.f,   //2     |/  |
+            1.f, 0.f    //3     0---3
         };
 
-        auto& subTexture = m_texture->getSubTexture2D(std::move(initialSubTexture));
+        auto& subTexture = m_texture->getSubTexture2D(initialSubTexture);
 
         const GLfloat textureCoords[] = {
-            // U                       //V
-            subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
-            subTexture.leftBottomUV.x, subTexture.rightTopUV.y,
-            subTexture.rightTopUV.x,   subTexture.rightTopUV.y,
-            subTexture.rightTopUV.x,   subTexture.leftBottomUV.y,
+            // U                         //V
+            subTexture.m_leftTopUV.x,    subTexture.m_rightBottomUV.y, 
+            subTexture.m_leftTopUV.x,    subTexture.m_leftTopUV.y, 
+            subTexture.m_rightBottomUV.x,subTexture.m_leftTopUV.y,
+            subTexture.m_rightBottomUV.x,subTexture.m_rightBottomUV.y,
         };
 
         const GLuint indices[] = {
@@ -56,7 +52,7 @@ namespace Renderer {
 
      //(RUS) Отрисовка спрайта
     //(ENG) Drawing a sprite
-    void Sprite::render(const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer) const
+    void Sprite::render(const glm::vec2& position, const glm::vec2& size, const float& rotation, const float& layer) 
     {
         m_shaderProgram->use();
 

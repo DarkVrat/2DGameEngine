@@ -25,7 +25,8 @@ namespace Renderer {
 			glm::ivec2 ms_bearing;  
 			GLuint ms_advance;
 
-			Character(GLuint T, glm::ivec2 S, glm::ivec2 B, GLuint A) :ms_textureID(T), ms_size(S), ms_bearing(B), ms_advance(A) {}
+			Character(const GLuint& texture, const glm::ivec2& size, const glm::ivec2& bearing, const GLuint& advance) 
+				:ms_textureID(texture), ms_size(size), ms_bearing(bearing), ms_advance(advance) {}
 			~Character() {glDeleteTextures(1, &ms_textureID);}
 		};
 
@@ -38,14 +39,14 @@ namespace Renderer {
 			glm::vec3 ms_color;
 		};
 	public:
-		static void createSymbols(std::shared_ptr<ShaderProgram> shader, int fontSize, std::string fontPath);
+		static void createSymbols(const std::shared_ptr<ShaderProgram>& shader, const int& fontSize, const std::string& fontPath);
 
-		static void renderText(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color);
+		static void renderText(const std::string& text, glm::vec3 position, const GLfloat& scale, const glm::vec3& color);
 
-		static void addTextInTimeBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time);
-		static void addTextInCountBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, int Count=1);
+		static void addTextInTimeBuffer(const std::string& text, const glm::vec3& position, const GLfloat& scale, const glm::vec3& color, const double& Time=1000);
+		static void addTextInCountBuffer(const std::string& text, const glm::vec3& position, const GLfloat& scale, const glm::vec3& color, const int& Count=1);
 		static void renderBuffer();
-		static void updateBuffer(double duration);
+		static void updateBuffer(const double& duration);
 
 		static void terminate();
 	private:

@@ -36,33 +36,33 @@ void ConfigManager::saveConfig() {
 
  //(RUS) установка размера окна
 //(ENG) setting the window size
-void ConfigManager::setWindowSize(glm::vec2 windowSize) {
-	m_configDoc.FindMember("window size")->value["width"].SetInt(windowSize.x);
-	m_configDoc.FindMember("window size")->value["height"].SetInt(windowSize.y);
+void ConfigManager::setWindowSize(const int& x , const int& y) {
+	m_configDoc.FindMember("window size")->value["width"].SetInt(x);
+	m_configDoc.FindMember("window size")->value["height"].SetInt(y);
 }
 
  //(RUS) установка номера монитора для вывода при полноэкранном режиме
 //(ENG) setting the monitor number to display in full screen mode
-void ConfigManager::setDisplayNumber(int monitorNumber) {
+void ConfigManager::setDisplayNumber(const unsigned& monitorNumber) {
 	m_configDoc.FindMember("display")->value.SetInt(monitorNumber); 
 }
 
 //(RUS) переключение полноэкранного режима
 //(ENG) toggle full screen mode
-void ConfigManager::setFullScreen(bool fullScreen) {
+void ConfigManager::setFullScreen(const bool& fullScreen) {
 	m_configDoc.FindMember("full screen")->value.SetBool(fullScreen);
 }
 
  //(RUS) установка общей громкости
 //(ENG) setting the overall volume
-void ConfigManager::setVolumeSounde(double volume) {
+void ConfigManager::setVolumeSounde(const double& volume) {
 	m_configDoc.FindMember("volume")->value.SetDouble(volume);
 	SOUND_MANAGER::updateGain();
 }
 
  //(RUS) установка громкости определённых элементов
 //(ENG) setting the volume of certain elements
-void ConfigManager::setVolumeSample(std::string name, double volume) {
+void ConfigManager::setVolumeSample(const std::string& name, const double& volume) {
 	for (auto& It : m_configDoc.FindMember("volumeSample")->value.GetArray()) {
 		if (It["name"].GetString() == name) {
 			It["volume"].SetDouble(volume);
@@ -73,10 +73,10 @@ void ConfigManager::setVolumeSample(std::string name, double volume) {
 
  //(RUS) получение размера окна
 //(ENG) getting window size
-glm::vec2 ConfigManager::getWindowSize() {
+glm::ivec2 ConfigManager::getWindowSize() {
 	int x = m_configDoc.FindMember("window size")->value["width"].GetInt();
 	int y = m_configDoc.FindMember("window size")->value["height"].GetInt();
-	return glm::vec2(x, y);
+	return glm::ivec2(x, y);
 }
 
  //(RUS) получение номера монитора
@@ -99,7 +99,7 @@ double ConfigManager::getVolumeSounde() {
 
  //(RUS) получение громкости определённых элементов
 //(ENG) getting the volume of certain elements
-double ConfigManager::getVolumeSample(std::string name) {
+double ConfigManager::getVolumeSample(const std::string& name) {
 	for (auto& It : m_configDoc.FindMember("volumeSample")->value.GetArray()) {
 		if (It["name"].GetString() == name) {
 			return It["volume"].GetDouble();

@@ -14,8 +14,8 @@
 namespace Audio {
 	class SoundEffectsPlayer{
 	public:
-		static std::shared_ptr<Audio::SoundEffectsPlayer> MakeSoundEffectPlayer(const std::string soundEffect, const std::string sampleName="default");
-		SoundEffectsPlayer(const std::string soundEffect, const std::string sampleName);
+		static std::shared_ptr<Audio::SoundEffectsPlayer> MakeSoundEffectPlayer(const std::string& soundEffect, const std::string& sampleName="default");
+		SoundEffectsPlayer(const std::string& soundEffect, const std::string& sampleName);
 		~SoundEffectsPlayer();
 
 		void play();
@@ -25,12 +25,12 @@ namespace Audio {
 
 		bool isStopped();
 
-		void setVec3Param(ALenum param, const glm::vec3& value);
+		void setVec3Param(const ALenum& param, const glm::vec3& value);
 		void setSampleSourse();
 
 		void updateGain();
 
-		glm::vec3 getVec3Param(ALenum param);
+		void getVec3Param(const ALenum& param, glm::vec3& value);
 
 		void deleteSourse();
 		void createEffect();

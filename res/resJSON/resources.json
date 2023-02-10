@@ -16,18 +16,97 @@
 		{
 			"name" : "Knight",
 			"filePath" : "res/textures/knight.png",
-			"subTextureWidth" : 86,
-			"subTextureHeight" : 86,
 			"subTextures" :  [
-				"Attack1_1", 
-				"Attack1_2", 
-				"Attack1_3", 
-				"Attack1_4",
-				"Attack1_5",
-				"Idle_1",
-				"Idle_2",
-				"Idle_3",
-				"Idle_4"
+			{
+				"name":"Attack1_1",
+				"left":0,
+				"top":172,
+				"right":86,
+				"bottom":86
+			},
+			{
+				"name":"Attack1_2",
+				"left":86,
+				"top":172,
+				"right":172,
+				"bottom":86
+			},
+			{
+				"name":"Attack1_3",
+				"left":172,
+				"top":172,
+				"right":258,
+				"bottom":86
+			},
+			{
+				"name":"Attack1_4",
+				"left":258,
+				"top":172,
+				"right":344,
+				"bottom":86
+			},
+			{
+				"name":"Attack1_5",
+				"left":344,
+				"top":172,
+				"right":430,
+				"bottom":86
+			},
+			{
+				"name":"Idle_1",
+				"left":0,
+				"top":86,
+				"right":86,
+				"bottom":0
+			},
+			{
+				"name":"Idle_2",
+				"left":86,
+				"top":86,
+				"right":172,
+				"bottom":0
+			},
+			{
+				"name":"Idle_3",
+				"left":172,
+				"top":86,
+				"right":258,
+				"bottom":0
+			},
+			{
+				"name":"Idle_4",
+				"left":258,
+				"top":86,
+				"right":344,
+				"bottom":0
+			}
+			]
+		},
+		{
+			"name" : "Menu",
+			"filePath" : "res/textures/forMenu.png",
+			"subTextures" :  [
+			{
+				"name":"Logo",
+				"left":0,
+				"top":160,
+				"right":180,
+				"bottom":80
+			},
+			{
+				"name":"Button",
+				"left":0,
+				"top":80,
+				"right":180,
+				"bottom":40
+			},
+			{
+				"name":"Button_select",
+				"left":0,
+				"top":40,
+				"right":180,
+				"bottom":0
+			}
 			]
 		}
 	],
@@ -72,6 +151,24 @@
 				{
 					"nameSprite":"S_Idle_4",
 					"subTexture":"Idle_4"
+				}
+			]
+		},
+		{
+			"textureAtlas" : "Menu",
+			"shader" : "spriteShader",
+			"createSprites" : [
+				{
+					"nameSprite":"S_Logo",
+					"subTexture":"Logo"
+				},
+				{
+					"nameSprite":"S_Button",
+					"subTexture":"Button"
+				},
+				{
+					"nameSprite":"S_Button_select",
+					"subTexture":"Button_select"
 				}
 			]
 		}

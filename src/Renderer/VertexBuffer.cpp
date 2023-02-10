@@ -19,13 +19,13 @@ namespace Renderer {
 		
 	}
 
-	void VertexBuffer::init(const void* data, const unsigned int size) {
+	void VertexBuffer::init(const void* data, const unsigned& size) {
 		glGenBuffers(1, &m_id); //создание вертексного буфера
 		glBindBuffer(GL_ARRAY_BUFFER, m_id); //связка к буферу
 		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW); //загрузка вертексного массива
 	}
 
-	void VertexBuffer::update(const void* data, const unsigned int size) const{
+	void VertexBuffer::update(const void* data, const unsigned& size) const{
 		glBindBuffer(GL_ARRAY_BUFFER, m_id);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	}

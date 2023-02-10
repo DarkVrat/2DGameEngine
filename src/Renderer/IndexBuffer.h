@@ -11,7 +11,7 @@ namespace Renderer {
 		IndexBuffer();
 		~IndexBuffer();
 
-		void init(const void* data, unsigned int count);
+		void init(const void* data, const unsigned& count);
 		void bind()const;
 		void unbind() const;
 

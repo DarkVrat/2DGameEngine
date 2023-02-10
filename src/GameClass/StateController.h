@@ -8,11 +8,11 @@
 
 class StateController {
 public:
-	StateController(const std::string initState);
+	StateController(const std::string& initState);
 
-	void setState(const std::string nextState);
-	void update(const double duration);
-	void render(glm::vec2& position, glm::vec2& size, float rotation, float layer);
+	void setState(const std::string& nextState);
+	void update(const double& duration);
+	void render(const glm::vec2& position, const glm::vec2& size, const float& rotation, const float& layer);
 
 private:
 	std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> m_sprites;

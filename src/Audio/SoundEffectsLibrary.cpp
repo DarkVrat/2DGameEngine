@@ -16,7 +16,7 @@ namespace Audio {
 	  //       и передача ID  буфера если звук уже загружен
 	 //(ENG) creating a buffer with sound from FileOfSound, recreating FileOfSound in the resource manager, 
 	//       and passing the buffer ID if the sound is already loaded
-	ALuint SoundEffectsLibrary::load(const std::string name){
+	ALuint SoundEffectsLibrary::load(const std::string& name){
 		if (m_SoundEffectBuffers.find(name) != m_SoundEffectBuffers.end())
 			return m_SoundEffectBuffers.at(name);
 
@@ -65,7 +65,7 @@ namespace Audio {
 
 	 //(RUS) Удаление звукового буфера
 	//(ENG) Deleting the sound buffer
-	void SoundEffectsLibrary::unLoad(const std::string name){
+	void SoundEffectsLibrary::unLoad(const std::string& name){
 		auto It = m_SoundEffectBuffers.find(name);
 		if (It != m_SoundEffectBuffers.end()) {
 			alDeleteBuffers(1, &It->second);

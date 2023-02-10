@@ -20,7 +20,7 @@
 GLFWwindow* PWindow = nullptr;
 
 void GLFWWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
-    CONFIG_MANAGER::setWindowSize(glm::vec2(width, height));
+    CONFIG_MANAGER::setWindowSize(width, height);
     RENDER_ENGINE::setViewport(width, height); 
     Control::MouseControl::setHeight(height);
     MAIN_GAME_CLASS::setProjectionMat(glm::vec2(width, height));
@@ -29,7 +29,7 @@ void GLFWMonitorCallBack(GLFWmonitor* monitor, int action) {
     if (action == GLFW_DISCONNECTED && CONFIG_MANAGER::getFullScreen()) {
         GLFWmonitor* new_monitor = RENDER_ENGINE::getMonitor();
         const GLFWvidmode* mode = glfwGetVideoMode(new_monitor);
-        CONFIG_MANAGER::setWindowSize(glm::vec2(mode->width, mode->height));
+        CONFIG_MANAGER::setWindowSize(mode->width, mode->height);
         glfwSetWindowMonitor(PWindow, new_monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     }
 }
@@ -50,7 +50,7 @@ int main(int argc, char** argv){
 
     CONFIG_MANAGER::loadConfig();
 
-    glm::vec2 window = CONFIG_MANAGER::getWindowSize();
+    glm::ivec2 window = CONFIG_MANAGER::getWindowSize();
     PWindow = glfwCreateWindow(window.x, window.y, "Game", RENDER_ENGINE::getMonitor(), NULL);
 
     if (!PWindow){
@@ -85,7 +85,7 @@ int main(int argc, char** argv){
     MOUSE::setHeight(window.y);
 
     RENDER_ENGINE::enableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    RENDER_ENGINE::setClearColor(0.2f, 0.2f, 0.2f, 1.f);
+    RENDER_ENGINE::setClearColor(50, 100, 50, 255);
     RENDER_ENGINE::setDetphTest(true);
        
     SOUND_DEVICE::init();
@@ -94,10 +94,8 @@ int main(int argc, char** argv){
     MAIN_GAME_CLASS::init();
     MAIN_GAME_CLASS::setProjectionMat(window);
 
-    
-
     double lastTime = glfwGetTime();
-    while (!glfwWindowShouldClose(PWindow)) {
+    while (!glfwWindowShouldClose(PWindow)) { 
         double currTime = glfwGetTime();
         double dura = (currTime - lastTime)*1000;
         lastTime = currTime;

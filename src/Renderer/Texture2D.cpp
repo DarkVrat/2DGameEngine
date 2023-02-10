@@ -3,7 +3,8 @@
 namespace Renderer {
 	 //(RUS) Создание текстуры, заполнение данных о текстуре
 	//(ENG) Creating a texture, filling in texture data
-	Texture2D::Texture2D(const GLuint width, const GLuint height, const unsigned char* data, const unsigned int channels, const GLenum filter, const GLenum wrapMode)  :m_widht(width), m_height(height) {
+	Texture2D::Texture2D(const GLuint& width, const GLuint& height, const unsigned char* data, const unsigned& channels, const GLenum& filter, const GLenum& wrapMode)  
+		:m_widht(width), m_height(height) {
 		switch (channels){
 		case 3:
 			m_mode = GL_RGB;
@@ -58,8 +59,14 @@ namespace Renderer {
 
 	 //(RUS) Добавление подтекстуры
 	//(ENG) Adding Subtexture
-	void Texture2D::addSubTexture(std::string name, const glm::vec2& _leftBottomUV, const glm::vec2& _rightTopUV) {
-		m_subTexture.emplace(std::move(name), SubTexture2D(_leftBottomUV, _rightTopUV));
+	void Texture2D::setSubTextureMap(const std::map<std::string, Renderer::Texture2D::SubTexture2D>& subTextures){
+		m_subTexture=subTextures;
+		for (auto& It : m_subTexture) {
+			It.second.m_leftTopUV.x /= m_widht;
+			It.second.m_leftTopUV.y /= m_height;
+			It.second.m_rightBottomUV.x /= m_widht;
+			It.second.m_rightBottomUV.y /= m_height;
+		}
 	}
 
 	 //(RUS) Получение подтекстуры

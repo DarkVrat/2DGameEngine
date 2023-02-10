@@ -15,8 +15,8 @@ namespace Audio {
 		static void init();
 		static void terminate();
 
-		static ALuint load(const std::string name);
-		static void unLoad(const std::string name);
+		static ALuint load(const std::string& name);
+		static void unLoad(const std::string& name);
 	private:
 		static std::map<std::string, ALuint> m_SoundEffectBuffers;
 	};

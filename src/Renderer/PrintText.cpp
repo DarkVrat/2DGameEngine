@@ -28,9 +28,9 @@ namespace Renderer {
 
      //(RUS) Создание символов, и установка параметров
     //(ENG) Creating Symbols and Setting Parameters
-    void PrintText::createSymbols(std::shared_ptr<ShaderProgram> shader, int fontSize, std::string fontPath) {
+    void PrintText::createSymbols(const std::shared_ptr<ShaderProgram>& shader, const int& fontSize, const std::string& fontPath) {
         m_fontSize = fontSize;
-        m_shader=std::move(shader);
+        m_shader=shader;
 
         FT_Library ft;
         if (FT_Init_FreeType(&ft))
@@ -76,7 +76,7 @@ namespace Renderer {
             std::shared_ptr<Character> character = std::make_shared<Character>( texture,
                                                                                 glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
                                                                                 glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-                                                                                static_cast<GLuint>(face->glyph->advance.x));
+                                                                                static_cast<GLuint>(face->glyph->advance.x >> 6));
 
             m_characters.insert(std::pair<GLchar, std::shared_ptr<Character>>(c, character));
         }
@@ -104,7 +104,7 @@ namespace Renderer {
 
      //(RUS) Отрисовка текста
     //(ENG) Text rendering
-    void PrintText::renderText(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color) {
+    void PrintText::renderText(const std::string& text, glm::vec3 position, const GLfloat& scale, const glm::vec3& color) {
         m_shader->use();
         m_shader->setVec3("textColor", color);
         m_shader->setFloat("layer", position.z);
@@ -135,7 +135,7 @@ namespace Renderer {
             m_vertexBuffer.unbind();
 
             glDrawElements(GL_TRIANGLES, m_indexBuffer.getCount(), GL_UNSIGNED_INT, nullptr);
-            position.x += (ch->ms_advance >> 6) * scale;
+            position.x += (ch->ms_advance) * scale;
         }
         m_vertexArray->unbind();
 
@@ -144,7 +144,7 @@ namespace Renderer {
 
      //(RUS) Добавление текста в буфер на какое то время
     //(ENG) Adding text to the buffer for a while
-    void PrintText::addTextInTimeBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, double Time){
+    void PrintText::addTextInTimeBuffer(const std::string& text, const glm::vec3& position, const GLfloat& scale, const glm::vec3& color, const double& Time){
         std::vector<std::pair<Text, double>>::iterator It;
         for (It = m_timeBufferText.begin(); It != m_timeBufferText.end(); It++) {
             if (It->first.ms_text == text && It->first.ms_position == position) {
@@ -163,7 +163,7 @@ namespace Renderer {
 
      //(RUS) Добавление текста в буфер на определённое количество отрисовок
     //(ENG) Adding text to the buffer for a certain number of renders
-    void PrintText::addTextInCountBuffer(std::string text, glm::vec3 position, GLfloat scale, glm::vec3 color, int Count){
+    void PrintText::addTextInCountBuffer(const std::string& text, const glm::vec3& position, const GLfloat& scale, const glm::vec3& color, const int& Count){
         std::vector<std::pair<Text, int>>::iterator It;
         for (It = m_countBufferText.begin(); It != m_countBufferText.end(); It++) {
             if (It->first.ms_text == text && It->first.ms_position == position) {
@@ -187,20 +187,20 @@ namespace Renderer {
             renderText(It.first.ms_text, It.first.ms_position, It.first.ms_scale, It.first.ms_color);
         }
         for (int i = m_countBufferText.size()-1; i >= 0; i--) {
-            Text t = m_countBufferText.at(i).first;
+            Text t = m_countBufferText[i].first;
             renderText(t.ms_text, t.ms_position, t.ms_scale, t.ms_color);
-            m_countBufferText.at(i).second--;
-            if (m_countBufferText.at(i).second < 1)
+            m_countBufferText[i].second--;
+            if (m_countBufferText[i].second < 1)
                 m_countBufferText.erase(m_countBufferText.begin() + i);
         }
     }
 
      //(RUS) обновление Time буфера, возможно удаление
     //(ENG) updating Time buffer, possibly deleting
-    void PrintText::updateBuffer(double duration){
+    void PrintText::updateBuffer(const double& duration){
         for (int i = m_timeBufferText.size() - 1; i >= 0; i--) {
-            m_timeBufferText.at(i).second -= duration;
-            if (m_timeBufferText.at(i).second < 0.0)
+            m_timeBufferText[i].second -= duration;
+            if (m_timeBufferText[i].second < 0.0)
                 m_timeBufferText.erase(m_timeBufferText.begin()+i);
         }
     }

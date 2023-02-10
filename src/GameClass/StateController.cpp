@@ -2,7 +2,7 @@
 
  //(RUS) Создание, и инициализация первого состояния
 //(ENG) Creation and initialization of the first state
-StateController::StateController(const std::string initState){
+StateController::StateController(const std::string& initState){
 	m_nameState=initState;
 	m_state = RESOURCE_MANAGER::getStateAnimation(m_nameState);
 	m_bufferState = m_state->getNextStateName();
@@ -20,7 +20,7 @@ StateController::StateController(const std::string initState){
   //       If called because of the end of frames in the animation, it will either start over or switch to the one in the buffer.
  //        If called before the end of the animation, it is checked whether it is possible to go to nameState, 
 //         and if the current one cannot be interrupted, then it will go to the buffer, otherwise it switches
-void StateController::setState(const std::string nextState){
+void StateController::setState(const std::string& nextState){
 	if (m_indexFrame >= m_sprites.size()) {
 		if (nextState == m_nameState) {
 			m_indexFrame = 0;
@@ -55,7 +55,7 @@ void StateController::setState(const std::string nextState){
 
  //(RUS) Обновление спрайта, смена кадра
 //(ENG) Sprite update, frame change
-void StateController::update(double duration){
+void StateController::update(const double& duration){
 	m_time += duration;
 	while (m_time > m_durationFrame) {
 		m_time -= m_durationFrame;
@@ -68,6 +68,6 @@ void StateController::update(double duration){
 
  //(RUS) Рендеринг спрайта
 //(ENG) Sprite rendering
-void StateController::render(glm::vec2& position, glm::vec2& size, float rotation, float layer){
+void StateController::render(const glm::vec2& position, const glm::vec2& size, const float& rotation, const float& layer){
 	m_sprites[m_indexFrame].first->render(position, size, rotation, layer);
 }

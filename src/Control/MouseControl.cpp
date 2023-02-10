@@ -21,42 +21,42 @@ namespace Control {
 	 //(RUS) установка GFLWwindow и высота окна
 	//(ENG) setting GFLWwindow and window height
 	void MouseControl::setWindow(GLFWwindow* pWindow) { m_PWindow = pWindow; }
-	void MouseControl::setHeight(double height) { m_height = height - 1; }
+	void MouseControl::setHeight(const double& height) { m_height = height - 1; }
 
 	 //(RUS) установка ивента нажатой кнопок
 	//(ENG) setting the event of the pressed button
 	void MouseControl::setButton(GLFWwindow* pWindow, int button, int action, int mods){
 		if (action == GLFW_REPEAT) { 
-			m_keys[button] = E_BUTTON_ACTION::Clamped; 
+			m_keys[button] = E_BUTTON_ACTION::CLAMPED; 
 			return; 
 		}
 		if (action == GLFW_PRESS) {
-			m_keys[button] = E_BUTTON_ACTION::Pressed;
+			m_keys[button] = E_BUTTON_ACTION::PRESSED;
 			return;
 		}
 		if (action == GLFW_RELEASE) {
-			m_keys[button] = E_BUTTON_ACTION::Released;
+			m_keys[button] = E_BUTTON_ACTION::RELEASED;
 			return;
 		}
 	}
 
 	 //(RUS) проверка ивента кнопок
 	//(ENG) button event check
-	bool MouseControl::ifPressed(const int key) {
-		if (m_keys[key] == E_BUTTON_ACTION::Pressed) {
-			m_keys[key] = E_BUTTON_ACTION::Clamped;
+	bool MouseControl::ifPressed(const int& key) {
+		if (m_keys[key] == E_BUTTON_ACTION::PRESSED) {
+			m_keys[key] = E_BUTTON_ACTION::CLAMPED;
 			return true;
 		}
 		return false;
 	}
-	bool MouseControl::ifClamped(const int key) {
-		if (m_keys[key] == E_BUTTON_ACTION::Pressed || m_keys[key] == E_BUTTON_ACTION::Clamped)
+	bool MouseControl::ifClamped(const int& key) {
+		if (m_keys[key] == E_BUTTON_ACTION::PRESSED || m_keys[key] == E_BUTTON_ACTION::CLAMPED)
 			return true;
 		return false;
 	}
-	bool MouseControl::ifReleased(const int key) {
-		if (m_keys[key] == E_BUTTON_ACTION::Released) {
-			m_keys[key] = E_BUTTON_ACTION::NotClamped;
+	bool MouseControl::ifReleased(const int& key) {
+		if (m_keys[key] == E_BUTTON_ACTION::RELEASED) {
+			m_keys[key] = E_BUTTON_ACTION::NOT_CLAMPED;
 			return true;
 		}
 		return false;
@@ -75,6 +75,6 @@ namespace Control {
 		m_height = 0;
 		m_mousePosition = glm::vec2(0, 0);
 		m_scroll = glm::vec2(0, 0);
-		m_keys.fill(E_BUTTON_ACTION::NotClamped);
+		m_keys.fill(E_BUTTON_ACTION::NOT_CLAMPED);
 	}
 }

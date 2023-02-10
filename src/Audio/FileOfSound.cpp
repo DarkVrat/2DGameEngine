@@ -7,7 +7,7 @@
 namespace Audio{ 
 	 //(RUS) загрузка и проверка аудиофайла, определение параметров
 	//(ENG) loading and checking an audio file, defining parameters
-	FileOfSound::FileOfSound(std::string filePath){
+	FileOfSound::FileOfSound(const std::string& filePath){
 		m_fileName =  filePath;
 		 
 		m_sndFile = sf_open((RESOURCE_MANAGER::getExecutablePath()+filePath).c_str(), SFM_READ, &m_sfInfo);

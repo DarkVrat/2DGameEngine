@@ -20,13 +20,13 @@ namespace Renderer {
 
 	 //(RUS) Установка цвета фона
 	//(ENG) Setting the background color
-	void RenderEngine::setClearColor(float r, float g, float b, float a){
-		glClearColor(r, g, b, a);
+	void RenderEngine::setClearColor(const int& r, const int& g, const int& b, const int& a){
+		glClearColor(r/255.0, g/255.0, b/255.0, a/255.0);
 	}
 
 	 //(RUS) Включение/отключение глубины для отрисовки
 	//(ENG) Enable/disable depth for rendering
-	void RenderEngine::setDetphTest(bool flag){
+	void RenderEngine::setDetphTest(const bool& flag){
 		if (flag) { glEnable(GL_DEPTH_TEST); }
 		else { glDisable(GL_DEPTH_TEST); }
 	}
@@ -39,13 +39,13 @@ namespace Renderer {
 
 	 //(RUS) Установка ширины и высоты области просмотра
 	//(ENG) Setting Viewport Width and Height
-	void RenderEngine::setViewport(unsigned int width, unsigned int height, unsigned intleftOffset, unsigned int bottomOffset){
+	void RenderEngine::setViewport(const unsigned& width, const unsigned& height, const unsigned& intleftOffset, const unsigned& bottomOffset){
 		glViewport(intleftOffset, bottomOffset, width, height);
 	}
 
 	 //(RUS) Установка параметров смешивания
 	//(ENG) Setting blending options
-	void RenderEngine::enableBlend(GLenum sfactor, GLenum dfactor){
+	void RenderEngine::enableBlend(const GLenum& sfactor, const GLenum& dfactor){
 		glEnable(GL_BLEND);
 		glBlendFunc(sfactor, dfactor);
 	}

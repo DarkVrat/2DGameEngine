@@ -14,9 +14,9 @@
 namespace Renderer{
 	class StateAnimation {
 	public:
-		StateAnimation(std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> frames, std::vector<std::string> sources, std::string nextState, bool uninterrupted);
+		StateAnimation(const std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>>& frames, const std::vector<std::string>& sources, const std::string& nextState, const bool& uninterrupted);
 
-		bool canChange(const std::string stateName);
+		bool canChange(const std::string& stateName);
 
 		bool getUninterrupted();
 		std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> getFrames();

@@ -87,7 +87,7 @@ std::shared_ptr<Renderer::ShaderProgram>  ResourceManager::getShader(const std::
   //-------------------------------Texture-----------------------------------//
  //(RUS) Загрузка текстуры
 //(ENG) Loading a textures
-void ResourceManager::loadTexture(std::string textureName, std::string texturePatn, std::vector<std::string> subTextures, const unsigned subWidth, const unsigned subHeigth) {
+void ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePatn, const std::map<std::string, Renderer::Texture2D::SubTexture2D>& subTextures) {
 	int channels, widht, height;
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* pixels=stbi_load(std::string(m_path + "/" + texturePatn).c_str(), &widht, &height, &channels, 0);
@@ -99,27 +99,8 @@ void ResourceManager::loadTexture(std::string textureName, std::string texturePa
 	std::shared_ptr<Renderer::Texture2D> newTexture = std::make_shared<Renderer::Texture2D>(widht, height,pixels, channels,GL_NEAREST,GL_CLAMP_TO_EDGE);
 	stbi_image_free(pixels);
 
-	if (newTexture) {
-		const unsigned int textureWidth = newTexture->getWidth();	
-		const unsigned int textureHeight = newTexture->getHeight(); 
-		unsigned int currentTexOffsetX = 0;
-		unsigned int currentTexOffsetY = textureHeight;
-
-		for (auto& currentSubTexName : subTextures) {
-			glm::vec2 leftBottomUV(static_cast<float>(currentTexOffsetX + 0.01f) / textureWidth, static_cast<float>(currentTexOffsetY - subHeigth + 0.01f) / textureHeight);
-			glm::vec2 rightTopUV(static_cast<float>(currentTexOffsetX + subHeigth - 0.01f) / textureWidth, static_cast<float>(currentTexOffsetY - 0.01f) / textureHeight);
-
-			newTexture->addSubTexture(std::move(currentSubTexName), leftBottomUV, rightTopUV);
-
-			currentTexOffsetX += subWidth; 
-
-			if (currentTexOffsetX >= textureWidth) {
-				currentTexOffsetX = 0;
-				currentTexOffsetY -= subHeigth;
-			}
-		}
-	}
-
+	newTexture->setSubTextureMap(subTextures);
+	 
 	m_textures.emplace(textureName, newTexture);
 }
 
@@ -160,7 +141,7 @@ std::shared_ptr<Renderer::Sprite> ResourceManager::getSprite(const std::string& 
   //-------------------------------StateAnimation------------------------------------//
  //(RUS) Загрузка StateAnimation
 //(ENG) Loading a StateAnimation
-void ResourceManager::loadStateAnimation(const std::string& stateName, std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> frames, std::vector<std::string> sources, std::string nextState, bool uninterrupted) {
+void ResourceManager::loadStateAnimation(const std::string& stateName, const  std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>>& frames, const std::vector<std::string>& sources, const std::string& nextState, const bool& uninterrupted) {
 	m_stateAnimation.emplace(stateName, std::make_shared<Renderer::StateAnimation>(frames, sources,nextState, uninterrupted));
 }
 
@@ -243,17 +224,19 @@ bool ResourceManager::loadJSONResurces(const std::string& JSONPath) {
 		for (const auto& currentTextureAtlases : textureAtlasesIt->value.GetArray()) {
 			const std::string name = currentTextureAtlases["name"].GetString();
 			const std::string filePath = currentTextureAtlases["filePath"].GetString();
-			const unsigned int subTextureWidth = currentTextureAtlases["subTextureWidth"].GetUint();
-			const unsigned int subTextureHeight = currentTextureAtlases["subTextureHeight"].GetUint();
 
 			const auto subTexturesArray = currentTextureAtlases["subTextures"].GetArray();
-			std::vector<std::string> subTexturesVector;
-			subTexturesVector.reserve(subTexturesArray.Size());
+			std::map<std::string, Renderer::Texture2D::SubTexture2D> subTexturesMap;
 			for (const auto& currentSubTexture : subTexturesArray) {
-				subTexturesVector.emplace_back(currentSubTexture.GetString());
+				Renderer::Texture2D::SubTexture2D sub;
+				sub.m_leftTopUV.x = currentSubTexture["left"].GetInt()-0.1f;
+				sub.m_leftTopUV.y = currentSubTexture["top"].GetInt() +0.1f;
+				sub.m_rightBottomUV.x = currentSubTexture["right"].GetInt() +0.1f;
+				sub.m_rightBottomUV.y = currentSubTexture["bottom"].GetInt()-0.1f;
+				subTexturesMap.emplace(currentSubTexture["name"].GetString(), sub);
 			}
-
-			loadTexture(name, filePath, std::move(subTexturesVector), subTextureWidth, subTextureHeight);
+			
+			loadTexture(name, filePath, std::move(subTexturesMap));
 		}
 	}
 

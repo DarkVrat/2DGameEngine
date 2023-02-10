@@ -10,7 +10,7 @@
 namespace Audio {
 	class FileOfSound {
 	public:
-		FileOfSound(std::string filePath); 
+		FileOfSound(const std::string& filePath);
 
 		SNDFILE* getSndFile();
 		SF_INFO getSfInfo();

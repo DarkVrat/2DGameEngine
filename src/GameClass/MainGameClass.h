@@ -40,4 +40,5 @@ private:
 	static E_GAME_STATE m_GameState;
 	static double m_time;
 	static int m_fps;
+	static int size;
 };

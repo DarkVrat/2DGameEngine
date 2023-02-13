@@ -55,6 +55,9 @@ add_executable(${PROJECT}
 	src/GameClass/GameObject.h
 	src/GameClass/StateController.cpp
 	src/GameClass/StateController.h
+	
+	src/UI/Button.cpp
+	src/UI/Button.h
 )
 
 target_compile_features(${PROJECT} PUBLIC cxx_std_17)

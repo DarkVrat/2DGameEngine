@@ -16,6 +16,7 @@ MainGameClass::E_GAME_STATE MainGameClass::m_GameState;
 glm::ivec2 MainGameClass::m_window;
 double MainGameClass::m_time;
 int MainGameClass::m_fps;
+int MainGameClass::size;
 
  //(RUS) первоначальная инициализация переменных
 //(ENG) initial initialization of variables
@@ -52,6 +53,9 @@ void MainGameClass::render() {
         m_vectorGameObject[i]->render();
     }
     PRINT_TEXT::renderBuffer();
+    PRINT_TEXT::renderText("Изменить размер можно колёсиком мыши, текущий размер "+std::to_string(size), glm::vec3(20, 850, 10), 0.25, glm::vec3(1, 1, 1));
+    PRINT_TEXT::renderTextWrapping("Этот текст нужен для проверки работоспособности переноса, выровняного по левому краю", glm::vec3(100,300,10),0.5, glm::vec3(1, 1, 1), size, LEFT);
+    PRINT_TEXT::renderTextWrapping("Этот текст нужен для проверки работоспособности переноса, выровняного по центру", glm::vec3(100, 700, 10), 0.5, glm::vec3(1, 1, 1), size, CENTR);
 }
 
  //(RUS) сортировка объектов по их layer, для отрисовки
@@ -81,7 +85,8 @@ bool MainGameClass::init() {
  //(RUS) Обработка нажатий
 //(ENG) Handling clicks
 void MainGameClass::events(){
-
+    size += MOUSE::getScroll().y * 10;
+    if (size < 0)size = 0;
 }
 
  //(RUS) Установка матрицы проекции для отрисовки

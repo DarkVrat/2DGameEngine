@@ -142,6 +142,52 @@ namespace Renderer {
         glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
+    void PrintText::renderTextWrapping(const std::string& text, glm::vec3 position, const GLfloat& scale, const glm::vec3& color, const int& size, const bool& centr) {
+        std::map<int, int> words;
+        int sizeWord = 0;
+        int sizeSpace = m_characters[' ']->ms_advance * scale;
+        for (int i = 0; i < text.length(); i++) {
+            if (text[i] != ' ') {
+                sizeWord += m_characters[text[i]]->ms_advance * scale;
+            }
+            else {
+                words.emplace(i, sizeWord + sizeSpace);
+                sizeWord = 0;
+            }
+            if (i == text.length() - 1) {
+                words.emplace(i + 1, sizeWord + sizeSpace);
+                sizeWord = 0;
+            }
+        }
+
+        int sizeText = 0;
+        int lastIndex = 0;
+        int lastTextRender = 0;
+        for (auto word : words) {
+            if (sizeText + word.second > size && sizeText != 0) {
+                if (!centr) {
+                    renderText(text.substr(lastTextRender, lastIndex - lastTextRender), position, scale, color);
+                }
+                else {
+                    renderText(text.substr(lastTextRender, lastIndex - lastTextRender), glm::vec3(position.x + (size - sizeText) / 2, position.y, position.z), scale, color);
+                }
+                position.y -= m_fontSize * scale;
+                lastTextRender = lastIndex + 1;
+                sizeText = word.second;
+            }
+            else {
+                sizeText += word.second;
+            }
+            lastIndex = word.first;
+        }
+        if (!centr) {
+            renderText(text.substr(lastTextRender, lastIndex - lastTextRender), position, scale, color);
+        }
+        else {
+            renderText(text.substr(lastTextRender, lastIndex - lastTextRender), glm::vec3(position.x + (size - sizeText) / 2, position.y, position.z), scale, color);
+        }
+    }
+
      //(RUS) Добавление текста в буфер на какое то время
     //(ENG) Adding text to the buffer for a while
     void PrintText::addTextInTimeBuffer(const std::string& text, const glm::vec3& position, const GLfloat& scale, const glm::vec3& color, const double& Time){

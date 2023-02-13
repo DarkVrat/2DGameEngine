@@ -11,6 +11,8 @@
 #include "IndexBuffer.h"
 
 #define PRINT_TEXT Renderer::PrintText
+#define CENTR true
+#define LEFT false
 
  //(RUS) Класс для рендеринга текста
 //(ENG) Text rendering class
@@ -42,6 +44,8 @@ namespace Renderer {
 		static void createSymbols(const std::shared_ptr<ShaderProgram>& shader, const int& fontSize, const std::string& fontPath);
 
 		static void renderText(const std::string& text, glm::vec3 position, const GLfloat& scale, const glm::vec3& color);
+
+		static void renderTextWrapping(const std::string& text, glm::vec3 position, const GLfloat& scale, const glm::vec3& color, const int& size, const bool& centr = LEFT);
 
 		static void addTextInTimeBuffer(const std::string& text, const glm::vec3& position, const GLfloat& scale, const glm::vec3& color, const double& Time=1000);
 		static void addTextInCountBuffer(const std::string& text, const glm::vec3& position, const GLfloat& scale, const glm::vec3& color, const int& Count=1);

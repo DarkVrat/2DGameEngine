@@ -12,6 +12,13 @@
 		}
 	],
 	
+	"texture":[
+		{
+			"name" : "font",
+			"filePath" : "res/textures/font.png"
+		}
+	],
+	
 	"textureAtlases" : [
 		{
 			"name" : "Knight",
@@ -260,7 +267,7 @@
 	
 	"textSettings":{
 		"shader":"textShader",
-		"fontSize":96,
-		"fontPath":"/res/Tkachevica.ttf"
+		"fontPath":"/res/Tkachevica.ttf",
+		"textureFont":"font"
 	}
 }

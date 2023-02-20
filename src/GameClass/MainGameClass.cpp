@@ -16,13 +16,13 @@ MainGameClass::E_GAME_STATE MainGameClass::m_GameState;
 glm::ivec2 MainGameClass::m_window;
 double MainGameClass::m_time;
 int MainGameClass::m_fps;
-int MainGameClass::size;
+int MainGameClass::size=700;
 
  //(RUS) первоначальная инициализация переменных
 //(ENG) initial initialization of variables
 MainGameClass::MainGameClass() {
     m_window=glm::ivec2(0, 0);
-    m_GameState=E_GAME_STATE::MAIN_MENU;
+    m_GameState=E_GAME_STATE::MAIN_MENU; 
     m_fps=0;
     m_time = 0.0;
 }
@@ -37,7 +37,7 @@ void MainGameClass::update(const double& duration){
     m_fps++;
     m_time += duration;
     if (m_time > 1000) {
-        PRINT_TEXT::addTextInTimeBuffer(std::to_string(m_fps), glm::vec3(0, 0, 100), 0.25, glm::vec3(1, 1, 1), 1000);
+        PRINT_TEXT::printTextTime(PRINT_TEXT::Text(std::to_string(m_fps), glm::vec3(0, 0, 10), 32, glm::vec3(1, 1, 1)),1000);
         m_fps = 0;
         m_time -= 1000;
     }
@@ -49,13 +49,14 @@ void MainGameClass::update(const double& duration){
  //(RUS) отрисовка объектов и текста
 //(ENG) drawing objects and text
 void MainGameClass::render() {
+
     for (int i = 0; i < m_vectorGameObject.size(); i++) {
         m_vectorGameObject[i]->render();
     }
+    PRINT_TEXT::printText(PRINT_TEXT::Text("Изменить размер можно колёсиком мыши, текущий размер "+std::to_string(size), glm::vec3(20, 850, 10), 32, glm::vec3(1, 1, 1)));
+    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по левому краю,", glm::vec3(100,300,12),32, glm::vec3(1, 1, 1)), size, LEFT);
+    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по центру", glm::vec3(100, 700, 13), 32, glm::vec3(1, 1, 1)), size, CENTR);
     PRINT_TEXT::renderBuffer();
-    PRINT_TEXT::renderText("Изменить размер можно колёсиком мыши, текущий размер "+std::to_string(size), glm::vec3(20, 850, 10), 0.25, glm::vec3(1, 1, 1));
-    PRINT_TEXT::renderTextWrapping("Этот текст нужен для проверки работоспособности переноса, выровняного по левому краю", glm::vec3(100,300,10),0.5, glm::vec3(1, 1, 1), size, LEFT);
-    PRINT_TEXT::renderTextWrapping("Этот текст нужен для проверки работоспособности переноса, выровняного по центру", glm::vec3(100, 700, 10), 0.5, glm::vec3(1, 1, 1), size, CENTR);
 }
 
  //(RUS) сортировка объектов по их layer, для отрисовки

@@ -87,6 +87,20 @@ std::shared_ptr<Renderer::ShaderProgram>  ResourceManager::getShader(const std::
   //-------------------------------Texture-----------------------------------//
  //(RUS) Загрузка текстуры
 //(ENG) Loading a textures
+void ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePatn) {
+	int channels, widht, height;
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* pixels = stbi_load(std::string(m_path + "/" + texturePatn).c_str(), &widht, &height, &channels, 0);
+	if (!pixels) {
+		std::cerr << "(!) ERROR TEXTUR LOAD" << textureName << std::endl;
+		return;
+	}
+
+	m_textures.emplace(textureName, std::make_shared<Renderer::Texture2D>(widht, height, pixels, channels, GL_NEAREST, GL_CLAMP_TO_EDGE));
+
+	stbi_image_free(pixels);
+}
+
 void ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePatn, const std::map<std::string, Renderer::Texture2D::SubTexture2D>& subTextures) {
 	int channels, widht, height;
 	stbi_set_flip_vertically_on_load(true);
@@ -219,6 +233,16 @@ bool ResourceManager::loadJSONResurces(const std::string& JSONPath) {
 		}
 	}
 
+	auto textureIt = JSONDoc.FindMember("texture");
+	if (textureIt != JSONDoc.MemberEnd()) {
+		for (const auto& currentTexture : textureIt->value.GetArray()) {
+			const std::string name = currentTexture["name"].GetString();
+			const std::string filePath = currentTexture["filePath"].GetString();
+
+			loadTexture(name, filePath);
+		}
+	}
+
 	auto textureAtlasesIt = JSONDoc.FindMember("textureAtlases");
 	if (textureAtlasesIt != JSONDoc.MemberEnd()) {
 		for (const auto& currentTextureAtlases : textureAtlasesIt->value.GetArray()) {
@@ -320,7 +344,7 @@ bool ResourceManager::loadJSONResurces(const std::string& JSONPath) {
 	}
 
 	auto& textSettings = JSONDoc.FindMember("textSettings")->value;
-	PRINT_TEXT::createSymbols(getShader(textSettings["shader"].GetString()), textSettings["fontSize"].GetInt(), textSettings["fontPath"].GetString());
+	PRINT_TEXT::init(getShader(textSettings["shader"].GetString()), textSettings["fontPath"].GetString(), getTexture(textSettings["textureFont"].GetString()));
 
 	return true;
 }

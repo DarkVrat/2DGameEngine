@@ -37,6 +37,7 @@ public:
 	static void unloadAllRes();
 
 	static void loadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
+	static void loadTexture(const std::string& textureName, const std::string& texturePatn);
 	static void loadTexture(const std::string& textureName, const std::string& texturePatn, const std::map<std::string, Renderer::Texture2D::SubTexture2D>& subTextures);
 	static void loadSprite(const std::string& spriteName, const std::string& textureName, const std::string& shaderName, const std::string& subTextureName = "Default");
 	static void loadStateAnimation(const std::string& stateName, const  std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>>& frames, const std::vector<std::string>& sources, const std::string& nextState, const bool& uninterrupted);

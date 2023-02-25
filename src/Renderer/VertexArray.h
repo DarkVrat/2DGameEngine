@@ -2,7 +2,6 @@
 
 #include <glad/glad.h>
 #include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
 
 namespace Renderer {
 	class VertexArray {
@@ -13,13 +12,12 @@ namespace Renderer {
 		VertexArray& operator=(VertexArray&& vertexArray) noexcept;
 		VertexArray(VertexArray&& indexArray) noexcept;
 
-		void addBuffer(const VertexBuffer& vertexBuffer, const VertexBufferLayout& Layout);
+		void addBuffer(const VertexBuffer& vertexBuffer, GLuint layoutID, GLuint size, bool divisor=false);
 		void bind() const;
 		void unbind() const;
 
 	private:
 		GLuint m_id=0;
-		size_t m_elementsCount =0;
 	};
 
 }

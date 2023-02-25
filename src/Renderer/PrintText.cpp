@@ -3,6 +3,7 @@
 #include "ft2build.h"
 #include <GLFW/glfw3.h>
 #include "../Managers/ResourceManager.h"
+#include "../Renderer/RenderEngine.h"
 #include FT_FREETYPE_H
 
 std::vector<uint8_t> Renderer::PrintText::m_advanceChar;
@@ -10,14 +11,13 @@ std::shared_ptr<Renderer::Texture2D> Renderer::PrintText::m_texture;
 std::vector<std::pair<Renderer::PrintText::Text, double>> Renderer::PrintText::m_timeBufferText;
 std::vector<Renderer::PrintText::Text> Renderer::PrintText::m_bufferText;
 std::shared_ptr<Renderer::ShaderProgram> Renderer::PrintText::m_shader;
-Renderer::VertexArray* Renderer::PrintText::m_vertexArray;
-Renderer::VertexBuffer Renderer::PrintText::m_vertexBuffer;
-Renderer::IndexBuffer Renderer::PrintText::m_indexBuffer;
-int Renderer::PrintText::m_fontSize=32;
 
-static double m_duration=0;
-static double shaderset=0;
-static double rendertext = 0;
+std::shared_ptr<Renderer::VertexArray> Renderer::PrintText::m_VAO;
+Renderer::VertexBuffer Renderer::PrintText::m_PositionVBO;
+Renderer::VertexBuffer Renderer::PrintText::m_ColorVBO;
+Renderer::VertexBuffer Renderer::PrintText::m_TextureVBO;
+
+float Renderer::PrintText::m_fontSize=32.f;
 
 namespace Renderer {
      //(RUS) Создание и заполнение начальными параметрами
@@ -25,10 +25,9 @@ namespace Renderer {
     PrintText::PrintText() {
         m_advanceChar.clear();
         m_timeBufferText.clear();
-        m_vertexArray=nullptr;
         m_texture = nullptr;
         m_shader = nullptr;
-    }
+    } 
 
      //(RUS) Создание символов, и установка параметров
     //(ENG) Creating Symbols and Setting Parameters
@@ -60,28 +59,43 @@ namespace Renderer {
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
 
-        m_vertexArray = new VertexArray();
-
-        VertexBufferLayout VBL;
-        VBL.addElementLayoutFloat(4, false);
-        m_vertexBuffer.init(NULL, sizeof(GLfloat) * 6 * 4);
-        m_vertexArray->bind();
-        m_vertexArray->addBuffer(m_vertexBuffer, VBL);
-        m_vertexBuffer.unbind();
-        m_vertexArray->unbind();
-
-        const GLuint indices[] = {
-            0, 1, 2,
-            2, 3, 0
+        float vertex[] = {
+            0.f, 0.f,   // 0    1-----2
+            0.f, 1.f,   // 1    |    /|
+            1.f, 1.f,   // 2    |   / |
+                        //      |  /  |
+            1.f, 1.f,   // 2    | /   |
+            1.f, 0.f,   // 3    |/    |
+            0.f, 0.f    // 0    0-----3
         };
 
-        m_indexBuffer.init(indices, 6);
+        m_VAO = std::make_shared<VertexArray>();
+        m_VAO->bind();
+        
+        VertexBuffer vertexVBO;
+        vertexVBO.init(vertex, sizeof(vertex));
+        m_VAO->addBuffer(vertexVBO, 0, 2);
+
+        m_PositionVBO.init(NULL, NULL);
+        m_VAO->addBuffer(m_PositionVBO, 1, 4, true);
+
+        m_ColorVBO.init(NULL, NULL);
+        m_VAO->addBuffer(m_ColorVBO, 2, 3, true);
+
+        m_TextureVBO.init(NULL, NULL);
+        m_VAO->addBuffer(m_TextureVBO, 3, 4, true);
+
+        m_TextureVBO.unbind();
+        m_VAO->unbind();
     }
 
-    void PrintText::printTextWrappingTime( Text text, const int& size, const bool& centr, const double& Time) {
+     //(RUS) Создание текста с переносом, выравняным по левому краю или центру
+    //(ENG) Create text with hyphenation aligned to the left or center
+    void PrintText::printTextWrapping( Text text, const int& size, const bool& centr, const double& Time) {
         std::map<int, int> words;
         int sizeWord = 0;
         int sizeSpace = m_advanceChar[(uint8_t)' '] * text.ms_scale / 32.0;
+
         for (int i = 0; i < text.ms_text.length(); i++) {
             if (text.ms_text[i] != ' ') {
                 sizeWord += m_advanceChar[(uint8_t)text.ms_text[i]] * text.ms_scale / 32.0;
@@ -99,21 +113,22 @@ namespace Renderer {
         int sizeText = 0;
         int lastIndex = 0;
         int lastTextRender = 0;
+
         for (auto& word : words) {
             if (sizeText + word.second > size && sizeText != 0) {
                 if (!centr) {
-                    printTextTime(Text( text.ms_text.substr(lastTextRender, lastIndex - lastTextRender), 
-                                        text.ms_position, 
-                                        text.ms_scale, 
-                                        text.ms_color), 
-                                  Time);
+                    printText(Text( text.ms_text.substr(lastTextRender, lastIndex - lastTextRender), 
+                                    text.ms_position, 
+                                    text.ms_scale, 
+                                    text.ms_color), 
+                              Time);
                 }
                 else { 
-                    printTextTime(Text( text.ms_text.substr(lastTextRender, lastIndex - lastTextRender), 
-                                        glm::vec3(text.ms_position.x + (size - sizeText) / 2, text.ms_position.y, text.ms_position.z), 
-                                        text.ms_scale, 
-                                        text.ms_color),
-                                  Time);
+                    printText(Text( text.ms_text.substr(lastTextRender, lastIndex - lastTextRender), 
+                                    glm::vec3(text.ms_position.x + (size - sizeText) / 2, text.ms_position.y, text.ms_position.z), 
+                                    text.ms_scale, 
+                                    text.ms_color),
+                              Time);
                 }
                 text.ms_position.y -= text.ms_scale;
                 lastTextRender = lastIndex + 1;
@@ -124,146 +139,44 @@ namespace Renderer {
             }
             lastIndex = word.first;
         }
+
         if (!centr) {
-            printTextTime(Text(text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
-                text.ms_position,
-                text.ms_scale,
-                text.ms_color),
-                Time);
+            printText(Text( text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
+                            text.ms_position,
+                            text.ms_scale,
+                            text.ms_color),
+                      Time);
         }
         else {
-            printTextTime(Text(text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
-                glm::vec3(text.ms_position.x + (size - sizeText) / 2, text.ms_position.y, text.ms_position.z),
-                text.ms_scale,
-                text.ms_color),
-                Time);
+            printText(Text( text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
+                            glm::vec3(text.ms_position.x + (size - sizeText) / 2, text.ms_position.y, text.ms_position.z),
+                            text.ms_scale,
+                            text.ms_color),
+                     Time);
         }
     }
 
-    void PrintText::printTextWrapping(Text text, const int& size, const bool& centr) {
-        std::map<int, int> words;
-        int sizeWord = 0;
-        int sizeSpace = m_advanceChar[(uint8_t)' '] * text.ms_scale / 32.0;
-        for (int i = 0; i < text.ms_text.length(); i++) {
-            if (text.ms_text[i] != ' ') {
-                sizeWord += m_advanceChar[(uint8_t)text.ms_text[i]] * text.ms_scale / 32.0;
-            }
-            else {
-                words.emplace(i, sizeWord + sizeSpace);
-                sizeWord = 0;
-            }
-            if (i == text.ms_text.length() - 1) {
-                words.emplace(i + 1, sizeWord + sizeSpace);
-                sizeWord = 0;
-            }
+     //(RUS) Добавление текста в буфер для отрисовки, либо разово, либо на время
+    //(ENG) Adding text to the rendering buffer, either one-time or temporarily
+    void PrintText::printText(const Text& text, const double& Time) {
+        if (Time == 0) {
+            m_bufferText.push_back(text);
+            return;
         }
 
-        int sizeText = 0;
-        int lastIndex = 0;
-        int lastTextRender = 0;
-        for (auto& word : words) {
-            if (sizeText + word.second > size && sizeText != 0) {
-                if (!centr) {
-                    printText(Text(text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
-                                   text.ms_position,
-                                   text.ms_scale,
-                                   text.ms_color));
-                }
-                else {
-                    printText(Text(text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
-                                   glm::vec3(text.ms_position.x + (size - sizeText) / 2, text.ms_position.y, text.ms_position.z),
-                                   text.ms_scale,
-                                   text.ms_color));
-                }
-                text.ms_position.y -= text.ms_scale;
-                lastTextRender = lastIndex + 1;
-                sizeText = word.second;
-            }
-            else {
-                sizeText += word.second;
-            }
-            lastIndex = word.first;
-        }
-        if (!centr) {
-            printText(Text(text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
-                text.ms_position,
-                text.ms_scale,
-                text.ms_color));
-        }
-        else {
-            printText(Text(text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
-                glm::vec3(text.ms_position.x + (size - sizeText) / 2, text.ms_position.y, text.ms_position.z),
-                text.ms_scale,
-                text.ms_color));
-        }
-    }
-
-     //(RUS) Добавление текста в буфер на какое то время
-    //(ENG) Adding text to the buffer for a while
-    void PrintText::printTextTime(const Text& text, const double& Time) {
-        std::vector<std::pair<Text, double>>::iterator It;
-        for (It = m_timeBufferText.begin(); It != m_timeBufferText.end(); It++) {
-            if (It->first.ms_text == text.ms_text && It->first.ms_position == text.ms_position) {
-                It->second = Time;
+        for (auto& It:m_timeBufferText) {
+            if (It.first.ms_text == text.ms_text && It.first.ms_position == text.ms_position) {
+                It.second = Time;
                 return;
             }
         }
+
         m_timeBufferText.push_back(std::make_pair<>(text,Time));
     }
 
-     //(RUS) Добавление текста в буфер на определённое количество отрисовок
-    //(ENG) Adding text to the buffer for a certain number of renders
-    void PrintText::printText(const Text& text){
-        m_bufferText.push_back(text);
-    }
-
-     //(RUS) Отрисовка текстов из буферов, и возможно удаление из Count буфера
-    //(ENG) Drawing texts from buffers, and possibly deleting from the Count buffer
-    void PrintText::renderBuffer(){
-        GLint scale = 32;
-        GLfloat sizeText = m_fontSize / 512.0;
-        GLfloat size = scale;
-
-        m_shader->use();
-
-        glActiveTexture(GL_TEXTURE0);
-        m_vertexArray->bind();
-        m_indexBuffer.bind();
-        m_texture->bind();
-
-        for (Text t : m_bufferText) {
-
-            m_shader->setVec3("textColor", t.ms_color);
-            m_shader->setFloat("layer", t.ms_position.z);
-            size = scale;
-
-            glm::vec2 position(t.ms_position.x, t.ms_position.y);
-
-            for (char c : t.ms_text) {
-                uint8_t ch = c;
-                glm::vec2 texture(sizeText * (ch % 16), sizeText * (ch / 16));
-                GLfloat vertices[4][4] = {
-                    { position.x,        position.y + size,   texture.x,            texture.y },
-                    { position.x,        position.y,          texture.x,            texture.y + sizeText },
-                    { position.x + size, position.y,          texture.x + sizeText, texture.y + sizeText },
-                    { position.x + size, position.y + size,   texture.x + sizeText, texture.y }
-                };
-                m_vertexBuffer.update(vertices, sizeof(vertices));
-                m_vertexBuffer.unbind();
-                glDrawElements(GL_TRIANGLES, m_indexBuffer.getCount(), GL_UNSIGNED_INT, nullptr);
-                position.x += m_advanceChar[ch] * size / (float)m_fontSize;
-            }
-        }
-        m_vertexArray->unbind();
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        m_bufferText.clear();
-    }
-
-     //(RUS) обновление Time буфера, возможно удаление
-    //(ENG) updating Time buffer, possibly deleting
-    void PrintText::updateBuffer(const double& duration){
+    //(RUS) обновление Time буфера, возможно удаление
+   //(ENG) updating Time buffer, possibly deleting
+    void PrintText::updateBuffer(const double& duration) {
         for (int i = m_timeBufferText.size() - 1; i >= 0; i--) {
             m_timeBufferText[i].second -= duration;
             if (m_timeBufferText[i].second < 0.0)
@@ -271,7 +184,58 @@ namespace Renderer {
             else
                 m_bufferText.push_back(m_timeBufferText[i].first);
         }
-        m_duration += duration;
+    }
+
+     //(RUS) Отрисовка текстов из буферов, и возможно удаление из Count буфера
+    //(ENG) Drawing texts from buffers, and possibly deleting from the Count buffer
+    void PrintText::renderBuffer(){
+        unsigned countChar = 0;
+        float sizeTexture = 32.0 / 512.0;
+
+        for (Text t : m_bufferText) {
+            countChar += t.ms_text.length();
+        }
+
+        std::vector<glm::vec4> Position;
+        std::vector<glm::vec3> Color;
+        std::vector<glm::vec4> Texture;
+        Position.reserve(countChar);
+        Color.reserve(countChar);
+        Texture.reserve(countChar);
+
+        for (Text t : m_bufferText) {
+             
+            float posX = t.ms_position.x;
+
+            for (char c : t.ms_text) {
+                uint8_t index= c;
+
+                Position.push_back(glm::vec4(posX, t.ms_position.y, t.ms_position.z, t.ms_scale));
+                Color.push_back(t.ms_color);
+                Texture.push_back(glm::vec4((index % 16) * sizeTexture, (index / 16) * sizeTexture, (index % 16 + 1) * sizeTexture, (index / 16 + 1) * sizeTexture));
+                 
+                posX += m_advanceChar[index] * (t.ms_scale / m_fontSize);
+            } 
+        }
+
+        glActiveTexture(GL_TEXTURE0);
+        m_shader->use();
+        m_texture->bind();
+
+        m_PositionVBO.update(&Position[0], Position.size() * sizeof(glm::vec4));
+        m_ColorVBO.update(&Color[0], Color.size() * sizeof(glm::vec3));
+        m_TextureVBO.update(&Texture[0], Texture.size() * sizeof(glm::vec4));
+
+        RENDER_ENGINE::drawInstanced(*m_VAO, countChar);
+        
+        m_VAO->unbind();
+        m_TextureVBO.unbind();
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+        m_bufferText.clear();
+        Position.clear();
+        Color.clear();
+        Texture.clear();
     }
 
      //(RUS) Очистка и удаление
@@ -281,6 +245,5 @@ namespace Renderer {
         m_advanceChar.clear();
         m_shader.~shared_ptr();
         m_texture.~shared_ptr();
-        delete m_vertexArray;
     }
 }

@@ -1,12 +1,23 @@
 #version 330 core
-layout (location = 0) in vec4 vertex;
+layout (location = 0) in vec2 vertex;
+layout (location = 1) in vec4 pos;
+layout (location = 2) in vec3 color;
+layout (location = 3) in vec4 cordsTex; 
 out vec2 TexCoords;
+out vec3 ColorChar;
 
 uniform mat4 projection;
-uniform float layer;
 
 void main()
 {
-    gl_Position = projection * vec4(vertex.xy, layer, 1.0);
-    TexCoords = vertex.zw;
+    gl_Position = projection * vec4(vertex.x*pos.w+pos.x, vertex.y*pos.w+pos.y, pos.z, 1.0);
+	if(vertex.x<0.5)
+		TexCoords.x = cordsTex.x;
+	else
+		TexCoords.x = cordsTex.z;
+	if(vertex.y<0.5)
+		TexCoords.y = cordsTex.y;
+	else
+		TexCoords.y = cordsTex.w;
+    ColorChar = color;
 }

@@ -35,14 +35,10 @@ namespace Renderer {
         };
 
         m_vertexCoordsBuffer.init(vertexCoords, 8 * sizeof(GLfloat));
-        VertexBufferLayout vertexCoordsLayout;
-        vertexCoordsLayout.addElementLayoutFloat(2, false);
-        m_vertexArray.addBuffer(m_vertexCoordsBuffer, vertexCoordsLayout);
+        m_vertexArray.addBuffer(m_vertexCoordsBuffer, 0, 2);
 
         m_textureCoordsBuffer.init(textureCoords, 8 * sizeof(GLfloat));
-        VertexBufferLayout textureCoordsLayout;
-        textureCoordsLayout.addElementLayoutFloat(2, false);
-        m_vertexArray.addBuffer(m_textureCoordsBuffer, textureCoordsLayout);
+        m_vertexArray.addBuffer(m_textureCoordsBuffer, 0, 2);
 
         m_indexBuffer.init(indices, 6);
 

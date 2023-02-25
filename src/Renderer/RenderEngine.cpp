@@ -18,6 +18,12 @@ namespace Renderer {
 		glDrawElements(GL_TRIANGLES, indexBuffer.getCount(), GL_UNSIGNED_INT, nullptr);
 	}
 
+	void RenderEngine::drawInstanced(const VertexArray& vertexArray, const GLuint& count){
+		vertexArray.bind();
+
+		glDrawArraysInstanced(GL_TRIANGLES, 0, 6, count);
+	}
+
 	 //(RUS) Установка цвета фона
 	//(ENG) Setting the background color
 	void RenderEngine::setClearColor(const int& r, const int& g, const int& b, const int& a){

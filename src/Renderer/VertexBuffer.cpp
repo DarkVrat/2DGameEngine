@@ -27,7 +27,7 @@ namespace Renderer {
 
 	void VertexBuffer::update(const void* data, const unsigned& size) const{
 		glBindBuffer(GL_ARRAY_BUFFER, m_id);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	}
 
 	void VertexBuffer::bind() const {

@@ -19,6 +19,7 @@ namespace Renderer {
 	class RenderEngine {
 	public:
 		static void draw(const VertexArray& vertexArray, const IndexBuffer& indesBuffer);
+		static void drawInstanced(const VertexArray& vertexArray, const GLuint& count);
 		static void setClearColor(const int& r, const int& g, const int& b, const int& a);
 		static void setDetphTest(const bool& flag);
 		

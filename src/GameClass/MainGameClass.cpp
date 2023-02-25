@@ -37,7 +37,7 @@ void MainGameClass::update(const double& duration){
     m_fps++;
     m_time += duration;
     if (m_time > 1000) {
-        PRINT_TEXT::printTextTime(PRINT_TEXT::Text(std::to_string(m_fps), glm::vec3(0, 0, 10), 32, glm::vec3(1, 1, 1)),1000);
+        PRINT_TEXT::printText(PRINT_TEXT::Text(std::to_string(m_fps), glm::vec3(0, 0, 10), 32, glm::vec3(1, 1, 1)),1000);
         m_fps = 0;
         m_time -= 1000;
     }
@@ -53,9 +53,9 @@ void MainGameClass::render() {
     for (int i = 0; i < m_vectorGameObject.size(); i++) {
         m_vectorGameObject[i]->render();
     }
-    PRINT_TEXT::printText(PRINT_TEXT::Text("Изменить размер можно колёсиком мыши, текущий размер "+std::to_string(size), glm::vec3(20, 850, 10), 32, glm::vec3(1, 1, 1)));
-    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по левому краю,", glm::vec3(100,300,12),32, glm::vec3(1, 1, 1)), size, LEFT);
-    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по центру", glm::vec3(100, 700, 13), 32, glm::vec3(1, 1, 1)), size, CENTR);
+    PRINT_TEXT::printText(PRINT_TEXT::Text("Изменить размер можно колёсиком мыши, текущий размер "+std::to_string(size), glm::vec3(20, 850, 10), 64, glm::vec3(0.5, 1, 1)));
+    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по левому краю,", glm::vec3(100,300,12), 32, glm::vec3(1, 0.5, 1)), size, LEFT);
+    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по центру", glm::vec3(100, 700, 13), 32, glm::vec3(1, 1, 0.5)), size, CENTR);
     PRINT_TEXT::renderBuffer();
 }
 

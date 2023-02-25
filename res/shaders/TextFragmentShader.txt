@@ -1,15 +1,15 @@
 #version 330 core
 in vec2 TexCoords;
+in vec3 ColorChar;
 out vec4 flag_color;
 
 uniform sampler2D text;
-uniform vec3 textColor;
 
 void main()
 {
     vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).a);
-	if(sampled.a < 0.5)
+    if(sampled.a < 0.5)
         discard;
-	flag_color=vec4(textColor, 1.0) * sampled;
+    flag_color=vec4(ColorChar, 1.0) * sampled;
 	
 }

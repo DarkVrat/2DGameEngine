@@ -3,6 +3,7 @@
 #include <memory>
 #include <glm/vec2.hpp>
 #include "GameObject.h"
+#include "../UI/Button.h"
 
 #define MAIN_GAME_CLASS MainGameClass
 
@@ -41,4 +42,6 @@ private:
 	static double m_time;
 	static int m_fps;
 	static int size;
+
+	static std::array<UserInterface::Button, 2> m_testButton;
 };

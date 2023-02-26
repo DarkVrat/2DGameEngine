@@ -1,5 +1,7 @@
 #include "MouseControl.h"
 
+#include <iostream>
+
 std::array<Control::MouseControl::E_BUTTON_ACTION, 8> Control::MouseControl::m_keys;
 GLFWwindow* Control::MouseControl::m_PWindow;
 double Control::MouseControl::m_height;
@@ -16,6 +18,11 @@ namespace Control {
 		m_mousePosition.y = m_height - y;
 		m_scroll.x = 0;
 		m_scroll.y = 0;
+		for (auto& It : m_keys) {
+			if (It == E_BUTTON_ACTION::PRESSED) {
+				It = E_BUTTON_ACTION::CLAMPED;
+			}
+		}
 	}
 
 	 //(RUS) установка GFLWwindow и высота окна
@@ -26,10 +33,6 @@ namespace Control {
 	 //(RUS) установка ивента нажатой кнопок
 	//(ENG) setting the event of the pressed button
 	void MouseControl::setButton(GLFWwindow* pWindow, int button, int action, int mods){
-		if (action == GLFW_REPEAT) { 
-			m_keys[button] = E_BUTTON_ACTION::CLAMPED; 
-			return; 
-		}
 		if (action == GLFW_PRESS) {
 			m_keys[button] = E_BUTTON_ACTION::PRESSED;
 			return;
@@ -59,6 +62,12 @@ namespace Control {
 			m_keys[key] = E_BUTTON_ACTION::NOT_CLAMPED;
 			return true;
 		}
+		return false;
+	}
+
+	bool MouseControl::ifInArea(glm::vec2 pos, glm::vec2 size){
+		if (pos.x <= m_mousePosition.x && pos.x + size.x >= m_mousePosition.x && pos.y <= m_mousePosition.y && pos.y + size.y >= m_mousePosition.y)
+			return true;
 		return false;
 	}
 	

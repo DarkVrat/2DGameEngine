@@ -17,6 +17,7 @@ glm::ivec2 MainGameClass::m_window;
 double MainGameClass::m_time;
 int MainGameClass::m_fps;
 int MainGameClass::size=700;
+std::array<UserInterface::Button, 2> MainGameClass::m_testButton;
 
  //(RUS) первоначальная инициализация переменных
 //(ENG) initial initialization of variables
@@ -56,6 +57,8 @@ void MainGameClass::render() {
     PRINT_TEXT::printText(PRINT_TEXT::Text("Изменить размер можно колёсиком мыши, текущий размер "+std::to_string(size), glm::vec3(20, 850, 10), 64, glm::vec3(0.5, 1, 1)));
     PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по левому краю,", glm::vec3(100,300,12), 32, glm::vec3(1, 0.5, 1)), size, LEFT);
     PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по центру", glm::vec3(100, 700, 13), 32, glm::vec3(1, 1, 0.5)), size, CENTR);
+    m_testButton[0].render();
+    m_testButton[1].render();
     PRINT_TEXT::renderBuffer();
 }
 
@@ -78,6 +81,16 @@ bool MainGameClass::init() {
 
     m_vectorGameObject.reserve(sizeof(GameObject));
 
+    m_testButton[0].create(glm::vec3(100, 100, 10), glm::vec2(360, 80), "size-100", 80, glm::vec3(0, 0, 0));
+    m_testButton[0].setCallBack([]() {
+            size -= 100;
+        });
+
+    m_testButton[1].create(glm::vec3(460, 100, 10), glm::vec2(360, 80), "size+100", 80, glm::vec3(0, 0, 0));
+    m_testButton[1].setCallBack([]() {
+            size += 100;
+        });
+
     setProjectionMat(m_window);
     
     return true;
@@ -88,6 +101,9 @@ bool MainGameClass::init() {
 void MainGameClass::events(){
     size += MOUSE::getScroll().y * 10;
     if (size < 0)size = 0;
+
+    m_testButton[0].checkClick();
+    m_testButton[1].checkClick();
 }
 
  //(RUS) Установка матрицы проекции для отрисовки

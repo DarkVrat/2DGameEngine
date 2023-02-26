@@ -159,7 +159,7 @@ namespace Renderer {
      //(RUS) Добавление текста в буфер для отрисовки, либо разово, либо на время
     //(ENG) Adding text to the rendering buffer, either one-time or temporarily
     void PrintText::printText(const Text& text, const double& Time) {
-        if (Time == 0) {
+        if (Time < 0) {
             m_bufferText.push_back(text);
             return;
         }
@@ -236,6 +236,14 @@ namespace Renderer {
         Position.clear();
         Color.clear();
         Texture.clear();
+    }
+
+    unsigned PrintText::sizeText(std::string text, GLint scale){
+        unsigned size = 0;
+        for (char c : text) {
+            size += m_advanceChar[(uint8_t)c] * scale / m_fontSize;
+        }
+        return size;
     }
 
      //(RUS) Очистка и удаление

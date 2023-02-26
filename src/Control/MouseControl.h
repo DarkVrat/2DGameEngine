@@ -23,6 +23,8 @@ namespace Control {
 		static bool ifReleased(const int& key);
 		static bool ifClamped(const int& key);
 
+		static bool ifInArea(glm::vec2 pos, glm::vec2 size);
+
 		static glm::vec2 getScroll();
 		static glm::vec2 getPosition();
 

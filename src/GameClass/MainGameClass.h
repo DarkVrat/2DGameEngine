@@ -4,6 +4,7 @@
 #include <glm/vec2.hpp>
 #include "GameObject.h"
 #include "../UI/Button.h"
+#include "../UI/SwitchBool.h"
 
 #define MAIN_GAME_CLASS MainGameClass
 
@@ -44,4 +45,5 @@ private:
 	static int size;
 
 	static std::array<UserInterface::Button, 2> m_testButton;
+	static UserInterface::SwitchBool m_textSwich;
 };

@@ -11,6 +11,7 @@
 #define E_FALSE UserInterface::Button::E_BUTTON_TYPE::FALSE
 #define E_TRUE UserInterface::Button::E_BUTTON_TYPE::TRUE
 #define E_LIST UserInterface::Button::E_BUTTON_TYPE::LIST
+#define E_NONE UserInterface::Button::E_BUTTON_TYPE::NONE
 
 namespace UserInterface {
 	class Button {
@@ -22,19 +23,21 @@ namespace UserInterface {
 			SLIDER,
 			FALSE,
 			TRUE,
-			LIST
+			LIST,
+			NONE
 		};
 
-		Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type = STANDART, std::string text = "", GLint scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
+		Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type , std::string text = "", GLint scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
 		Button();
 		~Button();
 
-		void create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type = STANDART, std::string text = "", GLint scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
+		void create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type , std::string text = "", GLint scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
 
 		void render();
-		void checkClick();
+		bool checkClick();
 
 		void setCallBack(std::function<void()> callBack);
+		void setType(E_BUTTON_TYPE type);
 
 	private:
 		std::shared_ptr<Renderer::Sprite> m_SpriteButtonOn;

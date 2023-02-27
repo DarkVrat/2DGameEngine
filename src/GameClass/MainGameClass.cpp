@@ -18,6 +18,7 @@ double MainGameClass::m_time;
 int MainGameClass::m_fps;
 int MainGameClass::size=700;
 std::array<UserInterface::Button, 2> MainGameClass::m_testButton;
+UserInterface::SwitchBool MainGameClass::m_textSwich;
 
  //(RUS) первоначальная инициализация переменных
 //(ENG) initial initialization of variables
@@ -55,10 +56,12 @@ void MainGameClass::render() {
         m_vectorGameObject[i]->render();
     }
     PRINT_TEXT::printText(PRINT_TEXT::Text("Изменить размер можно колёсиком мыши, текущий размер "+std::to_string(size), glm::vec3(20, 850, 10), 64, glm::vec3(0.5, 1, 1)));
-    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по левому краю,", glm::vec3(100,300,12), 32, glm::vec3(1, 0.5, 1)), size, LEFT);
+    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по левому краю,", glm::vec3(100,550,12), 32, glm::vec3(1, 0.5, 1)), size, LEFT);
     PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по центру", glm::vec3(100, 700, 13), 32, glm::vec3(1, 1, 0.5)), size, CENTR);
     m_testButton[0].render();
     m_testButton[1].render();
+    m_textSwich.render();
+    PRINT_TEXT::printText(PRINT_TEXT::Text("FullScreen: " + std::to_string(CONFIG_MANAGER::getFullScreen()), glm::vec3(40, 144, 10), 32, glm::vec3(1,1,1)));
     PRINT_TEXT::renderBuffer();
 }
 
@@ -82,14 +85,13 @@ bool MainGameClass::init() {
     m_vectorGameObject.reserve(sizeof(GameObject));
 
     m_testButton[0].create(glm::vec3(180, 100, 10), glm::vec2(360, 80),E_STANDART, "size-100", 80, glm::vec3(0, 0, 0));
-    m_testButton[0].setCallBack([]() {
-            size -= 100;
-        });
+    m_testButton[0].setCallBack([]() {size -= 100;});
 
     m_testButton[1].create(glm::vec3(540, 100, 10), glm::vec2(360, 80),E_STANDART, "size+100", 80, glm::vec3(0, 0, 0));
-    m_testButton[1].setCallBack([]() {
-            size += 100;
-        });
+    m_testButton[1].setCallBack([]() {size += 100;});
+
+    m_textSwich.create(glm::vec3(20, 160, 10), glm::vec2(40, 40), CONFIG_MANAGER::getFullScreen());
+    m_textSwich.setCallBack([](bool flag) {CONFIG_MANAGER::setFullScreen(flag);});
 
     setProjectionMat(m_window);
     
@@ -104,6 +106,7 @@ void MainGameClass::events(){
 
     m_testButton[0].checkClick();
     m_testButton[1].checkClick();
+    m_textSwich.checkClick();
 }
 
  //(RUS) Установка матрицы проекции для отрисовки

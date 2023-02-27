@@ -60,8 +60,8 @@ add_executable(${PROJECT}
 	src/UI/List.h
 	src/UI/Slider.cpp
 	src/UI/Slider.h
-	src/UI/Switch.cpp
-	src/UI/Switch.h
+	src/UI/SwitchBool.cpp
+	src/UI/SwitchBool.h
 )
 
 target_compile_features(${PROJECT} PUBLIC cxx_std_17)

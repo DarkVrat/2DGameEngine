@@ -2,6 +2,7 @@
 
 #include <array>
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 #include <GLFW/glfw3.h>
 
 #define MOUSE Control::MouseControl
@@ -23,7 +24,7 @@ namespace Control {
 		static bool ifReleased(const int& key);
 		static bool ifClamped(const int& key);
 
-		static bool ifInArea(glm::vec2 pos, glm::vec2 size);
+		static bool ifInArea(glm::vec4 area);
 
 		static glm::vec2 getScroll();
 		static glm::vec2 getPosition();

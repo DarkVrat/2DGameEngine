@@ -56,6 +56,12 @@ add_executable(${PROJECT}
 	
 	src/UI/Button.cpp
 	src/UI/Button.h
+	src/UI/List.cpp
+	src/UI/List.h
+	src/UI/Slider.cpp
+	src/UI/Slider.h
+	src/UI/Switch.cpp
+	src/UI/Switch.h
 )
 
 target_compile_features(${PROJECT} PUBLIC cxx_std_17)

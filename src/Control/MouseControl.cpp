@@ -65,8 +65,8 @@ namespace Control {
 		return false;
 	}
 
-	bool MouseControl::ifInArea(glm::vec2 pos, glm::vec2 size){
-		if (pos.x <= m_mousePosition.x && pos.x + size.x >= m_mousePosition.x && pos.y <= m_mousePosition.y && pos.y + size.y >= m_mousePosition.y)
+	bool MouseControl::ifInArea(glm::vec4 area){
+		if (area.x <= m_mousePosition.x && area.z >= m_mousePosition.x && area.y <= m_mousePosition.y && area.w >= m_mousePosition.y)
 			return true;
 		return false;
 	}

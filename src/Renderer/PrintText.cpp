@@ -238,8 +238,8 @@ namespace Renderer {
         Texture.clear();
     }
 
-    unsigned PrintText::sizeText(std::string text, GLint scale){
-        unsigned size = 0;
+    float PrintText::sizeText(std::string text, GLint scale){
+        float size = 0;
         for (char c : text) {
             size += m_advanceChar[(uint8_t)c] * scale / m_fontSize;
         }

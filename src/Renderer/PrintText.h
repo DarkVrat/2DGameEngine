@@ -43,7 +43,7 @@ namespace Renderer {
 		static void updateBuffer(const double& duration);
 		static void renderBuffer();
 
-		static unsigned sizeText(std::string text, GLint scale);
+		static float sizeText(std::string text, GLint scale);
 
 		static void terminate();
 	private:

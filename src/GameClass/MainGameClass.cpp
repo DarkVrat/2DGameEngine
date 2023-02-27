@@ -81,12 +81,12 @@ bool MainGameClass::init() {
 
     m_vectorGameObject.reserve(sizeof(GameObject));
 
-    m_testButton[0].create(glm::vec3(100, 100, 10), glm::vec2(360, 80), "size-100", 80, glm::vec3(0, 0, 0));
+    m_testButton[0].create(glm::vec3(180, 100, 10), glm::vec2(360, 80),E_STANDART, "size-100", 80, glm::vec3(0, 0, 0));
     m_testButton[0].setCallBack([]() {
             size -= 100;
         });
 
-    m_testButton[1].create(glm::vec3(460, 100, 10), glm::vec2(360, 80), "size+100", 80, glm::vec3(0, 0, 0));
+    m_testButton[1].create(glm::vec3(540, 100, 10), glm::vec2(360, 80),E_STANDART, "size+100", 80, glm::vec3(0, 0, 0));
     m_testButton[1].setCallBack([]() {
             size += 100;
         });

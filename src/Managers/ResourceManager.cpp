@@ -220,7 +220,7 @@ rapidjson::Document ResourceManager::loadJSONDoc(const std::string& JSONPath){
  //(RUS) Загрузка ресурсов из JSON файла
 //(ENG) Loading resources from a JSON file
 bool ResourceManager::loadJSONResurces(const std::string& JSONPath) {
-	const rapidjson::Document JSONDoc = loadJSONDoc(JSONPath);
+	const rapidjson::Document JSONDoc = loadJSONDoc(JSONPath); 
 
 	auto shadersIt = JSONDoc.FindMember("shader");
 	if (shadersIt != JSONDoc.MemberEnd()) {

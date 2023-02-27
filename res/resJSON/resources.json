@@ -16,6 +16,10 @@
 		{
 			"name" : "font",
 			"filePath" : "res/textures/font.png"
+		},
+		{
+			"name" : "logo",
+			"filePath" : "res/textures/logo.png"
 		}
 	],
 	
@@ -90,27 +94,97 @@
 			]
 		},
 		{
-			"name" : "Menu",
-			"filePath" : "res/textures/forMenu.png",
+			"name" : "UI",
+			"filePath" : "res/textures/UI.png",
 			"subTextures" :  [
 			{
-				"name":"Logo",
+				"name":"button_Off",
 				"left":0,
-				"top":160,
+				"top":140,
 				"right":180,
-				"bottom":80
+				"bottom":100
 			},
 			{
-				"name":"Button",
+				"name":"button_On",
 				"left":0,
-				"top":80,
+				"top":100,
+				"right":180,
+				"bottom":60
+			},
+			{
+				"name":"list_Select",
+				"left":0,
+				"top":60,
 				"right":180,
 				"bottom":40
 			},
 			{
-				"name":"Button_select",
+				"name":"list_Option",
 				"left":0,
 				"top":40,
+				"right":180,
+				"bottom":20
+			},
+			{
+				"name":"arrow_Off",
+				"left":0,
+				"top":20,
+				"right":20,
+				"bottom":0
+			},
+			{
+				"name":"arrow_On",
+				"left":20,
+				"top":20,
+				"right":40,
+				"bottom":0
+			},
+			{
+				"name":"slider_Off",
+				"left":40,
+				"top":20,
+				"right":60,
+				"bottom":0
+			},
+			{
+				"name":"slider_On",
+				"left":60,
+				"top":20,
+				"right":80,
+				"bottom":0
+			},
+			{
+				"name":"slider_Background",
+				"left":80,
+				"top":20,
+				"right":100,
+				"bottom":0
+			},
+			{
+				"name":"false_Off",
+				"left":100,
+				"top":20,
+				"right":120,
+				"bottom":0
+			},
+			{
+				"name":"false_On",
+				"left":120,
+				"top":20,
+				"right":140,
+				"bottom":0
+			},
+			{
+				"name":"true_Off",
+				"left":140,
+				"top":20,
+				"right":160,
+				"bottom":0
+			},
+			{
+				"name":"true_On",
+				"left":160,
+				"top":20,
 				"right":180,
 				"bottom":0
 			}
@@ -162,20 +236,70 @@
 			]
 		},
 		{
-			"textureAtlas" : "Menu",
+			"textureAtlas" : "logo",
 			"shader" : "spriteShader",
 			"createSprites" : [
 				{
 					"nameSprite":"S_Logo",
-					"subTexture":"Logo"
+					"subTexture":"Defoult"
+				}
+			]
+		},
+		{
+			"textureAtlas" : "UI",
+			"shader" : "spriteShader",
+			"createSprites" : [
+				{
+					"nameSprite":"S_button_Off",
+					"subTexture":"button_Off"
 				},
 				{
-					"nameSprite":"S_Button",
-					"subTexture":"Button"
+					"nameSprite":"S_button_On",
+					"subTexture":"button_On"
 				},
 				{
-					"nameSprite":"S_Button_select",
-					"subTexture":"Button_select"
+					"nameSprite":"S_list_Select",
+					"subTexture":"list_Select"
+				},
+				{
+					"nameSprite":"S_list_Option",
+					"subTexture":"list_Option"
+				},
+				{
+					"nameSprite":"S_arrow_Off",
+					"subTexture":"arrow_Off"
+				},
+				{
+					"nameSprite":"S_arrow_On",
+					"subTexture":"arrow_On"
+				},
+				{
+					"nameSprite":"S_slider_Off",
+					"subTexture":"slider_Off"
+				},
+				{
+					"nameSprite":"S_slider_On",
+					"subTexture":"slider_On"
+				},
+				{
+					"nameSprite":"S_slider_Background",
+					"subTexture":"slider_Background"
+				},
+				{
+					"nameSprite":"S_false_Off",
+					"subTexture":"false_Off"
+				},
+				{
+					"nameSprite":"S_false_On",
+					"subTexture":"false_On"
+				},
+				{
+					"nameSprite":"S_true_Off",
+					"subTexture":"true_Off"
+				},
+				{
+					"nameSprite":"S_true_On",
+					"subTexture":"true_On"
 				}
 			]
 		}

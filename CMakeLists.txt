@@ -56,8 +56,8 @@ add_executable(${PROJECT}
 	
 	src/UI/Button.cpp
 	src/UI/Button.h
-	src/UI/List.cpp
-	src/UI/List.h
+	src/UI/ListParameter.cpp
+	src/UI/ListParameter.h
 	src/UI/Slider.cpp
 	src/UI/Slider.h
 	src/UI/SwitchBool.cpp

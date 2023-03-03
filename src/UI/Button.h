@@ -10,7 +10,6 @@
 #define E_SLIDER UserInterface::Button::E_BUTTON_TYPE::SLIDER
 #define E_FALSE UserInterface::Button::E_BUTTON_TYPE::FALSE
 #define E_TRUE UserInterface::Button::E_BUTTON_TYPE::TRUE
-#define E_LIST UserInterface::Button::E_BUTTON_TYPE::LIST
 #define E_NONE UserInterface::Button::E_BUTTON_TYPE::NONE
 
 namespace UserInterface {
@@ -23,15 +22,16 @@ namespace UserInterface {
 			SLIDER,
 			FALSE,
 			TRUE,
-			LIST,
 			NONE
 		};
 
-		Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type , std::string text = "", GLint scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
+		Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text = "", GLint scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
+		Button(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type);
 		Button();
 		~Button();
 
-		void create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type , std::string text = "", GLint scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
+		void create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text = "", GLint scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
+		void create(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type);
 
 		void render();
 		bool checkClick();
@@ -45,6 +45,7 @@ namespace UserInterface {
 		glm::vec2 m_position;
 		glm::vec2 m_size;
 		glm::vec4 m_area;
+		float m_rotation;
 		GLfloat m_layer;
 		PRINT_TEXT::Text m_textButton;
 		E_BUTTON_TYPE m_typeButton;

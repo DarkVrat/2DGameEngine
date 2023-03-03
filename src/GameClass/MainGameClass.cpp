@@ -19,6 +19,10 @@ int MainGameClass::m_fps;
 int MainGameClass::size=700;
 std::array<UserInterface::Button, 2> MainGameClass::m_testButton;
 UserInterface::SwitchBool MainGameClass::m_textSwich;
+UserInterface::Slider MainGameClass::m_testSliderVertical;
+UserInterface::Slider MainGameClass::m_testSliderHorizontal;
+glm::vec2 MainGameClass::m_vecToTestSliders=glm::vec2(30, 60);
+UserInterface::ListParameter<glm::ivec2> MainGameClass::m_testList;
 
  //(RUS) первоначальна€ инициализаци€ переменных
 //(ENG) initial initialization of variables
@@ -61,7 +65,11 @@ void MainGameClass::render() {
     m_testButton[0].render();
     m_testButton[1].render();
     m_textSwich.render();
-    PRINT_TEXT::printText(PRINT_TEXT::Text("FullScreen: " + std::to_string(CONFIG_MANAGER::getFullScreen()), glm::vec3(40, 144, 10), 32, glm::vec3(1,1,1)));
+    m_testSliderVertical.render();
+    m_testSliderHorizontal.render();
+    m_testList.render();
+    PRINT_TEXT::printText(PRINT_TEXT::Text(std::to_string(m_vecToTestSliders.x) + " " + std::to_string(m_vecToTestSliders.y), glm::vec3(300, 350, 10)));
+    PRINT_TEXT::printText(PRINT_TEXT::Text("FullScreen: " + std::to_string(CONFIG_MANAGER::getFullScreen()), glm::vec3(40, 144, 10)));
     PRINT_TEXT::renderBuffer();
 }
 
@@ -93,8 +101,27 @@ bool MainGameClass::init() {
     m_textSwich.create(glm::vec3(20, 160, 10), glm::vec2(40, 40), CONFIG_MANAGER::getFullScreen());
     m_textSwich.setCallBack([](bool flag) {CONFIG_MANAGER::setFullScreen(flag);});
 
+    m_testSliderVertical.create(glm::vec3(300, 300, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(0, 100), m_vecToTestSliders.x);
+    m_testSliderVertical.setCallBack([](float value) {
+            m_vecToTestSliders.x = value;
+        });
+
+    m_testSliderHorizontal.create(glm::vec3(600, 300, 10), glm::vec2(40, 300), UI_HORIZONTAL_SLIDER, glm::vec2(0, 100), m_vecToTestSliders.y);
+    m_testSliderHorizontal.setCallBack([](float value) {
+        m_vecToTestSliders.y = value;
+        });
+
+    std::vector<glm::ivec2> testList;
+    testList.push_back(glm::vec2(800, 600));
+    testList.push_back(glm::vec2(1280, 720));
+    testList.push_back(glm::vec2(1680, 1050));
+    m_testList.create(glm::vec3(900, 300, 10), glm::vec2(300, 40), 32, testList);
+    m_testList.setTypeToString([](glm::ivec2 value) {
+            return std::to_string(value.x)+"x"+std::to_string(value.y);
+        });
+
     setProjectionMat(m_window);
-    
+
     return true;
 }
 
@@ -107,6 +134,9 @@ void MainGameClass::events(){
     m_testButton[0].checkClick();
     m_testButton[1].checkClick();
     m_textSwich.checkClick();
+    m_testSliderVertical.checkClick();
+    m_testSliderHorizontal.checkClick();
+    m_testList.checkClick();
 }
 
  //(RUS) ”становка матрицы проекции дл€ отрисовки

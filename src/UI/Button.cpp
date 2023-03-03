@@ -8,6 +8,10 @@ namespace UserInterface {
 		create(position, size, type, text, scale, color);
 	}
 
+	Button::Button(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type){
+		create(position, size, rotation, type);
+	}
+
 	Button::Button(){
 		setType(NONE);
 		m_position = glm::vec2(0, 0);
@@ -28,6 +32,7 @@ namespace UserInterface {
 		m_layer = position.z;
 		m_size = size;
 		m_area = glm::vec4(m_position.x - m_size.x / 2, m_position.y - m_size.y / 2, m_position.x + m_size.x / 2, m_position.y + m_size.y / 2);
+		m_rotation = 0.f;
 
 		glm::vec3 posText(0, 0, 0);
 		posText.z = position.z + 0.1f;
@@ -38,12 +43,24 @@ namespace UserInterface {
 		m_click = false;
 	}
 
+	void Button::create(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type){
+		setType(type);
+
+		m_position = glm::vec2(position.x, position.y);
+		m_layer = position.z;
+		m_size = size;
+		m_area = glm::vec4(m_position.x - m_size.x / 2, m_position.y - m_size.y / 2, m_position.x + m_size.x / 2, m_position.y + m_size.y / 2);
+		m_rotation = rotation;
+
+		m_click = false;
+	}
+
 	void Button::render(){
 		if (m_click) {
-			m_SpriteButtonOn->render(m_position, m_size, 0.f, m_layer);
+			m_SpriteButtonOn->render(m_position, m_size, m_rotation, m_layer);
 		}
 		else {
-			m_SpriteButtonOff->render(m_position, m_size, 0.f, m_layer);
+			m_SpriteButtonOff->render(m_position, m_size, m_rotation, m_layer);
 		}
 
 		if (m_typeButton == STANDART) {
@@ -95,10 +112,6 @@ namespace UserInterface {
 		case UserInterface::Button::TRUE:
 			m_SpriteButtonOff = RESOURCE_MANAGER::getSprite("S_true_Off");
 			m_SpriteButtonOn = RESOURCE_MANAGER::getSprite("S_true_On");
-			break;
-		case UserInterface::Button::LIST:
-			m_SpriteButtonOff = RESOURCE_MANAGER::getSprite("S_list_Option");
-			m_SpriteButtonOn = RESOURCE_MANAGER::getSprite("S_list_Option");
 			break;
 		default:
 			m_SpriteButtonOn = nullptr;

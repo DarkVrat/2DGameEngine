@@ -2,8 +2,8 @@
 
 #include "Button.h"
 
-#define VERTICAL_SLIDER true
-#define HORIZONTAL_SLIDER false
+#define UI_VERTICAL_SLIDER true
+#define UI_HORIZONTAL_SLIDER false
 
 namespace UserInterface {
 	class Slider {

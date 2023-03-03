@@ -100,28 +100,14 @@
 			{
 				"name":"button_Off",
 				"left":0,
-				"top":140,
-				"right":180,
-				"bottom":100
-			},
-			{
-				"name":"button_On",
-				"left":0,
 				"top":100,
 				"right":180,
 				"bottom":60
 			},
 			{
-				"name":"list_Select",
+				"name":"button_On",
 				"left":0,
 				"top":60,
-				"right":180,
-				"bottom":40
-			},
-			{
-				"name":"list_Option",
-				"left":0,
-				"top":40,
 				"right":180,
 				"bottom":20
 			},
@@ -256,14 +242,6 @@
 				{
 					"nameSprite":"S_button_On",
 					"subTexture":"button_On"
-				},
-				{
-					"nameSprite":"S_list_Select",
-					"subTexture":"list_Select"
-				},
-				{
-					"nameSprite":"S_list_Option",
-					"subTexture":"list_Option"
 				},
 				{
 					"nameSprite":"S_arrow_Off",

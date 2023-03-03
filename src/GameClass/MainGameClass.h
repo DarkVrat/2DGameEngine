@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include "../UI/Button.h"
 #include "../UI/SwitchBool.h"
+#include "../UI/Slider.h"
+#include "../UI/ListParameter.h"
 
 #define MAIN_GAME_CLASS MainGameClass
 
@@ -46,4 +48,8 @@ private:
 
 	static std::array<UserInterface::Button, 2> m_testButton;
 	static UserInterface::SwitchBool m_textSwich;
+	static UserInterface::Slider m_testSliderVertical;
+	static UserInterface::Slider m_testSliderHorizontal;
+	static glm::vec2 m_vecToTestSliders;
+	static UserInterface::ListParameter<glm::ivec2> m_testList;
 };

@@ -12,11 +12,12 @@ namespace UserInterface{
 		m_spriteBackGroung = nullptr;
 		m_spriteSliderOn = nullptr;
 		m_spriteSliderOff = nullptr;
-		m_position = glm::vec3(0, 0, 0);
+		m_position = glm::vec2(0, 0);
 		m_size = glm::vec2(0, 0);
 		m_positionSlider = glm::vec2(0,0);
 		m_MinMax = glm::vec2(0, 0);
 		m_value = 0.f;
+		m_layer = 0.f;
 		m_view = false;
 		m_step = 0.f;
 	}

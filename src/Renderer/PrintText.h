@@ -30,7 +30,7 @@ namespace Renderer {
 			GLint ms_scale;
 			glm::vec3 ms_color;
 
-			Text(const std::string& text, const glm::vec3& position, const GLint& scale, const glm::vec3& color)
+			Text(const std::string& text, const glm::vec3& position, const GLint& scale=32, const glm::vec3& color=glm::vec3(1,1,1))
 				:ms_text(text), ms_position(position), ms_scale(scale), ms_color(color) {}
 			Text() :ms_text(""), ms_position(glm::vec3(0, 0, 0)), ms_scale(32), ms_color(glm::vec3(1, 1, 1)) {}
 		};

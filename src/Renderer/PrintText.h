@@ -22,8 +22,8 @@ namespace Renderer {
 	class PrintText {
 
 	public:
-		//(RUS) Структура описывающая текст для рендеринга из буферов
-	   //(ENG) Structure describing text to render from buffers
+		 //(RUS) Структура описывающая текст для рендеринга из буферов
+	    //(ENG) Structure describing text to render from buffers
 		struct Text {
 			std::string ms_text;
 			glm::vec3 ms_position;

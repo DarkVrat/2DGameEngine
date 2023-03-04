@@ -7,6 +7,7 @@
 #include "../UI/SwitchBool.h"
 #include "../UI/Slider.h"
 #include "../UI/ListParameter.h"
+#include "../UI/Translater.h"
 
 #define MAIN_GAME_CLASS MainGameClass
 

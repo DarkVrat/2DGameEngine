@@ -11,6 +11,7 @@
 #include "../Managers/ResourceManager.h"
 #include "../Renderer/PrintText.h"
 
+
 std::vector<std::shared_ptr<GameObject>> MainGameClass::m_vectorGameObject;
 MainGameClass::E_GAME_STATE MainGameClass::m_GameState;
 glm::ivec2 MainGameClass::m_window;
@@ -70,6 +71,14 @@ void MainGameClass::render() {
     m_testList.render();
     PRINT_TEXT::printText(PRINT_TEXT::Text(std::to_string(m_vecToTestSliders.x) + " " + std::to_string(m_vecToTestSliders.y), glm::vec3(300, 350, 10)));
     PRINT_TEXT::printText(PRINT_TEXT::Text("FullScreen: " + std::to_string(CONFIG_MANAGER::getFullScreen()), glm::vec3(40, 144, 10)));
+
+    Translater::setLanguage("EN");
+    PRINT_TEXT::printText(PRINT_TEXT::Text(TRANSLETE("menu", "newGame"), glm::vec3(700, 500, 10)));
+    Translater::setLanguage("RU");
+    PRINT_TEXT::printText(PRINT_TEXT::Text(TRANSLETE("menu", "continue"), glm::vec3(700, 460, 10)));
+    Translater::setLanguage("NO");
+    PRINT_TEXT::printText(PRINT_TEXT::Text(TRANSLETE("menu", "loadGame"), glm::vec3(700, 420, 10)));
+     
     PRINT_TEXT::renderBuffer();
 }
 

@@ -1,0 +1,34 @@
+{
+	"subject":[
+	{
+		"nameSubject":"menu",
+		"dictionary":[
+			{
+				"name" : "newGame",
+				"EN" : "New Game",
+				"RU" : "Новая Игра"
+			},
+			{
+				"name" : "continue",
+				"EN" : "Continue",
+				"RU" : "Продолжить"
+			},
+			{
+				"name" : "loadGame",
+				"EN" : "Load Game",
+				"RU" : "Загрузить Игру"
+			},
+			{
+				"name" : "settings",
+				"EN" : "Settings",
+				"RU" : "Настройки"
+			},
+			{
+				"name" : "exit",
+				"EN" : "Exit",
+				"RU" : "Выход"
+			}
+		]
+	}
+	]
+}

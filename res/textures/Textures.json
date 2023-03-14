@@ -1,0 +1,133 @@
+{
+	"shaders":[
+		{
+			"name" : "NoBlendSpriteShader",
+			"filePath_v" : "res/Textures/Shaders/NoBlendSpriteVertexShader.txt",
+			"filePath_f" : "res/Textures/Shaders/NoBlendSpriteFragmentShader.txt"
+		},
+		{
+			"name" : "WithBlendSpriteShader",
+			"filePath_v" : "res/Textures/Shaders/WithBlendSpriteVertexShader.txt",
+			"filePath_f" : "res/Textures/Shaders/WithBlendSpriteFragmentShader.txt"
+		}		
+	],
+	
+	"oneTexture":[
+		{
+			"name" : "logo",
+			"filePath" : "res/Textures/logo.png",
+			"shader" : "NoBlendSpriteShader",
+			"blend":false
+		}
+	],
+	
+	"textureAtlasesCut" : [
+		{
+			"name" : "Knight",
+			"filePath" : "res/textures/knight.png",
+			"shader" : "NoBlendSpriteShader",
+			"blend":false,
+			"heightSprite" : 86,
+			"widthSprite" : 86,
+			"sprites" :  [
+				"Attack1_1",
+				"Attack1_2",
+				"Attack1_3",
+				"Attack1_4",
+				"Attack1_5",
+				"Idle_1",
+				"Idle_2",
+				"Idle_3",
+				"Idle_4"
+			]
+		}
+	],
+	
+	"textureAtlases" : [
+		{
+			"name" : "UI",
+			"filePath" : "res/Textures/UI.png",
+			"shader" : "NoBlendSpriteShader",
+			"blend":false,
+			"sprites" :  [
+			{
+				"name":"Button_Off",
+				"left":0,
+				"bottom":60,
+				"width" : 180,
+				"height" : 40
+			},
+			{
+				"name":"Button_On",
+				"left":0,
+				"bottom":20,
+				"width" : 180,
+				"height" : 40
+			},
+			{
+				"name":"Arrow_Off",
+				"left":0,
+				"bottom":0,
+				"width" : 20,
+				"height" : 20
+			},
+			{
+				"name":"Arrow_On",
+				"left":20,
+				"bottom":0,
+				"width" : 20,
+				"height" : 20
+			},
+			{
+				"name":"Slider_Off",
+				"left":40,
+				"bottom":0,
+				"width" : 20,
+				"height" : 20
+			},
+			{
+				"name":"Slider_On",
+				"left":60,
+				"bottom":0,
+				"width" : 20,
+				"height" : 20
+			},
+			{
+				"name":"Slider_Background",
+				"left":80,
+				"bottom":0,
+				"width" : 20,
+				"height" : 20
+			},
+			{
+				"name":"False_Off",
+				"left":100,
+				"bottom":0,
+				"width" : 20,
+				"height" : 20
+			},
+			{
+				"name":"False_On",
+				"left":120,
+				"bottom":0,
+				"width" : 20,
+				"height" : 20
+			},
+			{
+				"name":"True_Off",
+				"left":140,
+				"bottom":0,
+				"width" : 20,
+				"height" : 20
+			},
+			{
+				"name":"True_On",
+				"left":160,
+				"bottom":0,
+				"width" : 20,
+				"height" : 20
+			}
+			]
+		}
+	]
+}

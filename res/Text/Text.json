@@ -1,0 +1,7 @@
+{
+	"textVertexShaderPath":"res/Text/Shader/TextVertexShader.txt",
+	"textFragmentShaderPath":"res/Text/Shader/TextFragmentShader.txt",
+	"textureFontPath":"res/Text/font.png",
+	"TTFPath":"res/Text/Tkachevica.ttf",
+	"languagePath":"res/Text/Language/transleterENRU.json"
+}

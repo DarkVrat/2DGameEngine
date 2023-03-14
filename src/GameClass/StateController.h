@@ -12,7 +12,7 @@ public:
 
 	void setState(const std::string& nextState);
 	void update(const double& duration);
-	void render(const glm::vec2& position, const glm::vec2& size, const float& rotation, const float& layer);
+	void render(const glm::vec3& position, const glm::vec2& size, const float& rotation);
 
 private:
 	std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>> m_sprites;

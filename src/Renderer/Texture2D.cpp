@@ -3,8 +3,8 @@
 namespace Renderer {
 	 //(RUS) Создание текстуры, заполнение данных о текстуре
 	//(ENG) Creating a texture, filling in texture data
-	Texture2D::Texture2D(const GLuint& width, const GLuint& height, const unsigned char* data, const unsigned& channels, const GLenum& filter, const GLenum& wrapMode)  
-		:m_widht(width), m_height(height) {
+	Texture2D::Texture2D(const GLuint& width, const GLuint& height, const unsigned char* data, bool blend, std::shared_ptr<ShaderProgram> shader, const unsigned& channels, const GLenum& filter, const GLenum& wrapMode)
+		:m_widht(width), m_height(height), m_blend(blend), m_shader(shader) {
 		switch (channels){
 		case 3:
 			m_mode = GL_RGB;
@@ -39,6 +39,8 @@ namespace Renderer {
 		m_mode = texture2d.m_mode;
 		m_height = texture2d.m_height;
 		m_widht = texture2d.m_widht;
+		m_blend = texture2d.m_blend;
+		m_shader = texture2d.m_shader;
 		return *this;
 	}
 	Texture2D::Texture2D(Texture2D&& texture2d) noexcept {
@@ -47,6 +49,8 @@ namespace Renderer {
 		m_mode = texture2d.m_mode;
 		m_height = texture2d.m_height;
 		m_widht = texture2d.m_widht;
+		m_blend = texture2d.m_blend;
+		m_shader = texture2d.m_shader;
 	}
 	
 	 //(RUS) Удаление текстуры
@@ -55,26 +59,9 @@ namespace Renderer {
 
 	 //(RUS) bind текстуры для использования
 	//(ENG) bind texture to use
-	void Texture2D::bind() const { glBindTexture(GL_TEXTURE_2D, m_ID); }
-
-	 //(RUS) Добавление подтекстуры
-	//(ENG) Adding Subtexture
-	void Texture2D::setSubTextureMap(const std::map<std::string, Renderer::Texture2D::SubTexture2D>& subTextures){
-		m_subTexture=subTextures;
-		for (auto& It : m_subTexture) {
-			It.second.m_leftTopUV.x /= m_widht;
-			It.second.m_leftTopUV.y /= m_height;
-			It.second.m_rightBottomUV.x /= m_widht;
-			It.second.m_rightBottomUV.y /= m_height;
-		}
-	}
-
-	 //(RUS) Получение подтекстуры
-	//(ENG) Getting a subtexture
-	const Texture2D::SubTexture2D& Texture2D::getSubTexture2D(const std::string& name) const {
-		auto it = m_subTexture.find(name); 
-		if (it != m_subTexture.end()) return it->second; 
-		const static SubTexture2D defaultSubTex;
-		return defaultSubTex; 
+	void Texture2D::bind() const { 
+		m_shader->use();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_ID); 
 	}
 }

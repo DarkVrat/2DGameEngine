@@ -7,7 +7,6 @@
 
 #define E_STANDART UserInterface::Button::E_BUTTON_TYPE::STANDART
 #define E_ARROW UserInterface::Button::E_BUTTON_TYPE::ARROW
-#define E_SLIDER UserInterface::Button::E_BUTTON_TYPE::SLIDER
 #define E_FALSE UserInterface::Button::E_BUTTON_TYPE::FALSE
 #define E_TRUE UserInterface::Button::E_BUTTON_TYPE::TRUE
 #define E_NONE UserInterface::Button::E_BUTTON_TYPE::NONE
@@ -19,7 +18,6 @@ namespace UserInterface {
 		enum E_BUTTON_TYPE : uint8_t {
 			STANDART,
 			ARROW,
-			SLIDER,
 			FALSE,
 			TRUE,
 			NONE
@@ -42,11 +40,10 @@ namespace UserInterface {
 	private:
 		std::shared_ptr<Renderer::Sprite> m_SpriteButtonOn;
 		std::shared_ptr<Renderer::Sprite> m_SpriteButtonOff;
-		glm::vec2 m_position;
+		glm::vec3 m_position;
 		glm::vec2 m_size;
 		glm::vec4 m_area;
 		float m_rotation;
-		GLfloat m_layer;
 		PRINT_TEXT::Text m_textButton;
 		E_BUTTON_TYPE m_typeButton;
 

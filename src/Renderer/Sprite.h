@@ -3,9 +3,10 @@
 #include <memory>
 #include <string>
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include "VertexBuffer.h"
 #include "VertexArray.h"
-#include "IndexBuffer.h"
 
  //(RUS) Класс спрайта, хранит буферы, ссылку на шейдер, и ссылку на текстуру, необходимые для отрисовки
 //(ENG) Sprite class, stores the buffers, shader reference, and texture reference required for rendering
@@ -16,18 +17,13 @@ namespace Renderer {
 
 	class Sprite {
 	public:
-		Sprite(const std::shared_ptr<Texture2D>& pTexture, const std::string& initialSubTexture, const std::shared_ptr<ShaderProgram>& pShaderProgram);
+		Sprite(const std::shared_ptr<Texture2D>& pTexture, const glm::vec4& coordTexture);
 		~Sprite() {};
 		
-		void render(const glm::vec2& position, const glm::vec2& size, const float& rotation, const float& layer);
+		void render(const glm::vec3& position, const glm::vec2& size, const float& rotation);
 
 	protected:
 		std::shared_ptr<Texture2D> m_texture; 
-		std::shared_ptr<ShaderProgram> m_shaderProgram; 
-
-		VertexArray m_vertexArray;
-		VertexBuffer m_vertexCoordsBuffer;
-		VertexBuffer m_textureCoordsBuffer;
-		IndexBuffer m_indexBuffer;
+		glm::vec4 m_coordTexture;
 	};
 }

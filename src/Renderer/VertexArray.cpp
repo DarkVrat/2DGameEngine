@@ -19,12 +19,13 @@ namespace Renderer {
 		vertexArray.m_id = 0;
 	}
 
-	void VertexArray::addBuffer(const VertexBuffer& vertexBuffer, GLuint layoutID, GLuint size, bool divisor){
+	void VertexArray::addBuffer(const VertexBuffer& vertexBuffer, GLuint layoutID, GLuint size, bool divisor, GLvoid* pointer){
 		bind();
 		vertexBuffer.bind();
 
 		glEnableVertexAttribArray(layoutID);
-		glVertexAttribPointer(layoutID, size, GL_FLOAT, GL_FALSE, size * sizeof(float), (void*)0);
+		glVertexAttribPointer(layoutID, size, GL_FLOAT, GL_FALSE, size * sizeof(float), pointer);
+		
 
 		if (divisor) {
 			glVertexAttribDivisor(layoutID, 1);

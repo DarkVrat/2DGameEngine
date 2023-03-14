@@ -10,7 +10,6 @@ std::vector<uint8_t> Renderer::PrintText::m_advanceChar;
 std::shared_ptr<Renderer::Texture2D> Renderer::PrintText::m_texture;
 std::vector<std::pair<Renderer::PrintText::Text, double>> Renderer::PrintText::m_timeBufferText;
 std::vector<Renderer::PrintText::Text> Renderer::PrintText::m_bufferText;
-std::shared_ptr<Renderer::ShaderProgram> Renderer::PrintText::m_shader;
 
 std::shared_ptr<Renderer::VertexArray> Renderer::PrintText::m_VAO;
 Renderer::VertexBuffer Renderer::PrintText::m_PositionVBO;
@@ -26,13 +25,11 @@ namespace Renderer {
         m_advanceChar.clear();
         m_timeBufferText.clear();
         m_texture = nullptr;
-        m_shader = nullptr;
     } 
 
      //(RUS) Создание символов, и установка параметров
     //(ENG) Creating Symbols and Setting Parameters
-    void PrintText::init(const std::shared_ptr<ShaderProgram>& shader, const std::string& fontPath, const std::shared_ptr<Texture2D>& texture) {
-        m_shader=shader;
+    void PrintText::init(const std::string& fontPath, const std::shared_ptr<Texture2D>& texture) {
         m_texture = texture;
 
         FT_Library ft;
@@ -40,7 +37,7 @@ namespace Renderer {
             std::cerr << "(!) ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
 
         FT_Face face;
-        if (FT_New_Face(ft, (RESOURCE_MANAGER::getExecutablePath() + fontPath).c_str(), 0, &face))
+        if (FT_New_Face(ft, (RESOURCE_MANAGER::getExecutablePath() +"/" + fontPath).c_str(), 0, &face))
             std::cerr << "(!) ERROR::FREETYPE: Failed to load font" << std::endl;
 
         FT_Set_Pixel_Sizes(face, 0, m_fontSize);
@@ -218,8 +215,6 @@ namespace Renderer {
             } 
         }
 
-        glActiveTexture(GL_TEXTURE0);
-        m_shader->use();
         m_texture->bind();
 
         m_PositionVBO.update(&Position[0], Position.size() * sizeof(glm::vec4));
@@ -251,7 +246,11 @@ namespace Renderer {
     void PrintText::terminate(){
         m_timeBufferText.clear();
         m_advanceChar.clear();
-        m_shader.~shared_ptr();
         m_texture.~shared_ptr();
+    }
+
+    void PrintText::setProjection(const glm::mat4& projectionMatrix){
+        m_texture->getShader()->use();
+        m_texture->getShader()->setMatrix4("projection", projectionMatrix);
     }
 }

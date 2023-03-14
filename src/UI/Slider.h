@@ -29,14 +29,13 @@ namespace UserInterface {
 		Button m_buttonLess;
 		Button m_buttonMore;
 		glm::vec2 m_MinMax;
-		glm::vec2 m_position;
+		glm::vec3 m_position;
 		glm::vec2 m_size;
 		glm::vec2 m_positionSlider;
 		glm::vec2 m_sizeSlider;
 		glm::vec4 m_area;
 		float m_step;
 		float m_value;
-		float m_layer;
 		bool m_view;
 		bool m_click;
 		std::function<void(float value)> m_callback;

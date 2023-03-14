@@ -14,8 +14,7 @@ namespace UserInterface {
 
 	Button::Button(){
 		setType(NONE);
-		m_position = glm::vec2(0, 0);
-		m_layer = 0.f;
+		m_position = glm::vec3(0, 0, 0);
 		m_size = glm::vec2(1, 1);
 		m_click = false;
 	}
@@ -28,8 +27,7 @@ namespace UserInterface {
 	void Button::create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text, GLint scale, glm::vec3 color) {
 		setType(type);
 
-		m_position = glm::vec2(position.x, position.y);
-		m_layer = position.z;
+		m_position = position;
 		m_size = size;
 		m_area = glm::vec4(m_position.x - m_size.x / 2, m_position.y - m_size.y / 2, m_position.x + m_size.x / 2, m_position.y + m_size.y / 2);
 		m_rotation = 0.f;
@@ -46,8 +44,7 @@ namespace UserInterface {
 	void Button::create(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type){
 		setType(type);
 
-		m_position = glm::vec2(position.x, position.y);
-		m_layer = position.z;
+		m_position = position;
 		m_size = size;
 		m_area = glm::vec4(m_position.x - m_size.x / 2, m_position.y - m_size.y / 2, m_position.x + m_size.x / 2, m_position.y + m_size.y / 2);
 		m_rotation = rotation;
@@ -57,10 +54,10 @@ namespace UserInterface {
 
 	void Button::render(){
 		if (m_click) {
-			m_SpriteButtonOn->render(m_position, m_size, m_rotation, m_layer);
+			m_SpriteButtonOn->render(m_position, m_size, m_rotation);
 		}
 		else {
-			m_SpriteButtonOff->render(m_position, m_size, m_rotation, m_layer);
+			m_SpriteButtonOff->render(m_position, m_size, m_rotation);
 		}
 
 		if (m_typeButton == STANDART) {
@@ -94,24 +91,20 @@ namespace UserInterface {
 		m_typeButton = type;
 		switch (type){
 		case UserInterface::Button::STANDART:
-			m_SpriteButtonOff = RESOURCE_MANAGER::getSprite("S_button_Off");
-			m_SpriteButtonOn = RESOURCE_MANAGER::getSprite("S_button_On");
+			m_SpriteButtonOff = RESOURCE_MANAGER::getSprite("Button_Off");
+			m_SpriteButtonOn = RESOURCE_MANAGER::getSprite("Button_On");
 			break;
 		case UserInterface::Button::ARROW:
-			m_SpriteButtonOff = RESOURCE_MANAGER::getSprite("S_arrow_Off");
-			m_SpriteButtonOn = RESOURCE_MANAGER::getSprite("S_arrow_On");
-			break;
-		case UserInterface::Button::SLIDER:
-			m_SpriteButtonOff = RESOURCE_MANAGER::getSprite("S_slider_Off");
-			m_SpriteButtonOn = RESOURCE_MANAGER::getSprite("S_slider_On");
+			m_SpriteButtonOff = RESOURCE_MANAGER::getSprite("Arrow_Off");
+			m_SpriteButtonOn = RESOURCE_MANAGER::getSprite("Arrow_On");
 			break;
 		case UserInterface::Button::FALSE:
-			m_SpriteButtonOff = RESOURCE_MANAGER::getSprite("S_false_Off");
-			m_SpriteButtonOn = RESOURCE_MANAGER::getSprite("S_false_On");
+			m_SpriteButtonOff = RESOURCE_MANAGER::getSprite("False_Off");
+			m_SpriteButtonOn = RESOURCE_MANAGER::getSprite("False_On");
 			break;
 		case UserInterface::Button::TRUE:
-			m_SpriteButtonOff = RESOURCE_MANAGER::getSprite("S_true_Off");
-			m_SpriteButtonOn = RESOURCE_MANAGER::getSprite("S_true_On");
+			m_SpriteButtonOff = RESOURCE_MANAGER::getSprite("True_Off");
+			m_SpriteButtonOn = RESOURCE_MANAGER::getSprite("True_On");
 			break;
 		default:
 			m_SpriteButtonOn = nullptr;

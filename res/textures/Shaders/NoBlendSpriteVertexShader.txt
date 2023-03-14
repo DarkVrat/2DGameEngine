@@ -1,0 +1,25 @@
+#version 460
+layout(location = 0) in vec2 vertex;
+layout(location = 1) in vec4 texture; 
+layout(location = 2) in vec4 forMat0; 
+layout(location = 3) in vec4 forMat1; 
+layout(location = 4) in vec4 forMat2; 
+layout(location = 5) in vec4 forMat3; 
+out vec2 texCoord;
+
+uniform mat4 projection;
+
+void main() {
+	
+
+   if(vertex.x<0.5)
+		texCoord.x = texture.x;
+	else
+		texCoord.x = texture.z;
+	if(vertex.y<0.5)
+		texCoord.y = texture.y;
+	else
+		texCoord.y = texture.w;
+		
+   gl_Position = projection * mat4(forMat0,forMat1,forMat2,forMat3) * vec4(vertex, 1.0, 1.0);
+}

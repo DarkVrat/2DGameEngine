@@ -9,7 +9,6 @@
 #include "Texture2D.h"
 #include "VertexBuffer.h"
 #include "VertexArray.h"
-#include "IndexBuffer.h"
 
 #define PRINT_TEXT Renderer::PrintText
 #define CENTR true
@@ -35,7 +34,7 @@ namespace Renderer {
 			Text() :ms_text(""), ms_position(glm::vec3(0, 0, 0)), ms_scale(32), ms_color(glm::vec3(1, 1, 1)) {}
 		};
 
-		static void init(const std::shared_ptr<ShaderProgram>& shader, const std::string& fontPath, const std::shared_ptr<Texture2D>& texture);
+		static void init(const std::string& fontPath, const std::shared_ptr<Texture2D>& texture);
 
 		static void printTextWrapping(Text text, const int& size, const bool& centr = LEFT, const double& Time = -1.0);
 		static void printText(const Text& text, const double& Time = -1.0);
@@ -46,12 +45,13 @@ namespace Renderer {
 		static float sizeText(std::string text, GLint scale);
 
 		static void terminate();
+
+		static void setProjection(const glm::mat4& projectionMatrix);
 	private:
 		PrintText();
 		~PrintText() {};
 
 		static std::vector<uint8_t> m_advanceChar;
-		static std::shared_ptr<ShaderProgram> m_shader;
 		static std::shared_ptr<Texture2D> m_texture;
 		static std::shared_ptr<VertexArray> m_VAO;
 		static VertexBuffer m_PositionVBO;

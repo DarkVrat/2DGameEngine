@@ -37,12 +37,18 @@ public:
 	static void unloadAllRes();
 
 	static void loadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
-	static void loadTexture(const std::string& textureName, const std::string& texturePatn);
-	static void loadTexture(const std::string& textureName, const std::string& texturePatn, const std::map<std::string, Renderer::Texture2D::SubTexture2D>& subTextures);
-	static void loadSprite(const std::string& spriteName, const std::string& textureName, const std::string& shaderName, const std::string& subTextureName = "Default");
-	static void loadStateAnimation(const std::string& stateName, const  std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>>& frames, const std::vector<std::string>& sources, const std::string& nextState, const bool& uninterrupted);
-	static void loadSound(const std::string& soundName, const std::string& soundPath);
+	static void loadOneTexture(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const bool& blend);
+	static void loadTextureCut(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const bool& blend, const int& heightSprite, const int& widthSprite, const std::vector<std::string>& sprites);
+	static void loadTextureAtlas(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const bool& blend, const std::map<std::string, glm::vec4>& sprites);
+	static void loadSprite(const std::string& spriteName, const std::string& textureName, const glm::vec4& coords=glm::vec4(0,0,1,1));
+	//static void loadStateAnimation(const std::string& stateName, const  std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>>& frames, const std::vector<std::string>& sources, const std::string& nextState, const bool& uninterrupted);
+	//static void loadSound(const std::string& soundName, const std::string& soundPath);
 	
+	static void LoadAnimationResurces(const std::string& JSONPath);
+	static void LoadAudioResurces(const std::string& JSONPath);
+	static void LoadTextResurces(const std::string& JSONPath);
+	static void LoadTextureResurces(const std::string& JSONPath);
+
 	static std::shared_ptr<Renderer::ShaderProgram> getShader(const std::string& shaderName);
 	static std::shared_ptr<Renderer::Texture2D> getTexture(const std::string& textureName);
 	static std::shared_ptr<Renderer::Sprite> getSprite(const std::string& spriteName);
@@ -50,8 +56,10 @@ public:
 	static std::shared_ptr<Audio::FileOfSound> getSound(const std::string& soundName);
 	static std::shared_ptr<Audio::SampleSourse> getSampleSourse(const std::string& sampleName);
 
+	static void setProjection(const glm::mat4& projectionMatrix);
+
 	static rapidjson::Document loadJSONDoc(const std::string& JSONPath);
-	static bool loadJSONResurces(const std::string& JSONPath);
+	static bool loadJSONResurces();
 
 private:
 	typedef std::map<const std::string, std::shared_ptr<Renderer::StateAnimation>> StateAnimationMap;

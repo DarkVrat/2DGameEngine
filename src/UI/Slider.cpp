@@ -12,12 +12,11 @@ namespace UserInterface{
 		m_spriteBackGroung = nullptr;
 		m_spriteSliderOn = nullptr;
 		m_spriteSliderOff = nullptr;
-		m_position = glm::vec2(0, 0);
+		m_position = glm::vec3(0, 0, 0);
 		m_size = glm::vec2(0, 0);
 		m_positionSlider = glm::vec2(0,0);
 		m_MinMax = glm::vec2(0, 0);
 		m_value = 0.f;
-		m_layer = 0.f;
 		m_view = false;
 		m_step = 0.f;
 	}
@@ -33,13 +32,12 @@ namespace UserInterface{
 		m_MinMax = minMax;
 		m_value = startValue;
 		m_step = (minMax.y - minMax.x) / 20;
-		m_position = glm::vec2(position.x, position.y);
-		m_layer = position.z;
+		m_position = position;
 
 
-		m_spriteBackGroung = RESOURCE_MANAGER::getSprite("S_slider_Background");
-		m_spriteSliderOn = RESOURCE_MANAGER::getSprite("S_slider_On");
-		m_spriteSliderOff = RESOURCE_MANAGER::getSprite("S_slider_Off");
+		m_spriteBackGroung = RESOURCE_MANAGER::getSprite("Slider_Background");
+		m_spriteSliderOn = RESOURCE_MANAGER::getSprite("Slider_On");
+		m_spriteSliderOff = RESOURCE_MANAGER::getSprite("Slider_Off");
 
 		if (view) {
 			m_buttonLess.create(glm::vec3(position.x - (size.x / 2 - size.y / 2), position.y, position.z), glm::vec2(size.y, size.y), 90.f, E_ARROW);
@@ -76,12 +74,12 @@ namespace UserInterface{
 	void Slider::render(){
 		m_buttonLess.render();
 		m_buttonMore.render();
-		m_spriteBackGroung->render(m_position, m_size, 0.f, m_layer);
+		m_spriteBackGroung->render(m_position, m_size, 0.f);
 		if (m_click) {
-			m_spriteSliderOn->render(m_positionSlider, m_sizeSlider, 0.f, m_layer+0.1f);
+			m_spriteSliderOn->render(glm::vec3(m_positionSlider, m_position.z+0.1f), m_sizeSlider, 0.f);
 		}
 		else {
-			m_spriteSliderOff->render(m_positionSlider, m_sizeSlider, 0.f, m_layer + 0.1f);;
+			m_spriteSliderOff->render(glm::vec3(m_positionSlider, m_position.z + 0.1f), m_sizeSlider, 0.f);;
 		}
 	}
 

@@ -58,7 +58,7 @@ namespace Audio {
 
 		m_SoundEffectBuffers.emplace(name, buffer);
 
-		RESOURCE_MANAGER::loadSound(name, file->getFileName());
+		//RESOURCE_MANAGER::loadSound(name, file->getFileName());
 
 		return buffer;
 	}

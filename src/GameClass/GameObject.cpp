@@ -7,15 +7,14 @@
 
  //(RUS) Создание игрового объекта со всеми параметрами
 //(ENG) Creating a game object with all parameters
-GameObject::GameObject(const std::string& startState, const glm::vec2& position, const glm::vec2& size, const float& rotation, const float& layer){
+GameObject::GameObject(const std::string& startState, const glm::vec3& position, const glm::vec2& size, const float& rotation){
 	m_stateControll = std::make_shared<StateController>(startState);
 	m_position=position;
 	m_size=size;
 	m_rotation=rotation;
-	m_layer = layer;
 
 	std::shared_ptr<Audio::SoundEffectsPlayer> player = MAKE_SOUND_PLAYER("sword");
-	player->setVec3Param(AL_POSITION, glm::vec3(position, 0.f));
+	player->setVec3Param(AL_POSITION, position);
 	m_mapPlayer.emplace("Attack1", player);
 }
 
@@ -34,7 +33,7 @@ void GameObject::update(const double& duration){
  //(RUS) отрисовка игрового объекта
 //(ENG) game object rendering
 void GameObject::render(){
-	m_stateControll->render(m_position, m_size, m_rotation, m_layer);
+	m_stateControll->render(m_position, m_size, m_rotation);
 }
 
  //(RUS) событие атаки, запуск анимации, и воспроихведение звука
@@ -53,11 +52,9 @@ void GameObject::idle(){
 
  //(RUS) геттеры и сеттеры
 //(ENG) getters and setters
-void GameObject::setPosition(const glm::vec2& position) { m_position = position; }
+void GameObject::setPosition(const glm::vec3& position) { m_position = position; }
 void GameObject::setSize(const glm::vec2& size) { m_size = size; }
 void GameObject::setRotation(const float& rotation) { m_rotation = rotation; }
-void GameObject::setLayer(const float& layer) { m_layer = layer; }
-glm::vec2 GameObject::getPosition() { return m_position; }
+glm::vec3 GameObject::getPosition() { return m_position; }
 glm::vec2 GameObject::getSize() { return m_size; }
 float GameObject::getRotation() { return m_rotation; }
-float GameObject::getLayer() { return m_layer; }

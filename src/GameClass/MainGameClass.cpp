@@ -10,6 +10,7 @@
 #include "../Managers/ConfigManager.h"
 #include "../Managers/ResourceManager.h"
 #include "../Renderer/PrintText.h"
+#include "../Renderer/RenderEngine.h"
 
 
 std::vector<std::shared_ptr<GameObject>> MainGameClass::m_vectorGameObject;
@@ -68,7 +69,7 @@ void MainGameClass::render() {
     m_textSwich.render();
     m_testSliderVertical.render();
     m_testSliderHorizontal.render();
-    m_testList.render();
+    m_testList.render(); 
     PRINT_TEXT::printText(PRINT_TEXT::Text(std::to_string(m_vecToTestSliders.x) + " " + std::to_string(m_vecToTestSliders.y), glm::vec3(300, 350, 10)));
     PRINT_TEXT::printText(PRINT_TEXT::Text("FullScreen: " + std::to_string(CONFIG_MANAGER::getFullScreen()), glm::vec3(40, 144, 10)));
 
@@ -78,21 +79,23 @@ void MainGameClass::render() {
     PRINT_TEXT::printText(PRINT_TEXT::Text(TRANSLETE("menu", "continue"), glm::vec3(700, 460, 10)));
     Translater::setLanguage("NO");
     PRINT_TEXT::printText(PRINT_TEXT::Text(TRANSLETE("menu", "loadGame"), glm::vec3(700, 420, 10)));
-     
+    
+    RENDER_ENGINE::render();
     PRINT_TEXT::renderBuffer();
+
 }
 
  //(RUS) сортировка объектов по их layer, для отрисовки
 //(ENG) sorting objects by their layer, for rendering
 void MainGameClass::sortGameObject(){
-    auto comp = [](std::shared_ptr<GameObject> a, std::shared_ptr<GameObject> b) {return a->getLayer() < b->getLayer();};
+    auto comp = [](std::shared_ptr<GameObject> a, std::shared_ptr<GameObject> b) {return a->getPosition().z < b->getPosition().z; };
     std::sort(m_vectorGameObject.begin(), m_vectorGameObject.end(), comp);
 }
 
  //(RUS) Инициализация, загрузка ресурсов, установка параметров для Аудио::SoundDevice, создание объектов
 //(ENG) Initialization, loading resources, setting parameters for Audio::SoundDevice, creating objects
 bool MainGameClass::init() {
-    RESOURCE_MANAGER::loadJSONResurces("res/resJSON/resources.json");
+    RESOURCE_MANAGER::loadJSONResurces();
 
     SOUND_DEVICE::setGain(CONFIG_MANAGER::getVolumeSounde());
     SOUND_DEVICE::setAttunation(AL_INVERSE_DISTANCE_CLAMPED);
@@ -103,7 +106,7 @@ bool MainGameClass::init() {
 
     m_testButton[0].create(glm::vec3(180, 100, 10), glm::vec2(360, 80),E_STANDART, "size-100", 80, glm::vec3(0, 0, 0));
     m_testButton[0].setCallBack([]() {size -= 100;});
-
+     
     m_testButton[1].create(glm::vec3(540, 100, 10), glm::vec2(360, 80),E_STANDART, "size+100", 80, glm::vec3(0, 0, 0));
     m_testButton[1].setCallBack([]() {size += 100;});
 
@@ -153,16 +156,10 @@ void MainGameClass::events(){
 void MainGameClass::setProjectionMat(const glm::ivec2& window){
     m_window = window;
 
-    glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 100.f);
+    glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 200.f);
 
-    auto pSpriteShaderProgram = RESOURCE_MANAGER::getShader("spriteShader");
-    pSpriteShaderProgram->use();
-    pSpriteShaderProgram->setInt("tex", 0);
-    pSpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
-
-    auto pTextShaderProgram = RESOURCE_MANAGER::getShader("textShader");
-    pTextShaderProgram->use();
-    pTextShaderProgram->setMatrix4("projection", projectionMatrix);
+    RESOURCE_MANAGER::setProjection(projectionMatrix);
+    PRINT_TEXT::setProjection(projectionMatrix);
 }
 
  //(RUS) Уничтожение игровых объектов

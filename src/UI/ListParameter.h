@@ -28,9 +28,8 @@ namespace UserInterface {
 		Button m_buttonRight;
 
 		std::shared_ptr<Renderer::Sprite> m_spriteBackGroung;
-		glm::vec2 m_position;
+		glm::vec3 m_position;
 		glm::vec2 m_size;
-		float m_layer;
 
 		PRINT_TEXT::Text m_text;
 		int m_index;
@@ -46,9 +45,8 @@ namespace UserInterface {
 	template<class T>
 	inline ListParameter<T>::ListParameter(){
 		m_spriteBackGroung=nullptr;
-		m_position = glm::vec2(0, 0);
+		m_position = glm::vec3(0, 0, 0);
 		m_size = glm::vec2(0, 0);
-		m_layer = 0.f;
 		m_text;
 		m_index=0;
 	}
@@ -61,10 +59,9 @@ namespace UserInterface {
 	template<class T>
 	inline void ListParameter<T>::create(glm::vec3 position, glm::vec2 size, int scaleText, std::vector<T> vectorParam) {
 		m_index = 0;
-		m_position = glm::vec2(position.x, position.y);
-		m_layer = position.z;
+		m_position = position;
 		m_size = glm::vec2(size.x - size.y * 2, size.y);
-		m_spriteBackGroung = RESOURCE_MANAGER::getSprite("S_button_Off");
+		m_spriteBackGroung = RESOURCE_MANAGER::getSprite("Button_Off");
 		m_text.ms_scale = scaleText;
 		m_text.ms_color = glm::vec3(0, 0, 0);
 		m_vectorParametrs = vectorParam;
@@ -90,7 +87,7 @@ namespace UserInterface {
 	inline void ListParameter<T>::render() {
 		m_buttonLeft.render();
 		m_buttonRight.render();
-		m_spriteBackGroung->render(m_position, m_size, 0.f, m_layer);
+		m_spriteBackGroung->render(m_position, m_size, 0.f);
 		PRINT_TEXT::printText(m_text);
 	}
 
@@ -111,7 +108,7 @@ namespace UserInterface {
 		m_text.ms_text = m_typeToString(m_vectorParametrs[m_index]);
 
 		glm::vec3 posText(0, 0, 0);
-		posText.z = m_layer + 0.1f;
+		posText.z = m_position.z + 0.1f;
 		posText.y = m_position.y - m_text.ms_scale / 2.0;
 		posText.x = m_position.x - Renderer::PrintText::sizeText(m_text.ms_text, m_text.ms_scale) / 2.0;
 		m_text.ms_position = posText;

@@ -14,7 +14,7 @@
 
 class GameObject {
 public:
-	GameObject(const std::string& startState, const glm::vec2& position, const glm::vec2& size, const float& rotation, const float& layer=0.f);
+	GameObject(const std::string& startState, const glm::vec3& position, const glm::vec2& size, const float& rotation);
 	~GameObject();
 
 	void update(const double& duration);
@@ -23,20 +23,17 @@ public:
 	void attack();
 	void idle();
 
-	void setPosition(const glm::vec2& position);
+	void setPosition(const glm::vec3& position);
 	void setSize(const glm::vec2& size);
 	void setRotation(const float& rotation);
-	void setLayer(const float& layer);
-	glm::vec2 getPosition();
+	glm::vec3 getPosition();
 	glm::vec2 getSize();
 	float getRotation();
-	float getLayer();
 
 private:
 	std::map<std::string, std::shared_ptr<Audio::SoundEffectsPlayer>> m_mapPlayer;
 	std::shared_ptr<StateController> m_stateControll;
-	glm::vec2 m_position;
+	glm::vec3 m_position;
 	glm::vec2 m_size;
 	float m_rotation;
-	float m_layer;
 };

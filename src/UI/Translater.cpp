@@ -1,14 +1,11 @@
 #include "Translater.h"
 
-#include <rapidjson/document.h>
 #include "../Managers/ResourceManager.h"
 
 std::map<std::string, std::map<std::string, Translater::Dictionary>> Translater::m_transleter;
 std::string Translater::m_language;
 
-void Translater::init(){
-	rapidjson::Document language = RESOURCE_MANAGER::loadJSONDoc("res/language/transleterENRU.json");
-
+void Translater::init(rapidjson::Document language){
 	auto subject = language.FindMember("subject");
 	if (subject != language.MemberEnd()) {
 		for (const auto& currentSubject : subject->value.GetArray()) {

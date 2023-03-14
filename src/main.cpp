@@ -91,7 +91,6 @@ int main(int argc, char** argv){
        
     SOUND_DEVICE::init();
     SOUND_LIBRARY::init();
-    Translater::init();
 
     MAIN_GAME_CLASS::init();
     MAIN_GAME_CLASS::setProjectionMat(window);

@@ -68,6 +68,6 @@ void StateController::update(const double& duration){
 
  //(RUS) Рендеринг спрайта
 //(ENG) Sprite rendering
-void StateController::render(const glm::vec2& position, const glm::vec2& size, const float& rotation, const float& layer){
-	m_sprites[m_indexFrame].first->render(position, size, rotation, layer);
+void StateController::render(const glm::vec3& position, const glm::vec2& size, const float& rotation){
+	m_sprites[m_indexFrame].first->render(position, size, rotation);
 }

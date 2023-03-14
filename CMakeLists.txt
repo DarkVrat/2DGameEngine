@@ -17,8 +17,6 @@ add_executable(${PROJECT}
 	src/Renderer/VertexBuffer.h
 	src/Renderer/VertexArray.cpp
 	src/Renderer/VertexArray.h
-	src/Renderer/IndexBuffer.cpp
-	src/Renderer/IndexBuffer.h
 	src/Renderer/PrintText.cpp
 	src/Renderer/PrintText.h
 	src/Renderer/RenderEngine.cpp

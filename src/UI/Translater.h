@@ -2,6 +2,7 @@
 
 #include <string>
 #include <map>
+#include <rapidjson/document.h>
 
 #define TRANSLETE Translater::find
 
@@ -18,7 +19,7 @@ public:
 		std::string getEN() { return ms_EN; }
 	};
 
-	static void init();
+	static void init(rapidjson::Document language);
 
 	static std::string find(const std::string& subject, const std::string& text);
 

@@ -45,13 +45,17 @@ namespace UserInterface{
 			m_sizeSlider = glm::vec2(size.y, size.y);
 			m_size = glm::vec2(size.x - size.y * 2, size.y);
 			m_area = glm::vec4(m_position.x - m_size.x / 2 + m_size.y / 2, m_position.y - m_size.y / 2, m_position.x + m_size.x / 2 - m_size.y / 2, m_position.y + m_size.y / 2);
+			m_areaMin = glm::vec4(m_position.x - m_size.x / 2, m_area.y, m_area.x, m_area.w);
+			m_areaMax = glm::vec4(m_area.z, m_area.y, m_position.x + m_size.x / 2, m_area.w);
 		}
 		else {
-			m_buttonLess.create(glm::vec3(position.x , position.y + (size.x / 2 - size.y / 2), position.z), glm::vec2(size.x, size.x), 180.f, E_ARROW);
-			m_buttonMore.create(glm::vec3(position.x , position.y - (size.x / 2 - size.y / 2), position.z), glm::vec2(size.x, size.x), 0.f, E_ARROW);
+			m_buttonLess.create(glm::vec3(position.x, position.y + (size.x / 2 - size.y / 2), position.z), glm::vec2(size.x, size.x), 180.f, E_ARROW);
+			m_buttonMore.create(glm::vec3(position.x, position.y - (size.x / 2 - size.y / 2), position.z), glm::vec2(size.x, size.x), 0.f, E_ARROW);
 			m_sizeSlider = glm::vec2(size.x, size.x);
 			m_size = glm::vec2(size.x, size.y - size.x * 2);
 			m_area = glm::vec4(m_position.x - m_size.x / 2, m_position.y - m_size.y / 2 + m_size.x / 2, m_position.x + m_size.x / 2, m_position.y + m_size.y / 2 - m_size.x / 2);
+			m_areaMin = glm::vec4(m_area.x, m_position.y - m_size.y / 2, m_area.z, m_area.y);
+			m_areaMax = glm::vec4(m_area.x, m_area.w, m_area.z, m_position.y + m_size.y / 2);
 		}
 
 		m_buttonLess.setCallBack([&]() {
@@ -90,36 +94,57 @@ namespace UserInterface{
 		if (m_buttonMore.checkClick()) {
 			m_callback(m_value);
 		}
-		if (MOUSE::ifInArea(m_area)) {
-			if (MOUSE::ifClamped(GLFW_MOUSE_BUTTON_LEFT)){
+		if (MOUSE::ifInArea(m_areaMin)||MOUSE::ifInArea(m_area)|| MOUSE::ifInArea(m_areaMax)) {
+			if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 				m_click = true;
-				float procent;
-				if (m_view) {
-					m_positionSlider.x = MOUSE::getPosition().x;
-					float s = m_size.x - m_size.y;
-					procent = (m_positionSlider.x - m_position.x + s / 2) / s ;
-				}
-				else {
-					m_positionSlider.y = MOUSE::getPosition().y;
-					float s = m_size.y - m_size.x;
-					procent = (m_positionSlider.y - m_position.y + s / 2) / s;
-  				}
-				m_value = (m_MinMax.y - m_MinMax.x) * procent + m_MinMax.x;
 			}
+
+			if (MOUSE::ifClamped(GLFW_MOUSE_BUTTON_LEFT)&&m_click){
+
+				if (MOUSE::ifInArea(m_areaMin)) {
+					m_value = m_MinMax.x;
+					if (m_view) {m_positionSlider.x = m_area.x;}
+					else {m_positionSlider.y = m_area.y;}
+				}
+
+				if (MOUSE::ifInArea(m_areaMax)) {
+					m_value = m_MinMax.y;
+					if (m_view) {m_positionSlider.x = m_area.z;}
+					else {m_positionSlider.y = m_area.w;}
+				}
+
+				if (MOUSE::ifInArea(m_area)) {
+					float procent;
+					if (m_view) {
+						m_positionSlider.x = MOUSE::getPosition().x;
+						float s = m_size.x - m_size.y;
+						procent = (m_positionSlider.x - m_position.x + s / 2) / s;
+					}
+					else {
+						m_positionSlider.y = MOUSE::getPosition().y;
+						float s = m_size.y - m_size.x;
+						procent = (m_positionSlider.y - m_position.y + s / 2) / s;
+					}
+					m_value = (m_MinMax.y - m_MinMax.x) * procent + m_MinMax.x;
+				}
+
+				m_callback(m_value);
+			}
+
 			if (MOUSE::ifReleased(GLFW_MOUSE_BUTTON_LEFT)) {
 				m_click = false;
-				m_callback(m_value);
 			}
 		}
 		else {
-			if(m_click)
+			if (m_click) {
 				m_callback(m_value);
-			m_click = false;
+				m_click = false;
+			}
 		}
 	}
 
 	void Slider::updatePositionSlider(){
-		float procent = m_value / (m_MinMax.y - m_MinMax.x);
+		float procent = (m_value-m_MinMax.x) / (m_MinMax.y - m_MinMax.x);
 		if (m_view) {
 			float s = m_size.x - m_size.y;
 			m_positionSlider = glm::vec2(m_position.x-s/2+s*procent, m_position.y);

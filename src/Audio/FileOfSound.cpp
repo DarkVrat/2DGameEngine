@@ -10,7 +10,7 @@ namespace Audio{
 	FileOfSound::FileOfSound(const std::string& filePath){
 		m_fileName =  filePath;
 		 
-		m_sndFile = sf_open((RESOURCE_MANAGER::getExecutablePath()+filePath).c_str(), SFM_READ, &m_sfInfo);
+		m_sndFile = sf_open((RESOURCE_MANAGER::getExecutablePath()+"/"+filePath).c_str(), SFM_READ, &m_sfInfo);
 		if (!m_sndFile)
 			std::cerr << "(!) Could not open audio in " << filePath << ": " << sf_strerror(m_sndFile) << std::endl;
 

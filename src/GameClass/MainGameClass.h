@@ -53,4 +53,10 @@ private:
 	static UserInterface::Slider m_testSliderHorizontal;
 	static glm::vec2 m_vecToTestSliders;
 	static UserInterface::ListParameter<glm::ivec2> m_testList;
+
+	static std::array<UserInterface::Slider, 8> m_SliderForSpriteSetting;
+	static glm::vec3 m_vecForSpritePosition;
+	static glm::vec2 m_vecForSpriteSize;
+	static float m_floatForSpriteRotation;
+	static glm::vec2 m_vecForSpriteOrigin;
 };

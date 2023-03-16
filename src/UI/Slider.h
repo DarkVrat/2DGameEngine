@@ -34,6 +34,8 @@ namespace UserInterface {
 		glm::vec2 m_positionSlider;
 		glm::vec2 m_sizeSlider;
 		glm::vec4 m_area;
+		glm::vec4 m_areaMin;
+		glm::vec4 m_areaMax;
 		float m_step;
 		float m_value;
 		bool m_view;

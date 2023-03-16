@@ -23,8 +23,14 @@ std::array<UserInterface::Button, 2> MainGameClass::m_testButton;
 UserInterface::SwitchBool MainGameClass::m_textSwich;
 UserInterface::Slider MainGameClass::m_testSliderVertical;
 UserInterface::Slider MainGameClass::m_testSliderHorizontal;
-glm::vec2 MainGameClass::m_vecToTestSliders=glm::vec2(30, 60);
+glm::vec2 MainGameClass::m_vecToTestSliders=glm::vec2(0.1f , 0.1f);
 UserInterface::ListParameter<glm::ivec2> MainGameClass::m_testList;
+
+std::array<UserInterface::Slider, 8> MainGameClass::m_SliderForSpriteSetting;
+glm::vec3 MainGameClass::m_vecForSpritePosition=glm::vec3(0.5f, 0.5f, 0.f);
+glm::vec2 MainGameClass::m_vecForSpriteSize=glm::vec2(0.1f, 0.1f);
+float MainGameClass::m_floatForSpriteRotation=0.f;
+glm::vec2 MainGameClass::m_vecForSpriteOrigin=glm::vec2(0.5f, 0.5f);
 
  //(RUS) первоначальная инициализация переменных
 //(ENG) initial initialization of variables
@@ -62,24 +68,39 @@ void MainGameClass::render() {
         m_vectorGameObject[i]->render();
     }
     PRINT_TEXT::printText(PRINT_TEXT::Text("Изменить размер можно колёсиком мыши, текущий размер "+std::to_string(size), glm::vec3(20, 850, 10), 64, glm::vec3(0.5, 1, 1)));
-    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по левому краю,", glm::vec3(100,550,12), 32, glm::vec3(1, 0.5, 1)), size, LEFT);
-    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по центру", glm::vec3(100, 700, 13), 32, glm::vec3(1, 1, 0.5)), size, CENTR);
+    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по левому краю,", glm::vec3(150,700,12), 32, glm::vec3(1, 0.5, 1)), size, LEFT);
+    PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по центру", glm::vec3(150, 800, 13), 32, glm::vec3(1, 1, 0.5)), size, CENTR);
     m_testButton[0].render();
     m_testButton[1].render();
     m_textSwich.render();
     m_testSliderVertical.render();
     m_testSliderHorizontal.render();
     m_testList.render(); 
-    PRINT_TEXT::printText(PRINT_TEXT::Text(std::to_string(m_vecToTestSliders.x) + " " + std::to_string(m_vecToTestSliders.y), glm::vec3(300, 350, 10)));
+    
+    PRINT_TEXT::printText(PRINT_TEXT::Text(std::to_string(m_vecToTestSliders.x) + " " + std::to_string(m_vecToTestSliders.y), glm::vec3(1260, 40, 10)));
     PRINT_TEXT::printText(PRINT_TEXT::Text("FullScreen: " + std::to_string(CONFIG_MANAGER::getFullScreen()), glm::vec3(40, 144, 10)));
 
+    for (auto& currentSlider : m_SliderForSpriteSetting) {
+        currentSlider.render();
+    }
+    PRINT_TEXT::printText(PRINT_TEXT::Text("x: " + std::to_string(m_vecForSpritePosition.x), glm::vec3(300, 624, 10)));
+    PRINT_TEXT::printText(PRINT_TEXT::Text("y: " + std::to_string(m_vecForSpritePosition.y), glm::vec3(300, 584, 10)));
+    PRINT_TEXT::printText(PRINT_TEXT::Text("z: " + std::to_string(m_vecForSpritePosition.z), glm::vec3(300, 544, 10)));
+    PRINT_TEXT::printText(PRINT_TEXT::Text("height: " + std::to_string(m_vecForSpriteSize.y), glm::vec3(300, 504, 10)));
+    PRINT_TEXT::printText(PRINT_TEXT::Text("width: " + std::to_string(m_vecForSpriteSize.x), glm::vec3(300, 464, 10)));
+    PRINT_TEXT::printText(PRINT_TEXT::Text("rotation: " + std::to_string(m_floatForSpriteRotation), glm::vec3(300, 424, 10)));
+    PRINT_TEXT::printText(PRINT_TEXT::Text("origin x: " + std::to_string(m_vecForSpriteOrigin.x), glm::vec3(300, 384, 10)));
+    PRINT_TEXT::printText(PRINT_TEXT::Text("origin y: " + std::to_string(m_vecForSpriteOrigin.y), glm::vec3(300, 344, 10)));
+
     Translater::setLanguage("EN");
-    PRINT_TEXT::printText(PRINT_TEXT::Text(TRANSLETE("menu", "newGame"), glm::vec3(700, 500, 10)));
+    PRINT_TEXT::printText(PRINT_TEXT::Text(TRANSLETE("menu", "newGame"), glm::vec3(10, 800, 10)));
     Translater::setLanguage("RU");
-    PRINT_TEXT::printText(PRINT_TEXT::Text(TRANSLETE("menu", "continue"), glm::vec3(700, 460, 10)));
+    PRINT_TEXT::printText(PRINT_TEXT::Text(TRANSLETE("menu", "continue"), glm::vec3(10, 750, 10)));
     Translater::setLanguage("NO");
-    PRINT_TEXT::printText(PRINT_TEXT::Text(TRANSLETE("menu", "loadGame"), glm::vec3(700, 420, 10)));
+    PRINT_TEXT::printText(PRINT_TEXT::Text(TRANSLETE("menu", "loadGame"), glm::vec3(10, 700, 10)));
     
+    RESOURCE_MANAGER::getSprite("Attack1_1")->render(m_vecForSpritePosition, m_vecForSpriteSize.y, m_vecForSpriteSize.x, m_floatForSpriteRotation, m_vecForSpriteOrigin);
+     
     RENDER_ENGINE::render();
     PRINT_TEXT::renderBuffer();
 
@@ -104,6 +125,7 @@ bool MainGameClass::init() {
 
     m_vectorGameObject.reserve(sizeof(GameObject));
 
+    //------------------------//
     m_testButton[0].create(glm::vec3(180, 100, 10), glm::vec2(360, 80),E_STANDART, "size-100", 80, glm::vec3(0, 0, 0));
     m_testButton[0].setCallBack([]() {size -= 100;});
      
@@ -113,24 +135,69 @@ bool MainGameClass::init() {
     m_textSwich.create(glm::vec3(20, 160, 10), glm::vec2(40, 40), CONFIG_MANAGER::getFullScreen());
     m_textSwich.setCallBack([](bool flag) {CONFIG_MANAGER::setFullScreen(flag);});
 
-    m_testSliderVertical.create(glm::vec3(300, 300, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(0, 100), m_vecToTestSliders.x);
+    m_testSliderVertical.create(glm::vec3(1410, 20, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(0, 100), m_vecToTestSliders.x);
     m_testSliderVertical.setCallBack([](float value) {
             m_vecToTestSliders.x = value;
         });
 
-    m_testSliderHorizontal.create(glm::vec3(600, 300, 10), glm::vec2(40, 300), UI_HORIZONTAL_SLIDER, glm::vec2(0, 100), m_vecToTestSliders.y);
+    m_testSliderHorizontal.create(glm::vec3(1580, 190, 10), glm::vec2(40, 300), UI_HORIZONTAL_SLIDER, glm::vec2(0, 100), m_vecToTestSliders.y);
     m_testSliderHorizontal.setCallBack([](float value) {
         m_vecToTestSliders.y = value;
         });
 
-    std::vector<glm::ivec2> testList;
+    std::vector<glm::ivec2> testList; 
     testList.push_back(glm::vec2(800, 600));
     testList.push_back(glm::vec2(1280, 720));
     testList.push_back(glm::vec2(1680, 1050));
-    m_testList.create(glm::vec3(900, 300, 10), glm::vec2(300, 40), 32, testList);
+    m_testList.create(glm::vec3(900, 40, 10), glm::vec2(300, 40), 32, testList);
     m_testList.setTypeToString([](glm::ivec2 value) {
             return std::to_string(value.x)+"x"+std::to_string(value.y);
         });
+    //-----------------------------------------------//
+
+    m_SliderForSpriteSetting.at(0).create(glm::vec3(150, 640, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(0.f, 1.f), m_vecForSpritePosition.x);
+    m_SliderForSpriteSetting.at(0).setCallBack([](float value) {
+        m_vecForSpritePosition.x = value;
+        });
+
+    m_SliderForSpriteSetting.at(1).create(glm::vec3(150, 600, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(0.f, 1.f), m_vecForSpritePosition.y);
+    m_SliderForSpriteSetting.at(1).setCallBack([](float value) {
+        m_vecForSpritePosition.y = value;
+        });
+
+    m_SliderForSpriteSetting.at(2).create(glm::vec3(150, 560, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(-101.f, 101.f), m_vecForSpritePosition.z);
+    m_SliderForSpriteSetting.at(2).setCallBack([](float value) {
+        m_vecForSpritePosition.z = value;
+        });
+
+    m_SliderForSpriteSetting.at(3).create(glm::vec3(150, 520, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(-1.f, 1.f), m_vecForSpriteSize.y);
+    m_SliderForSpriteSetting.at(3).setCallBack([](float value) {
+        m_vecForSpriteSize.y = value;
+        });
+
+    m_SliderForSpriteSetting.at(4).create(glm::vec3(150, 480, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(-1.f, 1.f), m_vecForSpriteSize.x);
+    m_SliderForSpriteSetting.at(4).setCallBack([](float value) {
+        m_vecForSpriteSize.x = value;
+        });
+
+    m_SliderForSpriteSetting.at(5).create(glm::vec3(150, 440, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(0.f, 360.f), m_floatForSpriteRotation);
+    m_SliderForSpriteSetting.at(5).setCallBack([](float value) {
+        m_floatForSpriteRotation = value;
+        });
+
+    m_SliderForSpriteSetting.at(6).create(glm::vec3(150, 400, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(0.f, 1.f), m_vecForSpriteOrigin.x);
+    m_SliderForSpriteSetting.at(6).setCallBack([](float value) {
+        m_vecForSpriteOrigin.x = value;
+        });
+
+    m_SliderForSpriteSetting.at(7).create(glm::vec3(150, 360, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(0.f, 1.f), m_vecForSpriteOrigin.y);
+    m_SliderForSpriteSetting.at(7).setCallBack([](float value) {
+        m_vecForSpriteOrigin.y = value;
+        });
+
+
+
+    //==================================================//
 
     setProjectionMat(m_window);
 
@@ -149,6 +216,10 @@ void MainGameClass::events(){
     m_testSliderVertical.checkClick();
     m_testSliderHorizontal.checkClick();
     m_testList.checkClick();
+
+    for (auto& currentSlider : m_SliderForSpriteSetting) {
+        currentSlider.checkClick();
+    }
 }
 
  //(RUS) Установка матрицы проекции для отрисовки
@@ -156,10 +227,11 @@ void MainGameClass::events(){
 void MainGameClass::setProjectionMat(const glm::ivec2& window){
     m_window = window;
 
-    glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 200.f);
+    glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 100.f);
 
     RESOURCE_MANAGER::setProjection(projectionMatrix);
     PRINT_TEXT::setProjection(projectionMatrix);
+    Renderer::Sprite::setWindow(m_window);
 }
 
  //(RUS) Уничтожение игровых объектов

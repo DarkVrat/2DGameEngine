@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 
 #include <glm/vec3.hpp>
 #include <map>
@@ -26,33 +26,35 @@ namespace Renderer {
 		struct Text {
 			std::string ms_text;
 			glm::vec3 ms_position;
-			GLint ms_scale;
+			GLfloat ms_scale;
 			glm::vec3 ms_color;
 
-			Text(const std::string& text, const glm::vec3& position, const GLint& scale=32, const glm::vec3& color=glm::vec3(1,1,1))
+			Text(const std::string& text, const glm::vec3& position, const GLfloat& scale=0.01, const glm::vec3& color=glm::vec3(1,1,1))
 				:ms_text(text), ms_position(position), ms_scale(scale), ms_color(color) {}
-			Text() :ms_text(""), ms_position(glm::vec3(0, 0, 0)), ms_scale(32), ms_color(glm::vec3(1, 1, 1)) {}
+			Text() :ms_text(""), ms_position(glm::vec3(0, 0, 0)), ms_scale(0.01), ms_color(glm::vec3(1, 1, 1)) {}
 		};
 
 		static void init(const std::string& fontPath, const std::shared_ptr<Texture2D>& texture);
 
-		static void printTextWrapping(Text text, const int& size, const bool& centr = LEFT, const double& Time = -1.0);
+		static void printTextWrapping(Text text, float size, const bool& centr = LEFT, const double& Time = -1.0);
 		static void printText(const Text& text, const double& Time = -1.0);
 
 		static void updateBuffer(const double& duration);
 		static void renderBuffer();
 
-		static float sizeText(std::string text, GLint scale);
+		static float sizeText(std::string text, GLfloat scale);
 
 		static void terminate();
 
-		static void setProjection(const glm::mat4& projectionMatrix);
+		static void setWindow(const glm::vec2& window);
 	private:
 		PrintText();
 		~PrintText() {};
 
-		static std::vector<uint8_t> m_advanceChar;
+		static std::vector<float> m_advanceChar;
 		static std::shared_ptr<Texture2D> m_texture;
+		static glm::vec2 m_window;
+
 		static std::shared_ptr<VertexArray> m_VAO;
 		static VertexBuffer m_PositionVBO;
 		static VertexBuffer m_ColorVBO;

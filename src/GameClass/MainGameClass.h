@@ -16,7 +16,7 @@
 
 class MainGameClass {
 public:
-	static bool init();
+	static bool init(glm::vec2 window);
 
 	static void update(const double& duration);
 	static void render();
@@ -45,10 +45,10 @@ private:
 	static E_GAME_STATE m_GameState;
 	static double m_time;
 	static int m_fps;
-	static int size;
+	static float size;
 
 	static std::array<UserInterface::Button, 2> m_testButton;
-	static UserInterface::SwitchBool m_textSwich;
+	/*static UserInterface::SwitchBool m_textSwich;
 	static UserInterface::Slider m_testSliderVertical;
 	static UserInterface::Slider m_testSliderHorizontal;
 	static glm::vec2 m_vecToTestSliders;
@@ -59,4 +59,5 @@ private:
 	static glm::vec2 m_vecForSpriteSize;
 	static float m_floatForSpriteRotation;
 	static glm::vec2 m_vecForSpriteOrigin;
+	static std::shared_ptr<Renderer::Sprite> m_sprite;*/
 };

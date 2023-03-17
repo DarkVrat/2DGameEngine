@@ -4,7 +4,7 @@
 
 std::array<Control::MouseControl::E_BUTTON_ACTION, 8> Control::MouseControl::m_keys;
 GLFWwindow* Control::MouseControl::m_PWindow;
-double Control::MouseControl::m_height;
+glm::vec2 Control::MouseControl::m_windowSize;
 glm::vec2 Control::MouseControl::m_mousePosition;
 glm::vec2 Control::MouseControl::m_scroll;
 
@@ -14,13 +14,16 @@ namespace Control {
 	void MouseControl::updatePositionAndScroll(){
 		double x, y;
 		glfwGetCursorPos(m_PWindow, &x, &y);
-		m_mousePosition.x = x;
-		m_mousePosition.y = m_height - y;
+		m_mousePosition.x = x/m_windowSize.x;
+		m_mousePosition.y = 1 - y/m_windowSize.y;
 		m_scroll.x = 0;
 		m_scroll.y = 0;
 		for (auto& It : m_keys) {
 			if (It == E_BUTTON_ACTION::PRESSED) {
 				It = E_BUTTON_ACTION::CLAMPED;
+			}
+			if (It == E_BUTTON_ACTION::RELEASED) {
+				It = E_BUTTON_ACTION::NOT_CLAMPED;
 			}
 		}
 	}
@@ -28,7 +31,7 @@ namespace Control {
 	 //(RUS) установка GFLWwindow и высота окна
 	//(ENG) setting GFLWwindow and window height
 	void MouseControl::setWindow(GLFWwindow* pWindow) { m_PWindow = pWindow; }
-	void MouseControl::setHeight(const double& height) { m_height = height - 1; }
+	void MouseControl::setWindowSize(const glm::vec2& windowSize) { m_windowSize = glm::vec2(windowSize.x-1, windowSize.y-1); }
 
 	 //(RUS) установка ивента нажатой кнопок
 	//(ENG) setting the event of the pressed button
@@ -81,7 +84,7 @@ namespace Control {
 	//(ENG) Initialization and padding with zero parameters
 	MouseControl::MouseControl() {
 		m_PWindow = nullptr;
-		m_height = 0;
+		m_windowSize = glm::vec2(0, 0);
 		m_mousePosition = glm::vec2(0, 0);
 		m_scroll = glm::vec2(0, 0);
 		m_keys.fill(E_BUTTON_ACTION::NOT_CLAMPED);

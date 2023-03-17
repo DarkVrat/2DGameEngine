@@ -16,7 +16,7 @@ namespace Control {
 		static void updatePositionAndScroll();
 
 		static void setWindow(GLFWwindow* pWindow);
-		static void setHeight(const double& height);
+		static void setWindowSize(const glm::vec2& windowSize);
 		static void setScroll(GLFWwindow* окно, double x, double y);
 		static void setButton(GLFWwindow* pWindow, int button, int action, int mods);
 
@@ -40,7 +40,7 @@ namespace Control {
 		};
 		static std::array<E_BUTTON_ACTION, 8> m_keys;
 		static GLFWwindow* m_PWindow;
-		static double m_height;
+		static glm::vec2 m_windowSize;
 		static glm::vec2 m_mousePosition;
 		static glm::vec2 m_scroll;
 	};

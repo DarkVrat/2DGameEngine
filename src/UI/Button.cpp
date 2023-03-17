@@ -4,7 +4,7 @@
 #include "../Control/MouseControl.h"
 
 namespace UserInterface {
-	Button::Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text, GLint scale, glm::vec3 color){
+	Button::Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text, GLfloat scale, glm::vec3 color){
 		create(position, size, type, text, scale, color);
 	}
 
@@ -24,32 +24,28 @@ namespace UserInterface {
 		m_SpriteButtonOff.~shared_ptr();
 	}
 
-	void Button::create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text, GLint scale, glm::vec3 color) {
+	void Button::create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text, GLfloat scale, glm::vec3 color) {
 		setType(type);
 
 		m_position = position;
-		m_size = size;
-		m_area = glm::vec4(m_position.x - m_size.x / 2, m_position.y - m_size.y / 2, m_position.x + m_size.x / 2, m_position.y + m_size.y / 2);
+		m_sizeStandart = size;
 		m_rotation = 0.f;
-
-		glm::vec3 posText(0, 0, 0);
-		posText.z = position.z + 0.1f;
-		posText.y = position.y - scale / 2.0;
-		posText.x = position.x - Renderer::PrintText::sizeText(text, scale) / 2.0;
-		m_textButton = PRINT_TEXT::Text(text, posText, scale, color);
-
 		m_click = false;
+		m_scaleText = scale;
+		m_textButton = PRINT_TEXT::Text(text, m_position, scale, color);
+
+		update();
 	}
 
 	void Button::create(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type){
 		setType(type);
 
 		m_position = position;
-		m_size = size;
-		m_area = glm::vec4(m_position.x - m_size.x / 2, m_position.y - m_size.y / 2, m_position.x + m_size.x / 2, m_position.y + m_size.y / 2);
+		m_sizeStandart = size;
 		m_rotation = rotation;
-
 		m_click = false;
+
+		update();
 	}
 
 	void Button::render(){
@@ -63,6 +59,40 @@ namespace UserInterface {
 		if (m_typeButton == STANDART) {
 			PRINT_TEXT::printText(m_textButton);
 		}
+	}
+
+	void Button::update(){
+		if (m_SpriteButtonOff == nullptr) {
+			return;
+		}
+
+		m_size = m_sizeStandart;
+
+		if (m_size.x < 0.000001f && m_size.x>-0.000001f) {
+			m_size.x = m_size.y * m_SpriteButtonOff->getRatio();
+		}
+		if (m_size.y < 0.000001f && m_size.y>-0.000001f) {
+			m_size.y = m_size.x / m_SpriteButtonOff->getRatio();
+		}
+
+		m_area = glm::vec4(m_position.x - m_size.x / 2, m_position.y - m_size.y / 2, m_position.x + m_size.x / 2, m_position.y + m_size.y / 2);
+
+		if (m_typeButton != E_BUTTON_TYPE::STANDART) {
+			return;
+		}
+
+		m_textButton.ms_scale = m_size.y * m_scaleText;
+
+		if (Renderer::PrintText::sizeText(m_textButton.ms_text, m_textButton.ms_scale) > m_size.x * 0.9) {
+			m_textButton.ms_scale = (m_size.x * 0.9 * m_textButton.ms_scale) / Renderer::PrintText::sizeText(m_textButton.ms_text, m_textButton.ms_scale);
+		}
+
+		glm::vec3 posText(0, 0, 0);
+		posText.z = m_position.z + 0.1f;
+		posText.y = m_position.y - m_textButton.ms_scale / 2.0;
+		posText.x = m_position.x - Renderer::PrintText::sizeText(m_textButton.ms_text, m_textButton.ms_scale) / 2.0;
+		m_textButton.ms_position = posText;
+
 	}
 
 	bool Button::checkClick(){

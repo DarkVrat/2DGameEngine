@@ -23,15 +23,16 @@ namespace UserInterface {
 			NONE
 		};
 
-		Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text = "", GLint scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
+		Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text = "", GLfloat scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
 		Button(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type);
 		Button();
 		~Button();
 
-		void create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text = "", GLint scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
+		void create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text = "", GLfloat scale = 0, glm::vec3 color = glm::vec3(1, 1, 1));
 		void create(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type);
 
 		void render();
+		void update();
 		bool checkClick();
 
 		void setCallBack(std::function<void()> callBack);
@@ -41,9 +42,11 @@ namespace UserInterface {
 		std::shared_ptr<Renderer::Sprite> m_SpriteButtonOn;
 		std::shared_ptr<Renderer::Sprite> m_SpriteButtonOff;
 		glm::vec3 m_position;
+		glm::vec2 m_sizeStandart;
 		glm::vec2 m_size;
 		glm::vec4 m_area;
 		float m_rotation;
+		float m_scaleText;
 		PRINT_TEXT::Text m_textButton;
 		E_BUTTON_TYPE m_typeButton;
 

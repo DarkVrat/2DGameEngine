@@ -23,7 +23,6 @@ GLFWwindow* PWindow = nullptr;
 void GLFWWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
     CONFIG_MANAGER::setWindowSize(width, height);
     RENDER_ENGINE::setViewport(width, height); 
-    Control::MouseControl::setHeight(height);
     MAIN_GAME_CLASS::setProjectionMat(glm::vec2(width, height));
 }
 void GLFWMonitorCallBack(GLFWmonitor* monitor, int action) {
@@ -83,7 +82,6 @@ int main(int argc, char** argv){
     std::cout << "OpenGL version: " << RENDER_ENGINE::getVersion() << std::endl;
 
     MOUSE::setWindow(PWindow);
-    MOUSE::setHeight(window.y);
 
     RENDER_ENGINE::enableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     RENDER_ENGINE::setClearColor(50, 100, 50, 255);
@@ -92,8 +90,7 @@ int main(int argc, char** argv){
     SOUND_DEVICE::init();
     SOUND_LIBRARY::init();
 
-    MAIN_GAME_CLASS::init();
-    MAIN_GAME_CLASS::setProjectionMat(window);
+    MAIN_GAME_CLASS::init(window);
 
     double lastTime = glfwGetTime();
     while (!glfwWindowShouldClose(PWindow)) { 

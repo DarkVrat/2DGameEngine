@@ -20,10 +20,10 @@ namespace Renderer {
 		Sprite(const std::shared_ptr<Texture2D>& pTexture, const glm::vec4& coordTexture, const glm::ivec2& aspectRatio);
 		~Sprite() {};
 		
-		void render(const glm::vec3& position, const float& height, const float& width=0.f, const float& rotation=0.f, const glm::vec2& origin = glm::vec2(0.5f, 0.5f));
-		void render(const glm::vec3& position, const glm::vec2& size, const float& rotation, const glm::vec2& origin = glm::vec2(0.5f, 0.5f));
+		void render(const glm::vec3& position, const glm::vec2& size, const float& rotation=0.f, const glm::vec2& origin = glm::vec2(0.5f, 0.5f));
 
 		glm::ivec2 getAspectRatio() { return m_aspectRatio; } 
+		float getRatio() { return m_ratio*(m_window.y/m_window.x); }
 
 		static void setWindow(const glm::vec2& window) { m_window = window; }
 
@@ -31,6 +31,7 @@ namespace Renderer {
 		std::shared_ptr<Texture2D> m_texture; 
 		glm::vec4 m_coordTexture;
 		glm::ivec2 m_aspectRatio;
+		float m_ratio;
 
 		static glm::vec2 m_window;
 	};

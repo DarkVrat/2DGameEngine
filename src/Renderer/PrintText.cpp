@@ -2,12 +2,15 @@
 
 #include "ft2build.h"
 #include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
 #include "../Managers/ResourceManager.h"
 #include "../Renderer/RenderEngine.h"
 #include FT_FREETYPE_H
 
-std::vector<uint8_t> Renderer::PrintText::m_advanceChar;
+std::vector<float> Renderer::PrintText::m_advanceChar;
 std::shared_ptr<Renderer::Texture2D> Renderer::PrintText::m_texture;
+glm::vec2 Renderer::PrintText::m_window;
+
 std::vector<std::pair<Renderer::PrintText::Text, double>> Renderer::PrintText::m_timeBufferText;
 std::vector<Renderer::PrintText::Text> Renderer::PrintText::m_bufferText;
 
@@ -51,7 +54,7 @@ namespace Renderer {
                 std::cerr << "(!) ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
                 continue;
             }
-            m_advanceChar.push_back(face->glyph->advance.x >> 6);
+            m_advanceChar.push_back((face->glyph->advance.x >> 6)/ m_fontSize);
         }
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
@@ -88,14 +91,14 @@ namespace Renderer {
 
      //(RUS) Создание текста с переносом, выравняным по левому краю или центру
     //(ENG) Create text with hyphenation aligned to the left or center
-    void PrintText::printTextWrapping( Text text, const int& size, const bool& centr, const double& Time) {
-        std::map<int, int> words;
-        int sizeWord = 0;
-        int sizeSpace = m_advanceChar[(uint8_t)' '] * text.ms_scale / 32.0;
+    void PrintText::printTextWrapping( Text text, float size, const bool& centr, const double& Time) {
+        std::map<int, float> words;
+        float sizeWord = 0;
+        float sizeSpace = m_advanceChar[(uint8_t)' '] * text.ms_scale * (m_window.y / m_window.x);
 
         for (int i = 0; i < text.ms_text.length(); i++) {
             if (text.ms_text[i] != ' ') {
-                sizeWord += m_advanceChar[(uint8_t)text.ms_text[i]] * text.ms_scale / 32.0;
+                sizeWord += m_advanceChar[(uint8_t)text.ms_text[i]] * text.ms_scale * (m_window.y / m_window.x);
             }
             else {
                 words.emplace(i, sizeWord + sizeSpace);
@@ -107,7 +110,7 @@ namespace Renderer {
             }
         }
 
-        int sizeText = 0;
+        float sizeText = 0;
         int lastIndex = 0;
         int lastTextRender = 0;
 
@@ -193,6 +196,10 @@ namespace Renderer {
             countChar += t.ms_text.length();
         }
 
+        if (countChar == 0) {
+            return;
+        }
+
         std::vector<glm::vec4> Position;
         std::vector<glm::vec3> Color;
         std::vector<glm::vec4> Texture;
@@ -207,11 +214,11 @@ namespace Renderer {
             for (char c : t.ms_text) {
                 uint8_t index= c;
 
-                Position.push_back(glm::vec4(posX, t.ms_position.y, t.ms_position.z, t.ms_scale));
+                Position.push_back(glm::vec4(posX*m_window.x, t.ms_position.y*m_window.y, t.ms_position.z, t.ms_scale*m_window.y));
                 Color.push_back(t.ms_color);
                 Texture.push_back(glm::vec4((index % 16) * sizeTexture, (index / 16) * sizeTexture, (index % 16 + 1) * sizeTexture, (index / 16 + 1) * sizeTexture));
                  
-                posX += m_advanceChar[index] * (t.ms_scale / m_fontSize);
+                posX += m_advanceChar[index] * t.ms_scale * (m_window.y / m_window.x);
             } 
         }
 
@@ -233,10 +240,10 @@ namespace Renderer {
         Texture.clear();
     }
 
-    float PrintText::sizeText(std::string text, GLint scale){
+    float PrintText::sizeText(std::string text, GLfloat scale){
         float size = 0;
         for (char c : text) {
-            size += m_advanceChar[(uint8_t)c] * scale / m_fontSize;
+            size += m_advanceChar[(uint8_t)c] * scale * (m_window.y / m_window.x);
         }
         return size;
     }
@@ -249,7 +256,9 @@ namespace Renderer {
         m_texture.~shared_ptr();
     }
 
-    void PrintText::setProjection(const glm::mat4& projectionMatrix){
+    void PrintText::setWindow(const glm::vec2& window){
+        m_window = window;
+        glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 100.f);
         m_texture->getShader()->use();
         m_texture->getShader()->setMatrix4("projection", projectionMatrix);
     }

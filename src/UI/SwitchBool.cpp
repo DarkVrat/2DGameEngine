@@ -1,7 +1,7 @@
 #include "SwitchBool.h"
 
 namespace UserInterface {
-	SwitchBool::SwitchBool(glm::vec3 position, glm::vec2 size, bool startFlag){
+	SwitchBool::SwitchBool(glm::vec3 position, glm::vec2 size, bool startFlag, glm::vec2 origin){
 		create(position, size, startFlag);
 	}
 
@@ -14,13 +14,13 @@ namespace UserInterface {
 		m_button.~Button();
 	}
 
-	void SwitchBool::create(glm::vec3 position, glm::vec2 size, bool startFlag){
+	void SwitchBool::create(glm::vec3 position, glm::vec2 size, bool startFlag, glm::vec2 origin){
 		m_flag = startFlag;
 		if (startFlag) {
-			m_button.create(position, size, E_TRUE);
+			m_button.create(position, size, 0,E_TRUE, origin);
 		}
 		else {
-			m_button.create(position, size, E_FALSE);
+			m_button.create(position, size, 0, E_FALSE, origin);
 		}
 
 		m_button.setCallBack([&]() {
@@ -36,6 +36,10 @@ namespace UserInterface {
 
 	void SwitchBool::render(){
 		m_button.render();
+	}
+
+	void SwitchBool::update(){
+		m_button.update();
 	}
 
 	void SwitchBool::checkClick() {

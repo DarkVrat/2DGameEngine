@@ -4,12 +4,12 @@
 #include "../Control/MouseControl.h"
 
 namespace UserInterface {
-	Button::Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text, GLfloat scale, glm::vec3 color){
-		create(position, size, type, text, scale, color);
+	Button::Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type,  std::string text, GLfloat scale, glm::vec3 color, glm::vec2 origin){
+		create(position, size, type, text, scale, color, origin);
 	}
 
-	Button::Button(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type){
-		create(position, size, rotation, type);
+	Button::Button(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type, glm::vec2 origin){
+		create(position, size, rotation, type, origin);
 	}
 
 	Button::Button(){
@@ -24,7 +24,7 @@ namespace UserInterface {
 		m_SpriteButtonOff.~shared_ptr();
 	}
 
-	void Button::create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text, GLfloat scale, glm::vec3 color) {
+	void Button::create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text, GLfloat scale, glm::vec3 color, glm::vec2 origin) {
 		setType(type);
 
 		m_position = position;
@@ -33,16 +33,18 @@ namespace UserInterface {
 		m_click = false;
 		m_scaleText = scale;
 		m_textButton = PRINT_TEXT::Text(text, m_position, scale, color);
+		m_origin = origin;
 
 		update();
 	}
 
-	void Button::create(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type){
+	void Button::create(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type, glm::vec2 origin){
 		setType(type);
 
 		m_position = position;
 		m_sizeStandart = size;
 		m_rotation = rotation;
+		m_origin = origin;
 		m_click = false;
 
 		update();
@@ -50,10 +52,10 @@ namespace UserInterface {
 
 	void Button::render(){
 		if (m_click) {
-			m_SpriteButtonOn->render(m_position, m_size, m_rotation);
+			m_SpriteButtonOn->render(m_position, m_size, m_rotation, m_origin);
 		}
 		else {
-			m_SpriteButtonOff->render(m_position, m_size, m_rotation);
+			m_SpriteButtonOff->render(m_position, m_size, m_rotation, m_origin);
 		}
 
 		if (m_typeButton == STANDART) {
@@ -75,7 +77,7 @@ namespace UserInterface {
 			m_size.y = m_size.x / m_SpriteButtonOff->getRatio();
 		}
 
-		m_area = glm::vec4(m_position.x - m_size.x / 2, m_position.y - m_size.y / 2, m_position.x + m_size.x / 2, m_position.y + m_size.y / 2);
+		m_area = glm::vec4(m_position.x - m_size.x*m_origin.x, m_position.y - m_size.y * m_origin.y, m_position.x + m_size.x * (1-m_origin.x), m_position.y + m_size.y * (1-m_origin.y));
 
 		if (m_typeButton != E_BUTTON_TYPE::STANDART) {
 			return;
@@ -89,8 +91,8 @@ namespace UserInterface {
 
 		glm::vec3 posText(0, 0, 0);
 		posText.z = m_position.z + 0.1f;
-		posText.y = m_position.y - m_textButton.ms_scale / 2.0;
-		posText.x = m_position.x - Renderer::PrintText::sizeText(m_textButton.ms_text, m_textButton.ms_scale) / 2.0;
+		posText.y = m_position.y+(0.5-m_origin.y)*m_size.y - m_textButton.ms_scale / 2.0;
+		posText.x = m_position.x+(0.5-m_origin.x)*m_size.x - Renderer::PrintText::sizeText(m_textButton.ms_text, m_textButton.ms_scale) / 2.0;
 		m_textButton.ms_position = posText;
 
 	}
@@ -142,5 +144,20 @@ namespace UserInterface {
 			break;
 		}
 		
+	}
+
+	void Button::setPosition(glm::vec3 position){
+		m_position = position;
+		update();
+	}
+
+	void Button::setSize(glm::vec2 size){
+		m_sizeStandart = size;
+		update();
+	}
+
+	glm::vec2 Button::getSize()
+	{
+		return m_size;
 	}
 }

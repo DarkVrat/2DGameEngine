@@ -51,6 +51,7 @@ int main(int argc, char** argv){
     CONFIG_MANAGER::loadConfig();
 
     glm::ivec2 window = CONFIG_MANAGER::getWindowSize();
+    //реализовать создание окна с размером монитора при полноэкранном режиме, и его передачу в мышь
     PWindow = glfwCreateWindow(window.x, window.y, "Game", RENDER_ENGINE::getMonitor(), NULL);
 
     if (!PWindow){

@@ -86,22 +86,9 @@ namespace UserInterface {
 
 		m_area = glm::vec4(m_position.x - m_size.x*m_origin.x, m_position.y - m_size.y * m_origin.y, m_position.x + m_size.x * (1-m_origin.x), m_position.y + m_size.y * (1-m_origin.y));
 
-		if (m_typeButton != E_BUTTON_TYPE::STANDART) {
-			return;
+		if (m_typeButton == E_BUTTON_TYPE::STANDART) {
+			setText(m_textButton.ms_text);
 		}
-
-		m_textButton.ms_scale = m_size.y * m_scaleText;
-
-		if (Renderer::PrintText::sizeText(m_textButton.ms_text, m_textButton.ms_scale) > m_size.x * 0.9) {
-			m_textButton.ms_scale = (m_size.x * 0.9 * m_textButton.ms_scale) / Renderer::PrintText::sizeText(m_textButton.ms_text, m_textButton.ms_scale);
-		}
-
-		glm::vec3 posText(0, 0, 0);
-		posText.z = m_position.z + 0.1f;
-		posText.y = m_position.y+(0.5-m_origin.y)*m_size.y - m_textButton.ms_scale / 2.0;
-		posText.x = m_position.x+(0.5-m_origin.x)*m_size.x - Renderer::PrintText::sizeText(m_textButton.ms_text, m_textButton.ms_scale) / 2.0;
-		m_textButton.ms_position = posText;
-
 	}
 
 	bool Button::checkClick(){
@@ -160,6 +147,22 @@ namespace UserInterface {
 	void Button::setSize(const glm::vec2& size){
 		m_sizeStandart = size;
 		update();
+	}
+
+	void Button::setText(const std::string& text){
+		m_textButton.ms_text = text;
+
+		m_textButton.ms_scale = m_size.y * m_scaleText;
+
+		if (Renderer::PrintText::sizeText(m_textButton.ms_text, m_textButton.ms_scale) > m_size.x * 0.9) {
+			m_textButton.ms_scale = (m_size.x * 0.9 * m_textButton.ms_scale) / Renderer::PrintText::sizeText(m_textButton.ms_text, m_textButton.ms_scale);
+		}
+
+		glm::vec3 posText(0, 0, 0);
+		posText.z = m_position.z + 0.1f;
+		posText.y = m_position.y + (0.5 - m_origin.y) * m_size.y - m_textButton.ms_scale / 2.0;
+		posText.x = m_position.x + (0.5 - m_origin.x) * m_size.x - Renderer::PrintText::sizeText(m_textButton.ms_text, m_textButton.ms_scale) / 2.0;
+		m_textButton.ms_position = posText;
 	}
 
 	glm::vec2 Button::getSize()

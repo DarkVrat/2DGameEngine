@@ -8,6 +8,7 @@
 #include "../UI/Slider.h"
 #include "../UI/ListParameter.h"
 #include "../UI/Translater.h"
+#include "../UI/InputField.h"
 
 #define MAIN_GAME_CLASS MainGameClass
 
@@ -53,6 +54,7 @@ private:
 	static UserInterface::Slider m_testSliderHorizontal;
 	static glm::vec2 m_vecToTestSliders;
 	static UserInterface::ListParameter<glm::ivec2> m_testList;
+	static UserInterface::InputField m_testInputField;
 
 	/*static std::array<UserInterface::Slider, 8> m_SliderForSpriteSetting;
 	static glm::vec3 m_vecForSpritePosition;

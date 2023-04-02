@@ -3,7 +3,7 @@
 #include <thread>
 
 std::array<Control::KeyboardControl::E_BUTTON_ACTION, 349> Control::KeyboardControl::m_keys;
-std::string Control::KeyboardControl::m_buffer;
+char Control::KeyboardControl::m_buffer;
 bool Control::KeyboardControl::m_writeText;
 
 namespace Control {
@@ -23,7 +23,7 @@ namespace Control {
 			return;
 		}
 		if (action == GLFW_RELEASE) {
-			m_keys[key] = E_BUTTON_ACTION::PRESSED;
+			m_keys[key] = E_BUTTON_ACTION::RELEASED;
 			return;
 		}
 	}
@@ -53,8 +53,7 @@ namespace Control {
 	 //(RUS) Установка WritingText на true для режима ввода текста, получение WritingText и буфера с текстом
 	//(ENG) Setting WritingText to true for text input mode, getting WritingText and text buffer
 	void KeyboardControl::startWritingText() { m_writeText = true; }
-	bool KeyboardControl::getWriteText() { return m_writeText; }
-	std::string KeyboardControl::getBuffer() { return m_buffer; }
+	void KeyboardControl::endWritingText() { m_writeText = false; }
 
 	 //(RUS) Добавление символа в буфер. изменения значения для соответствия символа кириллице
 	//(ENG) Adding a character to the buffer. changing the value to match the Cyrillic character
@@ -64,29 +63,23 @@ namespace Control {
 			if (codepoint == 7622){codepoint = 185;}
 			if (codepoint == 257) {codepoint = 184;}
 			if (codepoint == 177) {codepoint = 168;}
-			m_buffer += (char)codepoint;
+			m_buffer = (char)codepoint;
 		} 
 	}
 
-	 //(RUS) удаление последнего символа в буфере
-	//(ENG) deleting the last character in the buffer
-	void KeyboardControl::deleteLastCharInBuffer(){
-		if (!m_buffer.empty()) 
-			m_buffer.pop_back();
+	bool KeyboardControl::getWritingText(){
+		return m_writeText;
 	}
 
-	 //(RUS) получение текста из буфера и его очистка
-	//(ENG) getting text from buffer and clearing it
-	std::string KeyboardControl::getBufferAndRemove() {
-		m_writeText = false;
-		std::string s = m_buffer;
-		m_buffer = "";
-		return s;
+	char KeyboardControl::getBuffer(){
+		char res = m_buffer;
+		m_buffer = 0;
+		return res;
 	}
 
 	 //(RUS) создание и заполнение переменных начальными параметрами
 	//(ENG) creating and filling variables with initial parameters
 	KeyboardControl::KeyboardControl() { 
-		m_keys.fill(E_BUTTON_ACTION::NOT_CLAMPED); m_buffer = ""; m_writeText = false; 
+		m_keys.fill(E_BUTTON_ACTION::NOT_CLAMPED); m_buffer = 0; m_writeText = false;
 	}
 }

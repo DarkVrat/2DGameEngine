@@ -39,6 +39,7 @@ namespace UserInterface {
 		void setType(const E_BUTTON_TYPE& type);
 		void setPosition(const glm::vec3& position);
 		void setSize(const glm::vec2& size);
+		void setText(const std::string& text);
 
 		glm::vec2 getSize();
 

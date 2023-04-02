@@ -61,6 +61,9 @@ add_executable(${PROJECT}
 	src/UI/SwitchBool.h
 	src/UI/Translater.cpp
 	src/UI/Translater.h
+	src/UI/InputField.cpp
+	src/UI/InputField.h
+	src/UI/UIElement.h
 )
 
 target_compile_features(${PROJECT} PUBLIC cxx_std_17)

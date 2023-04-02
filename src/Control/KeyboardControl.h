@@ -18,11 +18,10 @@ namespace Control {
 		static bool ifClamped(const int& key);
 
 		static void startWritingText();
-		static bool getWriteText();
+		static void endWritingText();
 		static void addCharInBuffer(GLFWwindow* окно, unsigned codepoint);
-		static void deleteLastCharInBuffer();
-		static std::string getBuffer();
-		static std::string getBufferAndRemove();
+		static bool getWritingText();
+		static char getBuffer();
 	private:
 		KeyboardControl();
 
@@ -33,7 +32,7 @@ namespace Control {
 			RELEASED
 		};
 		static std::array<E_BUTTON_ACTION, 349> m_keys;
-		static std::string m_buffer;
+		static char m_buffer;
 		static bool m_writeText;
 	};
 }

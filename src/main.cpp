@@ -47,8 +47,10 @@ int main(int argc, char** argv){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     RESOURCE_MANAGER::setExecutablePath(argv[0]);
-
+     
     CONFIG_MANAGER::loadConfig();
+
+    glfwWindowHint(GLFW_SAMPLES, CONFIG_MANAGER::getSamples());
 
     glm::ivec2 window = CONFIG_MANAGER::getWindowSize();
     //реализовать создание окна с размером монитора при полноэкранном режиме, и его передачу в мышь

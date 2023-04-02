@@ -23,22 +23,22 @@ namespace UserInterface {
 			NONE
 		};
 
-		Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text = "", GLfloat scale = 0, glm::vec3 color = glm::vec3(1, 1, 1), glm::vec2 origin = glm::vec2(0.5, 0.5));
-		Button(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type, glm::vec2 origin = glm::vec2(0.5, 0.5));
+		Button(const glm::vec3& position, const glm::vec2& size, const E_BUTTON_TYPE& type, const std::string& text = "", const GLfloat& scale = 0, const glm::vec3& color = glm::vec3(1, 1, 1), const glm::vec2& origin = glm::vec2(0.5, 0.5));
+		Button(const glm::vec3& position, const glm::vec2& size, float rotation, const E_BUTTON_TYPE& type, const glm::vec2& origin = glm::vec2(0.5, 0.5));
 		Button();
 		~Button();
 
-		void create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text = "", GLfloat scale = 0, glm::vec3 color = glm::vec3(1, 1, 1), glm::vec2 origin = glm::vec2(0.5, 0.5));
-		void create(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type, glm::vec2 origin = glm::vec2(0.5, 0.5));
+		void create(const glm::vec3& position, const glm::vec2& size, const E_BUTTON_TYPE& type, const std::string& text = "", const GLfloat& scale = 0, const glm::vec3& color = glm::vec3(1, 1, 1), const glm::vec2& origin = glm::vec2(0.5, 0.5));
+		void create(const glm::vec3& position, const glm::vec2& size, float rotation, const E_BUTTON_TYPE& type, const glm::vec2& origin = glm::vec2(0.5, 0.5));
 
 		void render();
 		void update();
 		bool checkClick();
 
 		void setCallBack(std::function<void()> callBack);
-		void setType(E_BUTTON_TYPE type);
-		void setPosition(glm::vec3 position);
-		void setSize(glm::vec2 size);
+		void setType(const E_BUTTON_TYPE& type);
+		void setPosition(const glm::vec3& position);
+		void setSize(const glm::vec2& size);
 
 		glm::vec2 getSize();
 

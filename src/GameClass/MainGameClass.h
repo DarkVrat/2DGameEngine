@@ -49,9 +49,9 @@ private:
 
 	static std::array<UserInterface::Button, 2> m_testButton;
 	static UserInterface::SwitchBool m_testSwich;
-	/*static UserInterface::Slider m_testSliderVertical;
+	static UserInterface::Slider m_testSliderVertical;
 	static UserInterface::Slider m_testSliderHorizontal;
-	static glm::vec2 m_vecToTestSliders;*/
+	static glm::vec2 m_vecToTestSliders;
 	static UserInterface::ListParameter<glm::ivec2> m_testList;
 
 	/*static std::array<UserInterface::Slider, 8> m_SliderForSpriteSetting;

@@ -23,7 +23,8 @@ namespace Renderer {
 		void render(const glm::vec3& position, const glm::vec2& size, const float& rotation=0.f, const glm::vec2& origin = glm::vec2(0.5f, 0.5f));
 
 		glm::ivec2 getAspectRatio() { return m_aspectRatio; } 
-		float getRatio() { return m_ratio*(m_window.y/m_window.x); }
+		float getRatio() { return m_ratio * (m_window.y / m_window.x); }
+		float getInversRatio() { return m_ratio * (m_window.x / m_window.y); }
 
 		static void setWindow(const glm::vec2& window) { m_window = window; }
 

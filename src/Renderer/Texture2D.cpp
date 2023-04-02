@@ -27,6 +27,8 @@ namespace Renderer {
 
 		glGenerateMipmap(GL_TEXTURE_2D);
 
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 

@@ -1,30 +1,37 @@
 #include "Button.h"
 
+#include <cmath>
 #include "../Managers/ResourceManager.h"
 #include "../Control/MouseControl.h"
 
 namespace UserInterface {
-	Button::Button(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type,  std::string text, GLfloat scale, glm::vec3 color, glm::vec2 origin){
+	Button::Button(const glm::vec3& position, const glm::vec2& size, const E_BUTTON_TYPE& type, const std::string& text, const GLfloat& scale, const glm::vec3& color, const glm::vec2& origin){
 		create(position, size, type, text, scale, color, origin);
 	}
 
-	Button::Button(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type, glm::vec2 origin){
+	Button::Button(const glm::vec3& position, const glm::vec2& size, float rotation, const E_BUTTON_TYPE& type, const glm::vec2& origin){
 		create(position, size, rotation, type, origin);
 	}
 
 	Button::Button(){
 		setType(NONE);
 		m_position = glm::vec3(0, 0, 0);
-		m_size = glm::vec2(1, 1);
-		m_click = false;
+		m_sizeStandart = glm::vec2(0, 0);
+		m_size = glm::vec2(0, 0);
+		m_area=glm::vec4(0,0,0,0);
+		m_origin=glm::vec2(0,0);
+		m_rotation=0.f;
+		m_scaleText=0.f;
+		m_textButton;
+		m_click=false;
 	}
 
 	Button::~Button(){
 		m_SpriteButtonOn.~shared_ptr();
 		m_SpriteButtonOff.~shared_ptr();
 	}
-
-	void Button::create(glm::vec3 position, glm::vec2 size, E_BUTTON_TYPE type, std::string text, GLfloat scale, glm::vec3 color, glm::vec2 origin) {
+	 
+	void Button::create(const glm::vec3& position, const glm::vec2& size, const E_BUTTON_TYPE& type, const std::string& text, const GLfloat& scale, const glm::vec3& color, const glm::vec2& origin) {
 		setType(type);
 
 		m_position = position;
@@ -38,7 +45,7 @@ namespace UserInterface {
 		update();
 	}
 
-	void Button::create(glm::vec3 position, glm::vec2 size, float rotation, E_BUTTON_TYPE type, glm::vec2 origin){
+	void Button::create(const glm::vec3& position, const glm::vec2& size, float rotation, const E_BUTTON_TYPE& type, const glm::vec2& origin){
 		setType(type);
 
 		m_position = position;
@@ -70,10 +77,10 @@ namespace UserInterface {
 
 		m_size = m_sizeStandart;
 
-		if (m_size.x < 0.000001f && m_size.x>-0.000001f) {
+		if (std::abs(m_size.x) < 0.000001f) {
 			m_size.x = m_size.y * m_SpriteButtonOff->getRatio();
 		}
-		if (m_size.y < 0.000001f && m_size.y>-0.000001f) {
+		if (std::abs(m_size.y) < 0.000001f) {
 			m_size.y = m_size.x / m_SpriteButtonOff->getRatio();
 		}
 
@@ -101,7 +108,6 @@ namespace UserInterface {
 		if (MOUSE::ifInArea(m_area)) {
 			if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 				m_click = true;
-				
 			}
 			if (m_click && MOUSE::ifReleased(GLFW_MOUSE_BUTTON_LEFT)) {
 				m_click = false;
@@ -119,7 +125,7 @@ namespace UserInterface {
 		m_callback = callBack;
 	}
 
-	void Button::setType(E_BUTTON_TYPE type){
+	void Button::setType(const E_BUTTON_TYPE& type){
 		m_typeButton = type;
 		switch (type){
 		case UserInterface::Button::STANDART:
@@ -146,12 +152,12 @@ namespace UserInterface {
 		
 	}
 
-	void Button::setPosition(glm::vec3 position){
+	void Button::setPosition(const glm::vec3& position){
 		m_position = position;
 		update();
 	}
 
-	void Button::setSize(glm::vec2 size){
+	void Button::setSize(const glm::vec2& size){
 		m_sizeStandart = size;
 		update();
 	}

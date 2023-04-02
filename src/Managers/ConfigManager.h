@@ -19,12 +19,14 @@ public:
 	static void setFullScreen(const bool& fullScreen = true);
 	static void setVolumeSounde(const double& volume = 1.0);
 	static void setVolumeSample(const std::string& name, const double& volume = 1.0);
+	static void setSamples(const unsigned& sample = 1);
 
 	static glm::ivec2 getWindowSize();
-	static int getDisplayNumber();
+	static unsigned getDisplayNumber();
 	static bool getFullScreen();
 	static double getVolumeSounde();
 	static double getVolumeSample(const std::string& name);
+	static unsigned getSamples();
 
 private:
 	static rapidjson::Document m_configDoc;

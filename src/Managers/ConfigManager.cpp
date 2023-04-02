@@ -71,6 +71,10 @@ void ConfigManager::setVolumeSample(const std::string& name, const double& volum
 	SOUND_MANAGER::updateGain();
 }
 
+void ConfigManager::setSamples(const unsigned& sample){
+	m_configDoc.FindMember("samples")->value.SetInt(sample);
+}
+
  //(RUS) получение размера окна
 //(ENG) getting window size
 glm::ivec2 ConfigManager::getWindowSize() {
@@ -81,7 +85,7 @@ glm::ivec2 ConfigManager::getWindowSize() {
 
  //(RUS) получение номера монитора
 //(ENG) get monitor number
-int ConfigManager::getDisplayNumber() {
+unsigned ConfigManager::getDisplayNumber() {
 	return m_configDoc.FindMember("display")->value.GetInt();
 }
 
@@ -106,4 +110,8 @@ double ConfigManager::getVolumeSample(const std::string& name) {
 		}
 	}
 	return 1.0;
+}
+
+unsigned ConfigManager::getSamples(){
+	return m_configDoc.FindMember("samples")->value.GetInt();
 }

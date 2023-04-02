@@ -60,13 +60,10 @@ namespace Renderer {
         FT_Done_FreeType(ft);
 
         float vertex[] = {
-            0.f, 0.f,   // 0    1-----2
-            0.f, 1.f,   // 1    |    /|
-            1.f, 1.f,   // 2    |   / |
-                        //      |  /  |
-            1.f, 1.f,   // 2    | /   |
-            1.f, 0.f,   // 3    |/    |
-            0.f, 0.f    // 0    0-----3
+            0.f, 0.f,   // 0    1--2
+            0.f, 1.f,   // 1    | /|
+            1.f, 1.f,   // 2    |/ |
+            1.f, 0.f,   // 3    0--3  
         };
 
         m_VAO = std::make_shared<VertexArray>();
@@ -191,6 +188,7 @@ namespace Renderer {
     void PrintText::renderBuffer(){
         unsigned countChar = 0;
         float sizeTexture = 32.0 / 512.0;
+        float alignment = 0.0001;
 
         for (Text t : m_bufferText) {
             countChar += t.ms_text.length();
@@ -216,7 +214,7 @@ namespace Renderer {
 
                 Position.push_back(glm::vec4(posX*m_window.x, t.ms_position.y*m_window.y, t.ms_position.z, t.ms_scale*m_window.y));
                 Color.push_back(t.ms_color);
-                Texture.push_back(glm::vec4((index % 16) * sizeTexture, (index / 16) * sizeTexture, (index % 16 + 1) * sizeTexture, (index / 16 + 1) * sizeTexture));
+                Texture.push_back(glm::vec4((index % 16) * sizeTexture + alignment, (index / 16) * sizeTexture + alignment, (index % 16 + 1) * sizeTexture - alignment, (index / 16 + 1) * sizeTexture - alignment));
                  
                 posX += m_advanceChar[index] * t.ms_scale * (m_window.y / m_window.x);
             } 
@@ -229,7 +227,7 @@ namespace Renderer {
         m_TextureVBO.update(&Texture[0], Texture.size() * sizeof(glm::vec4));
 
         RENDER_ENGINE::drawInstanced(*m_VAO, countChar);
-        
+
         m_VAO->unbind();
         m_TextureVBO.unbind();
         glBindTexture(GL_TEXTURE_2D, 0);

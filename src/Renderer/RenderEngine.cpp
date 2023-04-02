@@ -31,14 +31,11 @@ namespace Renderer {
 		m_VAO->bind();
 
 		const GLfloat vertexCoords[] = {
-			// X  Y     //      1------2
-			0.f, 0.f,   //0     |     /|
-			0.f, 1.f,   //1     |    / |
-			1.f, 1.f,   //2     |   /  |
-						//      |  /   |
-			1.f, 1.f,   //2     | /    |
-			1.f, 0.f,   //3     |/     |    
-			0.f, 0.f,   //0     0------3
+			// X  Y     //      1---2
+			0.f, 0.f,   //0     |  /|
+			0.f, 1.f,   //1     | / |
+			1.f, 1.f,   //2     |/  |
+			1.f, 0.f,   //3     0---3      
 		};
 		VertexBuffer vertexCoordsBuffer;
 		vertexCoordsBuffer.init(vertexCoords, sizeof(vertexCoords));
@@ -73,7 +70,7 @@ namespace Renderer {
 	void RenderEngine::drawInstanced(const VertexArray& vertexArray, const GLuint& count){
 		vertexArray.bind();
 
-		glDrawArraysInstanced(GL_TRIANGLES, 0, 6, count);
+		glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, count);
 	}
 
 	void RenderEngine::render(){

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <cmath>
 #include "Button.h"
 #include "../Renderer/PrintText.h"
 
@@ -8,17 +9,18 @@ namespace UserInterface {
 	template<class T>
 	class ListParameter {
 	public:
-		ListParameter(glm::vec3 position, glm::vec2 size, GLfloat scaleText, std::vector<T> vectorParam, glm::vec2 origin=glm::vec2(0.5,0.5));
+		ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const glm::vec2& origin=glm::vec2(0.5,0.5));
 		ListParameter();
 		~ListParameter();
 
-		void create(glm::vec3 position, glm::vec2 size, GLfloat scaleText, std::vector<T> vectorParam, glm::vec2 origin = glm::vec2(0.5, 0.5));
+		void create(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const glm::vec2& origin = glm::vec2(0.5, 0.5));
 
 		void render();
 		void update();
 		void checkClick();
 
 		void setTypeToString(std::function<std::string(T value)> typeToStringFunction);
+		void setColorText(const glm::vec3& color);
 
 		void updateText();
 
@@ -31,9 +33,8 @@ namespace UserInterface {
 		std::shared_ptr<Renderer::Sprite> m_spriteBackGroung;
 		glm::vec3 m_position;
 		glm::vec3 m_positionSprite;
-		glm::vec2 m_size;
 		glm::vec2 m_sizeSprite;
-		glm::vec2 m_sizeStandart;
+		glm::vec2 m_size;
 		glm::vec2 m_origin;
 
 		PRINT_TEXT::Text m_text;
@@ -44,17 +45,21 @@ namespace UserInterface {
 	};
 
 	template<class T>
-	inline ListParameter<T>::ListParameter(glm::vec3 position, glm::vec2 size, GLfloat scaleText, std::vector<T> vectorParam, glm::vec2 origin) {
+	inline ListParameter<T>::ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const glm::vec2& origin) {
 		create(position, size, scaleText, vectorParam, origin);
 	}
 
 	template<class T>
 	inline ListParameter<T>::ListParameter(){
 		m_spriteBackGroung=nullptr;
-		m_position = glm::vec3(0, 0, 0);
-		m_size = glm::vec2(0, 0);
+		m_position=glm::vec3(0,0,0);
+		m_positionSprite= glm::vec3(0, 0, 0);
+		m_sizeSprite= glm::vec2(0, 0);
+		m_size= glm::vec2(0, 0);
+		m_origin = glm::vec2(0, 0);
 		m_text;
 		m_index=0;
+		m_scaleText=0.f;
 	}
 
 	template<class T>
@@ -63,19 +68,19 @@ namespace UserInterface {
 	}
 
 	template<class T>
-	inline void ListParameter<T>::create(glm::vec3 position, glm::vec2 size, GLfloat scaleText, std::vector<T> vectorParam, glm::vec2 origin) {
+	inline void ListParameter<T>::create(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const glm::vec2& origin) {
 		m_index = 0;
 		m_position = position;
 		m_spriteBackGroung = RESOURCE_MANAGER::getSprite("Button_Off");
 		m_text.ms_scale = scaleText * size.y;
 		m_text.ms_color = glm::vec3(0, 0, 0);
-		m_sizeStandart = size;
+		m_size = size;
 		m_origin = origin;
 
 		m_scaleText = scaleText;
 
-		m_buttonLeft.create(glm::vec3(0,0,0), glm::vec2(1, 1), 90, E_ARROW);
-		m_buttonRight.create(glm::vec3(0,0,0), glm::vec2(1, 1), -90, E_ARROW);
+		m_buttonLeft.create(glm::vec3(0,0,0), glm::vec2(0, 0), 90, E_ARROW);
+		m_buttonRight.create(glm::vec3(0,0,0), glm::vec2(0, 0), -90, E_ARROW);
 		update();
 		
 		m_vectorParametrs = vectorParam;
@@ -104,23 +109,29 @@ namespace UserInterface {
 
 	template<class T>
 	inline void ListParameter<T>::update() {
-		m_size = m_sizeStandart;
+		glm::vec2 bufSize = m_size;
 
-		if (m_size.x < 0.000001f && m_size.x>-0.000001f) {
-			m_size.x = m_size.y * (ResourceManager::getSprite("Button_Off")->getRatio() + ResourceManager::getSprite("Arrow_Off")->getRatio() * 2);
+		if (std::abs(bufSize.x) < 0.000001f) {
+			bufSize.x = bufSize.y * (ResourceManager::getSprite("Button_Off")->getRatio() + ResourceManager::getSprite("Arrow_Off")->getRatio() * 2);
 		}
-		if (m_size.y < 0.000001f && m_size.y>-0.000001f) {
-			m_size.y = m_size.x / (ResourceManager::getSprite("Button_Off")->getRatio() + ResourceManager::getSprite("Arrow_Off")->getRatio() * 2);
+		if (std::abs(bufSize.y) < 0.000001f) {
+			bufSize.y = bufSize.x / (ResourceManager::getSprite("Button_Off")->getRatio() + ResourceManager::getSprite("Arrow_Off")->getRatio() * 2);
 		}
 
-		m_buttonLeft.setSize(glm::vec2(0, m_size.y));
-		m_buttonRight.setSize(glm::vec2(0, m_size.y));
+		m_buttonLeft.setSize(glm::vec2(0, bufSize.y));
+		m_buttonRight.setSize(glm::vec2(0, bufSize.y));
 
-		m_buttonLeft.setPosition(glm::vec3(m_position.x - m_size.x * m_origin.x + m_buttonLeft.getSize().x / 2, m_position.y + (0.5 - m_origin.y) * m_size.y, m_position.z));
-		m_buttonRight.setPosition(glm::vec3(m_position.x + m_size.x * (1 - m_origin.x) - m_buttonRight.getSize().x / 2, m_position.y + (0.5 - m_origin.y) * m_size.y, m_position.z));
+		m_buttonLeft.setPosition(glm::vec3(	m_position.x - bufSize.x * m_origin.x + m_buttonLeft.getSize().x / 2,
+											m_position.y + (0.5 - m_origin.y) * bufSize.y,
+											m_position.z));
+		m_buttonRight.setPosition(glm::vec3(m_position.x + bufSize.x * (1 - m_origin.x) - m_buttonRight.getSize().x / 2,
+											m_position.y + (0.5 - m_origin.y) * bufSize.y,
+											m_position.z));
 		
-		m_sizeSprite = glm::vec2(m_size.x - m_buttonLeft.getSize().x * 2, m_size.y);
-		m_positionSprite = glm::vec3(m_position.x + (0.5 - m_origin.x) * m_buttonLeft.getSize().x * 2, m_position.y, m_position.z);
+		m_sizeSprite = glm::vec2(bufSize.x - m_buttonLeft.getSize().x * 2, bufSize.y);
+		m_positionSprite = glm::vec3(m_position.x + (0.5 - m_origin.x) * m_buttonLeft.getSize().x * 2, 
+									 m_position.y, 
+									 m_position.z);
 
 		if (!m_vectorParametrs.empty()) {
 			updateText();
@@ -137,6 +148,11 @@ namespace UserInterface {
 	inline void ListParameter<T>::setTypeToString(std::function<std::string(T value)> typeToStringFunction) {
 		m_typeToString = typeToStringFunction;
 		updateText();
+	}
+
+	template<class T>
+	inline void ListParameter<T>::setColorText(const glm::vec3& color){
+		m_text.ms_color = color;
 	}
 	 
 	template<class T>

@@ -1,7 +1,7 @@
 #include "SwitchBool.h"
 
 namespace UserInterface {
-	SwitchBool::SwitchBool(glm::vec3 position, glm::vec2 size, bool startFlag, glm::vec2 origin){
+	SwitchBool::SwitchBool(const glm::vec3& position, const glm::vec2& size, const bool& startFlag, const glm::vec2& origin){
 		create(position, size, startFlag);
 	}
 
@@ -14,7 +14,7 @@ namespace UserInterface {
 		m_button.~Button();
 	}
 
-	void SwitchBool::create(glm::vec3 position, glm::vec2 size, bool startFlag, glm::vec2 origin){
+	void SwitchBool::create(const glm::vec3& position, const glm::vec2& size, const bool& startFlag, const glm::vec2& origin){
 		m_flag = startFlag;
 		if (startFlag) {
 			m_button.create(position, size, 0,E_TRUE, origin);
@@ -43,8 +43,9 @@ namespace UserInterface {
 	}
 
 	void SwitchBool::checkClick() {
-		if (m_button.checkClick())
+		if (m_button.checkClick()) {
 			m_callback(m_flag);
+		}
 	}
 
 	void SwitchBool::setCallBack(std::function<void(bool flag)> callBack){

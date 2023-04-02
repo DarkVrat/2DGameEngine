@@ -21,9 +21,9 @@ int MainGameClass::m_fps;
 float MainGameClass::size=0.5;
 std::array<UserInterface::Button, 2> MainGameClass::m_testButton;
 UserInterface::SwitchBool MainGameClass::m_testSwich;
-//UserInterface::Slider MainGameClass::m_testSliderVertical;
-//UserInterface::Slider MainGameClass::m_testSliderHorizontal;
-//glm::vec2 MainGameClass::m_vecToTestSliders=glm::vec2(0.1f , 0.1f);
+UserInterface::Slider MainGameClass::m_testSliderVertical;
+UserInterface::Slider MainGameClass::m_testSliderHorizontal;
+glm::vec2 MainGameClass::m_vecToTestSliders=glm::vec2(0.1f , 0.1f);
 UserInterface::ListParameter<glm::ivec2> MainGameClass::m_testList;
 //
 //std::array<UserInterface::Slider, 8> MainGameClass::m_SliderForSpriteSetting;
@@ -72,17 +72,19 @@ void MainGameClass::render() {
     PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по левому краю,", glm::vec3(0,0.93, 12), 0.04, glm::vec3(1, 0.5, 1)), size, LEFT);
     PRINT_TEXT::printTextWrapping(PRINT_TEXT::Text("Этот текст нужен для проверки работоспособности переноса, выровняного по центру", glm::vec3(0, 0.85, 13), 0.04, glm::vec3(1, 1, 0.5)), size, CENTR);
     PRINT_TEXT::printText(PRINT_TEXT::Text("Позиция мыши:" + std::to_string(MOUSE::getPosition().x)+" "+ std::to_string(MOUSE::getPosition().y), glm::vec3(0, 0.03, 10), 0.04, glm::vec3(1, 1, 1)));
-    m_testButton[0].render();
-    m_testButton[1].render();
-    m_testSwich.render(); 
-    PRINT_TEXT::printText(PRINT_TEXT::Text("FullScreen: " + std::to_string(CONFIG_MANAGER::getFullScreen()), glm::vec3(0, 0.07, 10), 0.03));
-    /*m_testSliderVertical.render();
-    m_testSliderHorizontal.render();*/
-    m_testList.render(); 
+   // m_testButton[0].render();
+    //m_testButton[1].render();
+   // m_testSwich.render(); 
+   // PRINT_TEXT::printText(PRINT_TEXT::Text("FullScreen: " + std::to_string(CONFIG_MANAGER::getFullScreen()), glm::vec3(0, 0.07, 10), 0.03));
+    m_testSliderVertical.render();
+    m_testSliderHorizontal.render();
+   // m_testList.render(); 
     
-    /*PRINT_TEXT::printText(PRINT_TEXT::Text(std::to_string(m_vecToTestSliders.x) + " " + std::to_string(m_vecToTestSliders.y), glm::vec3(1260, 40, 10)));
-   
+    PRINT_TEXT::printText(PRINT_TEXT::Text(std::to_string(m_vecToTestSliders.x) + " " + std::to_string(m_vecToTestSliders.y), glm::vec3(0, 0.1, 10), 0.03));
 
+    RESOURCE_MANAGER::getSprite("Attack1_1")->render(glm::vec3(0.5, 0.5, 20), m_vecToTestSliders);
+
+    /*
     for (auto& currentSlider : m_SliderForSpriteSetting) {
         currentSlider.render();
     }
@@ -137,16 +139,16 @@ bool MainGameClass::init(glm::vec2 window) {
 
     m_testSwich.create(glm::vec3(0.05, 0.1, 10), glm::vec2(0, 0.05), CONFIG_MANAGER::getFullScreen(), glm::vec2(0,0));
     m_testSwich.setCallBack([](bool flag) {CONFIG_MANAGER::setFullScreen(flag);});
+     
+    m_testSliderVertical.create(glm::vec3(0.5, 0.05, 10), glm::vec2(0, 0.1), UI_VERTICAL_SLIDER, glm::vec2(0, 1), m_vecToTestSliders.x);
+    m_testSliderVertical.setCallBack([](float value) {
+            m_vecToTestSliders.x = value;
+        });
 
-    //m_testSliderVertical.create(glm::vec3(1410, 20, 10), glm::vec2(300, 40), UI_VERTICAL_SLIDER, glm::vec2(0, 100), m_vecToTestSliders.x);
-    //m_testSliderVertical.setCallBack([](float value) {
-    //        m_vecToTestSliders.x = value;
-    //    });
-
-    //m_testSliderHorizontal.create(glm::vec3(1580, 190, 10), glm::vec2(40, 300), UI_HORIZONTAL_SLIDER, glm::vec2(0, 100), m_vecToTestSliders.y);
-    //m_testSliderHorizontal.setCallBack([](float value) {
-    //    m_vecToTestSliders.y = value;
-    //    });
+    m_testSliderHorizontal.create(glm::vec3(0.015, 0.5, 10), glm::vec2(0.03, 0), UI_HORIZONTAL_SLIDER, glm::vec2(0, 1), m_vecToTestSliders.y);
+    m_testSliderHorizontal.setCallBack([](float value) {
+        m_vecToTestSliders.y = value;
+        });
 
     std::vector<glm::ivec2> testList; 
     testList.push_back(glm::vec2(800, 600));
@@ -214,12 +216,12 @@ void MainGameClass::events(){
     if (size < 0)size = 0;
     if (size > 1)size = 1;
 
-    m_testButton[0].checkClick();
-    m_testButton[1].checkClick();
-    m_testSwich.checkClick();
-   /*m_testSliderVertical.checkClick();
-    m_testSliderHorizontal.checkClick();*/
-    m_testList.checkClick();
+    //m_testButton[0].checkClick();
+    //m_testButton[1].checkClick();
+    //m_testSwich.checkClick();
+    m_testSliderVertical.checkClick();
+    m_testSliderHorizontal.checkClick();
+   // m_testList.checkClick();
 
    /*for (auto& currentSlider : m_SliderForSpriteSetting) {
         currentSlider.checkClick();
@@ -237,10 +239,12 @@ void MainGameClass::setProjectionMat(const glm::ivec2& window){
     PRINT_TEXT::setWindow(m_window);
     Renderer::Sprite::setWindow(m_window);
     MOUSE::setWindowSize(m_window);
-    m_testButton[0].update();
-    m_testButton[1].update();
-    m_testSwich.update();
-    m_testList.update();
+    m_testSliderVertical.update();
+    m_testSliderHorizontal.update();
+   // m_testButton[0].update();
+   // m_testButton[1].update();
+   // m_testSwich.update();
+   // m_testList.update();
 }
 
  //(RUS) Уничтожение игровых объектов

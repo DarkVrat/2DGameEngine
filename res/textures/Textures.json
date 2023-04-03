@@ -93,11 +93,18 @@
 				"height" : 20
 			},
 			{
-				"name":"Slider_Background",
+				"name":"Slider_Background_Vertical",
 				"left":0,
-				"bottom":101,
+				"bottom":100,
 				"width" : 160,
-				"height" : 19
+				"height" : 20
+			},
+			{
+				"name":"Slider_Background_Horizontal",
+				"left":160,
+				"bottom":0,
+				"width" : 20,
+				"height" : 120
 			},
 			{
 				"name":"False_Off",

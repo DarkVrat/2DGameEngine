@@ -5,8 +5,8 @@
 #include "../Control/MouseControl.h"
 
 namespace UserInterface {
-	Button::Button(const glm::vec3& position, const glm::vec2& size, const E_BUTTON_TYPE& type, const std::string& text, const GLfloat& scale, const glm::vec3& color, const glm::vec2& origin){
-		create(position, size, type, text, scale, color, origin);
+	Button::Button(const glm::vec3& position, const glm::vec2& size, const std::string& text, const GLfloat& scale, const glm::vec3& color, const glm::vec2& origin){
+		create(position, size, text, scale, color, origin);
 	}
 
 	Button::Button(const glm::vec3& position, const glm::vec2& size, float rotation, const E_BUTTON_TYPE& type, const glm::vec2& origin){
@@ -31,8 +31,8 @@ namespace UserInterface {
 		m_SpriteButtonOff.~shared_ptr();
 	}
 	 
-	void Button::create(const glm::vec3& position, const glm::vec2& size, const E_BUTTON_TYPE& type, const std::string& text, const GLfloat& scale, const glm::vec3& color, const glm::vec2& origin) {
-		setType(type);
+	void Button::create(const glm::vec3& position, const glm::vec2& size, const std::string& text, const GLfloat& scale, const glm::vec3& color, const glm::vec2& origin) {
+		setType(STANDART);
 
 		m_position = position;
 		m_sizeStandart = size;
@@ -80,7 +80,7 @@ namespace UserInterface {
 		if (std::abs(m_size.x) < 0.000001f) {
 			m_size.x = m_size.y * m_SpriteButtonOff->getRatio();
 		}
-		if (std::abs(m_size.y) < 0.000001f) {
+		else if (std::abs(m_size.y) < 0.000001f) {
 			m_size.y = m_size.x / m_SpriteButtonOff->getRatio();
 		}
 
@@ -96,9 +96,13 @@ namespace UserInterface {
 			if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 				m_click = true;
 			}
-			if (m_click && MOUSE::ifReleased(GLFW_MOUSE_BUTTON_LEFT)) {
+			else if (m_click && MOUSE::ifReleased(GLFW_MOUSE_BUTTON_LEFT)) {
 				m_click = false;
 				m_callback();
+				if (m_soundClick == nullptr) {
+					m_soundClick = MAKE_SOUND_PLAYER("UIButton", "UI");
+				}
+				m_soundClick->play(); 
 				return true;
 			}
 		}

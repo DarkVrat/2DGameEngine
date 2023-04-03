@@ -5,8 +5,8 @@
 #define UI_VERTICAL_SLIDER true
 #define UI_HORIZONTAL_SLIDER false
 
-namespace UserInterface {
-	class Slider {
+namespace UserInterface{
+	class Slider : public UIElement{
 	public:
 		Slider(const glm::vec3& position, const glm::vec2& size, const bool& view, const glm::vec2& minMax, const float& startValue, const glm::vec2& origin=glm::vec2(0.5, 0.5));
 		Slider();
@@ -14,11 +14,11 @@ namespace UserInterface {
 
 		void create(const glm::vec3& position, const glm::vec2& size, const bool& view, const glm::vec2& minMax, const float& startValue, const glm::vec2& origin = glm::vec2(0.5, 0.5));
 
-		void render();
-		void checkClick();
-		void updatePositionSlider();
-		void update();
+		void render()override;
+		void update()override;
+		bool checkClick()override;
 
+		void updatePositionSlider();
 		void setCallBack(std::function<void(float value)> callBack);
 
 		float getValue() { return m_value; }

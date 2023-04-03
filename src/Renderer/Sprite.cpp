@@ -22,7 +22,7 @@ namespace Renderer {
         if (size.x < 0.000001f && size.x>-0.000001f) {
             SizeSprite.x = SizeSprite.y * m_ratio;
         }
-        if (size.y < 0.000001f && size.y>-0.000001f) {
+        else if (size.y < 0.000001f && size.y>-0.000001f) {
             SizeSprite.y = SizeSprite.x / m_ratio;
         }
 

@@ -22,7 +22,7 @@ namespace Control {
 			if (It == E_BUTTON_ACTION::PRESSED) {
 				It = E_BUTTON_ACTION::CLAMPED;
 			}
-			if (It == E_BUTTON_ACTION::RELEASED) {
+			else if (It == E_BUTTON_ACTION::RELEASED) {
 				It = E_BUTTON_ACTION::NOT_CLAMPED;
 			}
 		}
@@ -40,7 +40,7 @@ namespace Control {
 			m_keys[button] = E_BUTTON_ACTION::PRESSED;
 			return;
 		}
-		if (action == GLFW_RELEASE) {
+		else if (action == GLFW_RELEASE) {
 			m_keys[button] = E_BUTTON_ACTION::RELEASED;
 			return;
 		}

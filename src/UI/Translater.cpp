@@ -23,7 +23,7 @@ void Translater::init(rapidjson::Document language){
 }
 
 std::string Translater::find(const std::string& subject, const std::string& text){
-	if(m_language=="RU")
+	if(m_language == "RU")
 		return m_transleter.at(subject).at(text).getRU();
 	if (m_language == "EN")
 		return m_transleter.at(subject).at(text).getEN();

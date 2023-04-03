@@ -16,6 +16,10 @@
 		{
 		"name":"default",
 		"volume":1.0
+		},
+		{
+		"name":"UI",
+		"volume":1.0
 		}
 	],
 	

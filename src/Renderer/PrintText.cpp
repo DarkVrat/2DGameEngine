@@ -8,6 +8,7 @@
 #include FT_FREETYPE_H
 
 std::vector<float> Renderer::PrintText::m_advanceChar;
+std::vector<glm::vec4> Renderer::PrintText::m_textureChar;
 std::shared_ptr<Renderer::Texture2D> Renderer::PrintText::m_texture;
 glm::vec2 Renderer::PrintText::m_window;
 
@@ -47,6 +48,8 @@ namespace Renderer {
 
         m_advanceChar.reserve(255);
 
+        float sizeTexture = 1.0 / 16.0;
+
         for (unsigned int c=0; c<256; c++)
         {
             if (FT_Load_Char(face, c, FT_LOAD_RENDER))
@@ -55,6 +58,11 @@ namespace Renderer {
                 continue;
             }
             m_advanceChar.push_back((face->glyph->advance.x >> 6)/ m_fontSize);
+
+            m_textureChar.push_back(glm::vec4(  (c % 16) * sizeTexture + 0.0001, 
+                                                (c / 16) * sizeTexture + 0.0001,
+                                                (c % 16 + 1) * sizeTexture - 0.0001,
+                                                (c / 16 + 1) * sizeTexture - 0.0001));
         }
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
@@ -187,8 +195,6 @@ namespace Renderer {
     //(ENG) Drawing texts from buffers, and possibly deleting from the Count buffer
     void PrintText::renderBuffer(){
         unsigned countChar = 0;
-        float sizeTexture = 32.0 / 512.0;
-        float alignment = 0.0001;
 
         for (Text t : m_bufferText) {
             countChar += t.ms_text.length();
@@ -214,7 +220,7 @@ namespace Renderer {
 
                 Position.push_back(glm::vec4(posX*m_window.x, t.ms_position.y*m_window.y, t.ms_position.z, t.ms_scale*m_window.y));
                 Color.push_back(t.ms_color);
-                Texture.push_back(glm::vec4((index % 16) * sizeTexture + alignment, (index / 16) * sizeTexture + alignment, (index % 16 + 1) * sizeTexture - alignment, (index / 16 + 1) * sizeTexture - alignment));
+                Texture.push_back(m_textureChar.at(index));
                  
                 posX += m_advanceChar[index] * t.ms_scale * (m_window.y / m_window.x);
             } 

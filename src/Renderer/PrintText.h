@@ -52,6 +52,7 @@ namespace Renderer {
 		~PrintText() {};
 
 		static std::vector<float> m_advanceChar;
+		static std::vector<glm::vec4> m_textureChar;
 		static std::shared_ptr<Texture2D> m_texture;
 		static glm::vec2 m_window;
 

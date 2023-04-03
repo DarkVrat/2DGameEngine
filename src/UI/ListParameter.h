@@ -7,7 +7,7 @@
 
 namespace UserInterface {
 	template<class T>
-	class ListParameter {
+	class ListParameter : public UIElement{
 	public:
 		ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const glm::vec2& origin=glm::vec2(0.5,0.5));
 		ListParameter();
@@ -15,9 +15,9 @@ namespace UserInterface {
 
 		void create(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const glm::vec2& origin = glm::vec2(0.5, 0.5));
 
-		void render();
-		void update();
-		void checkClick();
+		void render() override;
+		void update() override;
+		bool checkClick() override;
 
 		void setTypeToString(std::function<std::string(T value)> typeToStringFunction);
 		void setColorText(const glm::vec3& color);
@@ -139,9 +139,11 @@ namespace UserInterface {
 	}
 
 	template<class T>
-	inline void ListParameter<T>::checkClick() {
-		m_buttonLeft.checkClick();
-		m_buttonRight.checkClick();
+	inline bool ListParameter<T>::checkClick() {
+		if (m_buttonLeft.checkClick() || m_buttonRight.checkClick()) {
+			return true;
+		}
+		return false;
 	}
 
 	template<class T>

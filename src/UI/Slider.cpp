@@ -38,15 +38,16 @@ namespace UserInterface{
 		m_position = position;
 		m_origin = origin;
 
-		m_spriteBackGroung = RESOURCE_MANAGER::getSprite("Slider_Background");
 		m_spriteSliderOn = RESOURCE_MANAGER::getSprite("Slider_On");
 		m_spriteSliderOff = RESOURCE_MANAGER::getSprite("Slider_Off");
 
 		if (m_view) {
+			m_spriteBackGroung = RESOURCE_MANAGER::getSprite("Slider_Background_Vertical");
 			m_buttonLess.create(glm::vec3(0, 0, 0), glm::vec2(0, 0), 90, E_ARROW);
 			m_buttonMore.create(glm::vec3(0, 0, 0), glm::vec2(0, 0), -90, E_ARROW);
 		}
 		else {
+			m_spriteBackGroung = RESOURCE_MANAGER::getSprite("Slider_Background_Horizontal");
 			m_buttonLess.create(glm::vec3(0, 0, 0), glm::vec2(0, 0), 180, E_ARROW);
 			m_buttonMore.create(glm::vec3(0, 0, 0), glm::vec2(0, 0), 0, E_ARROW);
 		}
@@ -79,16 +80,12 @@ namespace UserInterface{
 		}
 	}
 
-	void Slider::checkClick() {
-		if (m_buttonLess.checkClick()) {
+	bool Slider::checkClick() {
+		if (m_buttonLess.checkClick()|| m_buttonMore.checkClick()) {
 			m_callback(m_value);
-			return;
+			return true;
 		}
-		if (m_buttonMore.checkClick()) {
-			m_callback(m_value);
-			return;
-		}
-		if (MOUSE::ifInArea(m_areaMin)||MOUSE::ifInArea(m_area)|| MOUSE::ifInArea(m_areaMax)) {
+		else if (MOUSE::ifInArea(m_areaMin)||MOUSE::ifInArea(m_area)|| MOUSE::ifInArea(m_areaMax)) {
 			if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 				m_click = true;
 			}
@@ -97,34 +94,44 @@ namespace UserInterface{
 
 				if (MOUSE::ifInArea(m_areaMin)) {
 					m_value = m_MinMax.x;
-					updatePositionSlider();
 				}
-
-				if (MOUSE::ifInArea(m_areaMax)) {
+				else if (MOUSE::ifInArea(m_areaMax)) {
 					m_value = m_MinMax.y;
-					updatePositionSlider();
 				}
-
-				if (MOUSE::ifInArea(m_area)) {
+				else if (MOUSE::ifInArea(m_area)) {
 					float procent;
 					if (m_view) {
-						m_positionSlider.x = MOUSE::getPosition().x;
 						float s = m_area.z - m_area.x;
-						procent = (m_positionSlider.x - m_area.x) / s;
+						procent = (MOUSE::getPosition().x - m_area.x) / s;
 					}
 					else {
-						m_positionSlider.y = MOUSE::getPosition().y;
 						float s = m_area.w - m_area.y;
-						procent = (m_positionSlider.y - m_area.y) / s;
+						procent = (MOUSE::getPosition().y - m_area.y) / s;
 					}
 					m_value = (m_MinMax.y - m_MinMax.x) * procent + m_MinMax.x;
 				}
 
+				updatePositionSlider();
 				m_callback(m_value);
 			}
+			
 
 			if (MOUSE::ifReleased(GLFW_MOUSE_BUTTON_LEFT)) {
 				m_click = false;
+				return true;
+			}
+			
+			if (std::abs(MOUSE::getScroll().y) > 0) {
+				m_value += MOUSE::getScroll().y * m_step * 0.1;
+				if (m_value < m_MinMax.x) {
+					m_value = m_MinMax.x;
+				}
+				else if (m_value > m_MinMax.y) {
+					m_value = m_MinMax.y;
+				}
+				updatePositionSlider();
+				m_callback(m_value);
+				return true;
 			}
 		}
 		else {
@@ -132,8 +139,10 @@ namespace UserInterface{
 				m_callback(m_value);
 				updatePositionSlider();
 				m_click = false;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	void Slider::updatePositionSlider(){
@@ -149,14 +158,14 @@ namespace UserInterface{
 	}
 
 	void Slider::update(){
-		glm::vec2 size = m_size;
+		glm::vec2 size = m_size; 
 
 		if (m_view) {
 			if (std::abs(size.x) < 0.000001f) {
-				size.x = size.y * (ResourceManager::getSprite("Slider_Background")->getRatio() + ResourceManager::getSprite("Arrow_Off")->getRatio() * 2);
+				size.x = size.y * (ResourceManager::getSprite("Slider_Background_Vertical")->getRatio() + ResourceManager::getSprite("Arrow_Off")->getRatio() * 2);
 			}
-			if (std::abs(size.y) < 0.000001f) {
-				size.y = size.x / (ResourceManager::getSprite("Slider_Background")->getRatio() + ResourceManager::getSprite("Arrow_Off")->getRatio() * 2);
+			else if (std::abs(size.y) < 0.000001f) {
+				size.y = size.x / (ResourceManager::getSprite("Slider_Background_Vertical")->getRatio() + ResourceManager::getSprite("Arrow_Off")->getRatio() * 2);
 			}
 
 			m_buttonLess.setSize(glm::vec2(0, size.y));
@@ -184,10 +193,10 @@ namespace UserInterface{
 		}
 		else {
 			if (std::abs(size.x) < 0.000001f) {
-				size.x = size.y / (ResourceManager::getSprite("Slider_Background")->getInversRatio() + ResourceManager::getSprite("Arrow_Off")->getInversRatio() * 2);
+				size.x = size.y / (ResourceManager::getSprite("Slider_Background_Vertical")->getInversRatio() + ResourceManager::getSprite("Arrow_Off")->getInversRatio() * 2);
 			}
-			if (std::abs(size.y) < 0.000001f) {
-				size.y = size.x * (ResourceManager::getSprite("Slider_Background")->getInversRatio() + ResourceManager::getSprite("Arrow_Off")->getInversRatio() * 2);
+			else if (std::abs(size.y) < 0.000001f) {
+				size.y = size.x * (ResourceManager::getSprite("Slider_Background_Vertical")->getInversRatio() + ResourceManager::getSprite("Arrow_Off")->getInversRatio() * 2);
 			}
 
 			m_buttonLess.setSize(glm::vec2(size.x, 0));

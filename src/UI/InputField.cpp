@@ -18,7 +18,7 @@ namespace UserInterface {
 	}
 
 	void InputField::create(const glm::vec3& position, const glm::vec2& size, const std::string& text, const GLfloat& scale, const glm::vec3& color, const glm::vec2& origin){
-		m_field.create(position, size, E_STANDART, text, scale, color, origin);
+		m_field.create(position, size, text, scale, color, origin);
 		m_field.setCallBack([]() {});
 		m_writeText = false;
 		m_bufferString = text;
@@ -33,20 +33,19 @@ namespace UserInterface {
 		m_field.update();
 	}
 
-	void InputField::checkClick(){
+	bool InputField::checkClick(){
 		bool click = m_field.checkClick();
 
 		if (click && !m_writeText && !KEYBOARD::getWritingText()) {
 			KEYBOARD::startWritingText();
 			m_writeText = true;
-			click = false;
 		}
-
-		if ((click||KEYBOARD::ifPressed(GLFW_KEY_ENTER)) && m_writeText && KEYBOARD::getWritingText()) {
+		else if ((click||KEYBOARD::ifPressed(GLFW_KEY_ENTER)) && m_writeText && KEYBOARD::getWritingText()) {
 			KEYBOARD::endWritingText();
 			m_writeText = false;
 			m_callBack(m_bufferString);
 			m_field.setText(m_bufferString);
+			return true;
 		}
 
 		if (m_writeText) {
@@ -54,13 +53,12 @@ namespace UserInterface {
 			if (c != 0) {
 				m_bufferString.insert(m_index, 1, c);
 				m_index++;
-			}
+			} 
 
 			if (KEYBOARD::ifPressed(GLFW_KEY_LEFT) && m_index > 0) {
 				m_index--;
 			}
-
-			if (KEYBOARD::ifPressed(GLFW_KEY_RIGHT) && m_index < m_bufferString.length()) {
+			else if (KEYBOARD::ifPressed(GLFW_KEY_RIGHT) && m_index < m_bufferString.length()) {
 				m_index++;
 			}
 
@@ -71,6 +69,8 @@ namespace UserInterface {
 
 			m_field.setText(stringForPaint());
 		}
+
+		return false;
 	}
 
 	std::string InputField::stringForPaint(){

@@ -16,15 +16,12 @@ namespace Control {
 
 		if (action == GLFW_REPEAT) {
 			m_keys[key] = E_BUTTON_ACTION::CLAMPED;
-			return;
 		}
-		if (action == GLFW_PRESS){
+		else if (action == GLFW_PRESS){
 			m_keys[key] = E_BUTTON_ACTION::PRESSED;
-			return;
 		}
-		if (action == GLFW_RELEASE) {
+		else if (action == GLFW_RELEASE) {
 			m_keys[key] = E_BUTTON_ACTION::RELEASED;
-			return;
 		}
 	}
 

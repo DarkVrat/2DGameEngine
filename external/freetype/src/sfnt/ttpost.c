@@ -5,7 +5,7 @@
  *   PostScript name table processing for TrueType and OpenType fonts
  *   (body).
  *
- * Copyright (C) 1996-2022 by
+ * Copyright (C) 1996-2023 by
  * David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -58,7 +58,7 @@
 #define MAC_NAME( x )  (FT_String*)psnames->macintosh_name( (FT_UInt)(x) )
 
 
-#else /* FT_CONFIG_OPTION_POSTSCRIPT_NAMES */
+#else /* !FT_CONFIG_OPTION_POSTSCRIPT_NAMES */
 
 
    /* Otherwise, we ignore the `psnames' module, and provide our own  */
@@ -152,7 +152,7 @@
   };
 
 
-#endif /* FT_CONFIG_OPTION_POSTSCRIPT_NAMES */
+#endif /* !FT_CONFIG_OPTION_POSTSCRIPT_NAMES */
 
 
   static FT_Error
@@ -558,7 +558,7 @@
 #else /* !TT_CONFIG_OPTION_POSTSCRIPT_NAMES */
 
   /* ANSI C doesn't like empty source files */
-  typedef int  _tt_post_dummy;
+  typedef int  tt_post_dummy_;
 
 #endif /* !TT_CONFIG_OPTION_POSTSCRIPT_NAMES */
 

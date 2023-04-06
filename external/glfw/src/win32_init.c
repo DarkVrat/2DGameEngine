@@ -29,6 +29,8 @@
 
 #include "internal.h"
 
+#if defined(_GLFW_WIN32)
+
 #include <stdlib.h>
 
 static const GUID _glfw_GUID_DEVINTERFACE_HID =
@@ -382,7 +384,7 @@ static GLFWbool createHelperWindow(void)
     if (!_glfw.win32.helperWindowClass)
     {
         _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "WIn32: Failed to register helper window class");
+                             "Win32: Failed to register helper window class");
         return GLFW_FALSE;
     }
 
@@ -724,4 +726,6 @@ void _glfwTerminateWin32(void)
 
     freeLibraries();
 }
+
+#endif // _GLFW_WIN32
 

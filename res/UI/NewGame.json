@@ -1,0 +1,24 @@
+{
+	"staticSprites":[
+	{
+		"spriteName":"darkForBackground",
+		"position":{"x":0.5,"y":0.5,"z":9},
+		"size":{"x":1,"y":1},
+		"rotation":0,
+		"origin":{"x":0.5,"y":0.5}
+	}
+	],
+	
+	"buttons":[
+	{
+		"function":"SaveConfig",
+		"position":{"x":0.5,"y":0.5,"z":10},
+		"size":{"x":0,"y":0.1},
+		"subjectTranslete":"menu",
+		"textForTranslete":"exit",
+		"scaleTextForButton":0.9,
+		"color":{"r":0,"g":0,"b":0},
+		"origin":{"x":0.5,"y":0.5}
+	}
+	]
+}

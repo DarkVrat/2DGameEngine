@@ -4,7 +4,7 @@
  *
  *   SFNT object management (base).
  *
- * Copyright (C) 1996-2022 by
+ * Copyright (C) 1996-2023 by
  * David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -1107,13 +1107,7 @@
       /* Don't bother to load the tables unless somebody asks for them. */
       /* No need to do work which will (probably) not be used.          */
       if ( face->variation_support & TT_FACE_FLAG_VAR_FVAR )
-      {
-        if ( tt_face_lookup_table( face, TTAG_glyf ) != 0 &&
-             tt_face_lookup_table( face, TTAG_gvar ) != 0 )
-          flags |= FT_FACE_FLAG_MULTIPLE_MASTERS;
-        if ( tt_face_lookup_table( face, TTAG_CFF2 ) != 0 )
-          flags |= FT_FACE_FLAG_MULTIPLE_MASTERS;
-      }
+        flags |= FT_FACE_FLAG_MULTIPLE_MASTERS;
 #endif
 
       root->face_flags = flags;
@@ -1227,7 +1221,7 @@
 
         if ( count > 0 )
         {
-          FT_Memory        memory   = face->root.stream->memory;
+          FT_Memory        memory   = face->root.memory;
           FT_UShort        em_size  = face->header.Units_Per_EM;
           FT_Short         avgwidth = face->os2.xAvgCharWidth;
           FT_Size_Metrics  metrics;

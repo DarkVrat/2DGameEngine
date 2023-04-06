@@ -4,7 +4,7 @@
  *
  *   TrueType and OpenType embedded BDF properties (body).
  *
- * Copyright (C) 2005-2022 by
+ * Copyright (C) 2005-2023 by
  * David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -248,7 +248,7 @@
 #else /* !TT_CONFIG_OPTION_BDF */
 
   /* ANSI C doesn't like empty source files */
-  typedef int  _tt_bdf_dummy;
+  typedef int  tt_bdf_dummy_;
 
 #endif /* !TT_CONFIG_OPTION_BDF */
 

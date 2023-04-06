@@ -154,7 +154,7 @@ namespace Renderer {
 		return monitors[CONFIG_MANAGER::getDisplayNumber()];
 	}
 
-	int RenderEngine::getCountMonitor(){ 
+	int RenderEngine::getCountMonitor(){
 		int count;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
 		return count;

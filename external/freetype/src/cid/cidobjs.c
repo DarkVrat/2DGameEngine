@@ -4,7 +4,7 @@
  *
  *   CID objects manager (body).
  *
- * Copyright (C) 1996-2022 by
+ * Copyright (C) 1996-2023 by
  * David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -69,8 +69,7 @@
       FT_Module  module;
 
 
-      module = FT_Get_Module( slot->face->driver->root.library,
-                              "pshinter" );
+      module = FT_Get_Module( slot->library, "pshinter" );
       if ( module )
       {
         T1_Hints_Funcs  funcs;
@@ -153,7 +152,7 @@
   }
 
 
-  FT_LOCAL( FT_Error )
+  FT_LOCAL_DEF( FT_Error )
   cid_size_request( FT_Size          size,
                     FT_Size_Request  req )
   {

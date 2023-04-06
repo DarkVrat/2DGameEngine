@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <thread>
 #include <rapidjson/error/en.h>
 #define  STB_IMAGE_IMPLEMENTATION
 #define  STBI_ONLY_PNG
@@ -140,7 +141,7 @@ void ResourceManager::loadTextureCut(const std::string& textureName, const std::
 
 	for (auto& currentSprite : sprites) {
 		float left = (currentTexOffsetX + 0.01f) / textureWidth;
-		float right = (currentTexOffsetX + heightSprite - 0.01f) / textureWidth;
+		float right = (currentTexOffsetX + widthSprite - 0.01f) / textureWidth;
 		float bottom = (currentTexOffsetY - heightSprite + 0.01f) / textureHeight;
 		float top = (currentTexOffsetY - 0.01f) / textureHeight;
 
@@ -254,10 +255,20 @@ std::shared_ptr<Audio::SampleSourse> ResourceManager::getSampleSourse(const std:
 //(ENG) Loading resources from a JSON file
 bool ResourceManager::loadJSONResurces() {
 
+	std::thread audio([&]() {
+			LoadAudioResurces("res/Audio/Audio.json");
+		});
+
 	LoadTextureResurces("res/Textures/Textures.json");
+	
+	std::thread Animation([&]() {
+			LoadAnimationResurces("res/Animation/Animation.json");
+		});
+	
 	LoadTextResurces("res/Text/Text.json");
-	LoadAnimationResurces("res/Animation/Animation.json");
-	LoadAudioResurces("res/Audio/Audio.json");
+
+	audio.join();
+	Animation.join();
 
 	return true;
 }

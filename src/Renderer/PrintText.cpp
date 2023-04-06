@@ -59,10 +59,10 @@ namespace Renderer {
             }
             m_advanceChar.push_back((face->glyph->advance.x >> 6)/ m_fontSize);
 
-            m_textureChar.push_back(glm::vec4(  (c % 16) * sizeTexture + 0.0001, 
-                                                (c / 16) * sizeTexture + 0.0001,
-                                                (c % 16 + 1) * sizeTexture - 0.0001,
-                                                (c / 16 + 1) * sizeTexture - 0.0001));
+            m_textureChar.push_back(glm::vec4(  (c % 16) * sizeTexture + 0.001, 
+                                                (c / 16) * sizeTexture + 0.001,
+                                                (c % 16 + 1) * sizeTexture - 0.001,
+                                                (c / 16 + 1) * sizeTexture - 0.001));
         }
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
@@ -121,20 +121,11 @@ namespace Renderer {
 
         for (auto& word : words) {
             if (sizeText + word.second > size && sizeText != 0) {
-                if (!centr) {
-                    printText(Text( text.ms_text.substr(lastTextRender, lastIndex - lastTextRender), 
-                                    text.ms_position, 
-                                    text.ms_scale, 
-                                    text.ms_color), 
-                              Time);
-                }
-                else { 
-                    printText(Text( text.ms_text.substr(lastTextRender, lastIndex - lastTextRender), 
-                                    glm::vec3(text.ms_position.x + (size - sizeText) / 2, text.ms_position.y, text.ms_position.z), 
-                                    text.ms_scale, 
-                                    text.ms_color),
-                              Time);
-                }
+                printTextReduction(Text(text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
+                                        text.ms_position,
+                                        text.ms_scale,
+                                        text.ms_color),
+                                   size, centr, Time);
                 text.ms_position.y -= text.ms_scale;
                 lastTextRender = lastIndex + 1;
                 sizeText = word.second;
@@ -145,19 +136,30 @@ namespace Renderer {
             lastIndex = word.first;
         }
 
-        if (!centr) {
-            printText(Text( text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
-                            text.ms_position,
-                            text.ms_scale,
-                            text.ms_color),
-                      Time);
+        printTextReduction(Text(text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
+                                text.ms_position,
+                                text.ms_scale,
+                                text.ms_color),
+            size, centr, Time);
+    }
+
+    void PrintText::printTextReduction(Text text, float size, const bool& centr, const double& Time){
+        float startSize = text.ms_scale;
+        if (sizeText(text) > size) {
+            text.ms_scale = (size * text.ms_scale) / Renderer::PrintText::sizeText(text.ms_text, text.ms_scale);
+        }
+
+        if (centr) {
+            text.ms_position = glm::vec3(   text.ms_position.x + (size - sizeText(text)) / 2, 
+                                            text.ms_position.y + (startSize - text.ms_scale) / 2, 
+                                            text.ms_position.z);
+            printText(text, Time);
         }
         else {
-            printText(Text( text.ms_text.substr(lastTextRender, lastIndex - lastTextRender),
-                            glm::vec3(text.ms_position.x + (size - sizeText) / 2, text.ms_position.y, text.ms_position.z),
-                            text.ms_scale,
-                            text.ms_color),
-                     Time);
+            text.ms_position = glm::vec3(   text.ms_position.x,
+                                            text.ms_position.y + (startSize - text.ms_scale) / 2,
+                                            text.ms_position.z);
+            printText(text, Time);
         }
     }
 
@@ -186,8 +188,6 @@ namespace Renderer {
             m_timeBufferText[i].second -= duration;
             if (m_timeBufferText[i].second < 0.0)
                 m_timeBufferText.erase(m_timeBufferText.begin() + i);
-            else
-                m_bufferText.push_back(m_timeBufferText[i].first);
         }
     }
 
@@ -195,6 +195,10 @@ namespace Renderer {
     //(ENG) Drawing texts from buffers, and possibly deleting from the Count buffer
     void PrintText::renderBuffer(){
         unsigned countChar = 0;
+
+        for (auto& textTime: m_timeBufferText) {
+            m_bufferText.push_back(textTime.first);
+        }
 
         for (Text t : m_bufferText) {
             countChar += t.ms_text.length();

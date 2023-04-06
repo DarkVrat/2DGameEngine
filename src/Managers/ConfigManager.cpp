@@ -9,6 +9,7 @@
 #include "../Audio/SoundDevice.h"
 #include "../Managers/SoundManager.h"
 #include "../Managers/ResourceManager.h"
+#include "../UI/Translater.h"
 
 rapidjson::Document ConfigManager::m_configDoc;
 
@@ -66,13 +67,24 @@ void ConfigManager::setVolumeSample(const std::string& name, const double& volum
 	for (auto& It : m_configDoc.FindMember("volumeSample")->value.GetArray()) {
 		if (It["name"].GetString() == name) {
 			It["volume"].SetDouble(volume);
+			SOUND_MANAGER::updateGain();
 		}
 	}
-	SOUND_MANAGER::updateGain();
 }
 
 void ConfigManager::setSamples(const unsigned& sample){
 	m_configDoc.FindMember("samples")->value.SetInt(sample);
+}
+
+void ConfigManager::setVSync(const unsigned& VSync){
+	m_configDoc.FindMember("VSync")->value.SetBool(VSync);
+}
+
+void ConfigManager::setLanguage(const std::string& language){
+	rapidjson::Value languageValue;
+	languageValue.SetString(language.c_str(), m_configDoc.GetAllocator());
+	m_configDoc.FindMember("language")->value = languageValue;
+	Translater::setLanguage(language);
 }
 
  //(RUS) получение размера окна
@@ -114,4 +126,12 @@ double ConfigManager::getVolumeSample(const std::string& name) {
 
 unsigned ConfigManager::getSamples(){
 	return m_configDoc.FindMember("samples")->value.GetInt();
+}
+
+unsigned ConfigManager::getVSync(){
+	return m_configDoc.FindMember("VSync")->value.GetBool();
+}
+
+std::string ConfigManager::getLanguage(){
+	return m_configDoc.FindMember("language")->value.GetString();
 }

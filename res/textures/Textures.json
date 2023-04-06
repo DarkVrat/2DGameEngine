@@ -4,8 +4,7 @@
 			"name" : "NoBlendSpriteShader",
 			"filePath_v" : "res/Textures/Shaders/NoBlendSpriteVertexShader.txt",
 			"filePath_f" : "res/Textures/Shaders/NoBlendSpriteFragmentShader.txt"
-		},
-		{
+		},{
 			"name" : "WithBlendSpriteShader",
 			"filePath_v" : "res/Textures/Shaders/WithBlendSpriteVertexShader.txt",
 			"filePath_f" : "res/Textures/Shaders/WithBlendSpriteFragmentShader.txt"
@@ -18,6 +17,11 @@
 			"filePath" : "res/Textures/logo.png",
 			"shader" : "NoBlendSpriteShader",
 			"blend":false
+		},{
+			"name" : "darkForBackground",
+			"filePath" : "res/Textures/darkForBackground.png",
+			"shader" : "WithBlendSpriteShader",
+			"blend":true
 		}
 	],
 	
@@ -40,6 +44,35 @@
 				"Idle_3",
 				"Idle_4"
 			]
+		},{
+			"name" : "backAnimation",
+			"filePath" : "res/textures/backgroundAnimation.png",
+			"shader" : "NoBlendSpriteShader",
+			"blend":false,
+			"heightSprite" : 360,
+			"widthSprite" : 640,
+			"sprites" :  [
+				"backAnimation_1",
+				"backAnimation_2",
+				"backAnimation_3",
+				"backAnimation_4",
+				"backAnimation_5",
+				"backAnimation_6",
+				"backAnimation_7",
+				"backAnimation_8",
+				"backAnimation_9",
+				"backAnimation_10",
+				"backAnimation_11",
+				"backAnimation_12",
+				"backAnimation_13",
+				"backAnimation_14",
+				"backAnimation_15",
+				"backAnimation_16",
+				"backAnimation_17",
+				"backAnimation_18",
+				"backAnimation_19",
+				"backAnimation_20"
+			]
 		}
 	],
 	
@@ -56,82 +89,85 @@
 				"bottom":60,
 				"width" : 160,
 				"height" : 40
-			},
-			{
+			},{
 				"name":"Button_On",
 				"left":0,
 				"bottom":20,
 				"width" : 160,
 				"height" : 40
-			},
-			{
+			},{
 				"name":"Arrow_Off",
 				"left":0,
 				"bottom":0,
 				"width" : 20,
 				"height" : 20
-			},
-			{
+			},{
 				"name":"Arrow_On",
 				"left":20,
 				"bottom":0,
 				"width" : 20,
 				"height" : 20
-			},
-			{
+			},{
 				"name":"Slider_Off",
 				"left":40,
 				"bottom":0,
 				"width" : 20,
 				"height" : 20
-			},
-			{
+			},{
 				"name":"Slider_On",
 				"left":60,
 				"bottom":0,
 				"width" : 20,
 				"height" : 20
-			},
-			{
+			},{
 				"name":"Slider_Background_Vertical",
 				"left":0,
 				"bottom":100,
 				"width" : 160,
 				"height" : 20
-			},
-			{
+			},{
 				"name":"Slider_Background_Horizontal",
 				"left":160,
 				"bottom":0,
 				"width" : 20,
 				"height" : 120
-			},
-			{
+			},{
 				"name":"False_Off",
 				"left":80,
 				"bottom":0,
 				"width" : 20,
 				"height" : 20
-			},
-			{
+			},{
 				"name":"False_On",
 				"left":100,
 				"bottom":0,
 				"width" : 20,
 				"height" : 20
-			},
-			{
+			},{
 				"name":"True_Off",
 				"left":120,
 				"bottom":0,
 				"width" : 20,
 				"height" : 20
-			},
-			{
+			},{
 				"name":"True_On",
 				"left":140,
 				"bottom":0,
 				"width" : 20,
+				"height" : 20
+			}
+			]
+		},{
+			"name" : "UIWithBlend",
+			"filePath" : "res/Textures/UIWithBlend.png",
+			"shader" : "WithBlendSpriteShader",
+			"blend":true,
+			"sprites" :  [
+			{
+				"name":"backLine",
+				"left":0,
+				"bottom":0,
+				"width" : 160,
 				"height" : 20
 			}
 			]

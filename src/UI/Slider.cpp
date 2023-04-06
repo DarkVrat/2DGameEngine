@@ -22,11 +22,7 @@ namespace UserInterface{
 		m_step = 0.f;
 	}
 
-	Slider::~Slider(){
-		m_spriteBackGroung.~shared_ptr();
-		m_spriteSliderOff.~shared_ptr();
-		m_spriteSliderOn.~shared_ptr();
-	}
+	Slider::~Slider(){}
 
 	void Slider::create(const glm::vec3& position, const glm::vec2& size, const bool& view, const glm::vec2& minMax, const float& startValue, const glm::vec2& origin){
 		m_view = view;
@@ -71,12 +67,12 @@ namespace UserInterface{
 	void Slider::render(){
 		m_buttonLess.render();
 		m_buttonMore.render();
-		m_spriteBackGroung->render(m_positionSprite, m_sizeSprite, 0.f, m_origin);
+		m_spriteBackGroung->renderUI(m_positionSprite, m_sizeSprite, 0.f, m_origin);
 		if (m_click) {
-			m_spriteSliderOn->render(glm::vec3(m_positionSlider, m_position.z + 0.1f), m_sizeSlider, 0.f);
+			m_spriteSliderOn->renderUI(glm::vec3(m_positionSlider, m_position.z + 0.1f), m_sizeSlider, 0.f);
 		}
 		else {
-			m_spriteSliderOff->render(glm::vec3(m_positionSlider, m_position.z + 0.1f), m_sizeSlider, 0.f);;
+			m_spriteSliderOff->renderUI(glm::vec3(m_positionSlider, m_position.z + 0.1f), m_sizeSlider, 0.f);;
 		}
 	}
 

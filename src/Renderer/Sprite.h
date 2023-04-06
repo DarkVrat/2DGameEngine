@@ -20,7 +20,8 @@ namespace Renderer {
 		Sprite(const std::shared_ptr<Texture2D>& pTexture, const glm::vec4& coordTexture, const glm::ivec2& aspectRatio);
 		~Sprite() {};
 		
-		void render(const glm::vec3& position, const glm::vec2& size, const float& rotation=0.f, const glm::vec2& origin = glm::vec2(0.5f, 0.5f));
+		void renderUI(const glm::vec3& position, const glm::vec2& size, const float& rotation = 0.f, const glm::vec2& origin = glm::vec2(0.5f, 0.5f));
+		void render(const glm::vec3& position, const glm::vec2& size, const float& rotation = 0.f, const glm::vec2& origin = glm::vec2(0.5f, 0.5f));
 
 		glm::ivec2 getAspectRatio() { return m_aspectRatio; } 
 		float getRatio() { return m_ratio * (m_window.y / m_window.x); }

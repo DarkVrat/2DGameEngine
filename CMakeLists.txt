@@ -47,6 +47,8 @@ add_executable(${PROJECT}
 	
 	src/GameClass/MainGameClass.cpp
 	src/GameClass/MainGameClass.h
+	src/GameClass/StatesMenu.cpp
+	src/GameClass/StatesMenu.h
 	src/GameClass/GameObject.cpp
 	src/GameClass/GameObject.h
 	src/GameClass/StateController.cpp

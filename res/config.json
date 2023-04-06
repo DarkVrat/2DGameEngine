@@ -1,25 +1,29 @@
 {
 	"window size":{
 		"width" : 1600,
-		"height" : 900
+		"height" : 900 
 	},
 	
 	"full screen" : false,
 	
-	"display" : 1,
+	"VSync":false,
+	
+	"display" : 0,
 	
 	"samples":1,
 	
-	"volume" : 1.0,
+	"volume" : 0.05,
 	
 	"volumeSample":[
 		{
-		"name":"default",
-		"volume":1.0
-		},
-		{
-		"name":"UI",
-		"volume":1.0
+			"name":"default",
+			"volume":0.0
+		},{
+			"name":"UI",
+			"volume":1.0
+		},{
+			"name":"Music",
+			"volume":1.0
 		}
 	],
 	

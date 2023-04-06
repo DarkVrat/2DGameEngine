@@ -11,6 +11,7 @@
 std::shared_ptr<Renderer::VertexArray> Renderer::RenderEngine::m_VAO;
 Renderer::VertexBuffer  Renderer::RenderEngine::m_textureCoordsBuffer;
 Renderer::VertexBuffer  Renderer::RenderEngine::m_modelMatBuffer[4];
+GLFWwindow* Renderer::RenderEngine::m_pWindow;
 
 std::map<std::shared_ptr<Renderer::Texture2D>, Renderer::RenderEngine::SpritesForRender> Renderer::RenderEngine::m_Sprites;
 std::map<std::shared_ptr<Renderer::Texture2D>, Renderer::RenderEngine::SpritesForRender> Renderer::RenderEngine::m_SpritesWithBlend;
@@ -151,5 +152,64 @@ namespace Renderer {
 
 		if (count <= CONFIG_MANAGER::getDisplayNumber()) { CONFIG_MANAGER::setDisplayNumber(); }
 		return monitors[CONFIG_MANAGER::getDisplayNumber()];
+	}
+
+	int RenderEngine::getCountMonitor(){ 
+		int count;
+		GLFWmonitor** monitors = glfwGetMonitors(&count);
+		return count;
+	}
+
+	std::vector<glm::ivec2> RenderEngine::getScreenResolutions(){
+		int count;
+		GLFWmonitor** monitors = glfwGetMonitors(&count);
+
+		count;
+		const GLFWvidmode* modes = glfwGetVideoModes(monitors[CONFIG_MANAGER::getDisplayNumber()], &count);
+
+		std::vector<glm::ivec2> resolutions;
+		glm::ivec2 last=glm::ivec2(0,0);
+		for (int i = 0; i < count; i++) {
+			int width = modes[i].width; 
+			int height = modes[i].height;
+			if (last.x == width && last.y == height) {
+				continue;
+			}
+			last = glm::ivec2(width, height);
+			resolutions.push_back(glm::ivec2(last));
+		}
+
+		return resolutions;
+	}
+	
+	void RenderEngine::setWindow(GLFWwindow* window){
+		m_pWindow = window;
+	}
+
+	void RenderEngine::applySettings(){
+		glm::ivec2 windowSize = CONFIG_MANAGER::getWindowSize();
+		 
+		glfwSetWindowSize(m_pWindow, windowSize.x, windowSize.y);
+		glfwSetWindowMonitor(m_pWindow, getMonitor() , 0, 0, windowSize.x, windowSize.y, 0);
+		glfwSwapInterval(CONFIG_MANAGER::getVSync());
+
+		if (CONFIG_MANAGER::getFullScreen()) {
+			int screenWidth, screenHeight;
+			glfwGetFramebufferSize(m_pWindow, &screenWidth, &screenHeight);
+			glViewport(0, 0, screenWidth, screenHeight);
+		}
+		else {
+			int windowWidth, windowHeight;
+			glfwGetWindowSize(m_pWindow, &windowWidth, &windowHeight);
+			glViewport(0, 0, windowWidth, windowHeight);
+
+			int screenWidth, screenHeight;
+			glfwGetMonitorWorkarea(glfwGetPrimaryMonitor(), NULL, NULL, &screenWidth, &screenHeight);
+			glfwSetWindowPos(m_pWindow, (screenWidth - windowWidth) / 2, (screenHeight - windowHeight) / 2);
+		}
+	}
+
+	void RenderEngine::closeWindow() {
+		glfwSetWindowShouldClose(m_pWindow, GL_TRUE);
 	}
 }

@@ -73,7 +73,7 @@ int main(int argc, char** argv){
 
     glfwMakeContextCurrent(PWindow);
 
-    glfwSwapInterval(0);
+    glfwSwapInterval(CONFIG_MANAGER::getVSync());
 	
 	if(!gladLoadGL()){
         glfwTerminate();
@@ -81,13 +81,25 @@ int main(int argc, char** argv){
 		return -1;
 	}
 
+    if (CONFIG_MANAGER::getFullScreen()) {
+        int screenWidth, screenHeight;
+        glfwGetFramebufferSize(PWindow, &screenWidth, &screenHeight);
+        glViewport(0, 0, screenWidth, screenHeight);
+    }
+    else {
+        int windowWidth, windowHeight;
+        glfwGetWindowSize(PWindow, &windowWidth, &windowHeight);
+        glViewport(0, 0, windowWidth, windowHeight);
+    }
+
     std::cout << "Renderer: " << RENDER_ENGINE::getRender() << std::endl;
     std::cout << "OpenGL version: " << RENDER_ENGINE::getVersion() << std::endl;
 
     MOUSE::setWindow(PWindow);
+    RENDER_ENGINE::setWindow(PWindow);
 
     RENDER_ENGINE::enableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    RENDER_ENGINE::setClearColor(50, 100, 50, 255);
+    RENDER_ENGINE::setClearColor(0, 0, 0, 255);
     RENDER_ENGINE::setDetphTest(true);
        
     SOUND_DEVICE::init();
@@ -113,8 +125,6 @@ int main(int argc, char** argv){
         MAIN_GAME_CLASS::events();
     }
     RESOURCE_MANAGER::unloadAllRes();
-
-    CONFIG_MANAGER::saveConfig();
      
     PRINT_TEXT::terminate();
     SOUND_MANAGER::terminate();

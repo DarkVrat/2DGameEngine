@@ -37,11 +37,13 @@ namespace Renderer {
 		static void init(const std::string& fontPath, const std::shared_ptr<Texture2D>& texture);
 
 		static void printTextWrapping(Text text, float size, const bool& centr = LEFT, const double& Time = -1.0);
+		static void printTextReduction(Text text, float size, const bool& centr = LEFT, const double& Time = -1.0);
 		static void printText(const Text& text, const double& Time = -1.0);
 
 		static void updateBuffer(const double& duration);
 		static void renderBuffer();
 
+		static float sizeText(Text text) { return sizeText(text.ms_text, text.ms_scale); }
 		static float sizeText(std::string text, GLfloat scale);
 
 		static void terminate();

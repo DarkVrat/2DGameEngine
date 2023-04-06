@@ -4,6 +4,8 @@
 #include "../Managers/ResourceManager.h"
 #include "../Control/MouseControl.h"
 
+std::shared_ptr<Audio::SoundEffectsPlayer> UserInterface::Button::m_soundClick;
+
 namespace UserInterface {
 	Button::Button(const glm::vec3& position, const glm::vec2& size, const std::string& text, const GLfloat& scale, const glm::vec3& color, const glm::vec2& origin){
 		create(position, size, text, scale, color, origin);
@@ -26,10 +28,7 @@ namespace UserInterface {
 		m_click=false;
 	}
 
-	Button::~Button(){
-		m_SpriteButtonOn.~shared_ptr();
-		m_SpriteButtonOff.~shared_ptr();
-	}
+	Button::~Button(){}
 	 
 	void Button::create(const glm::vec3& position, const glm::vec2& size, const std::string& text, const GLfloat& scale, const glm::vec3& color, const glm::vec2& origin) {
 		setType(STANDART);
@@ -59,10 +58,10 @@ namespace UserInterface {
 
 	void Button::render(){
 		if (m_click) {
-			m_SpriteButtonOn->render(m_position, m_size, m_rotation, m_origin);
+			m_SpriteButtonOn->renderUI(m_position, m_size, m_rotation, m_origin);
 		}
 		else {
-			m_SpriteButtonOff->render(m_position, m_size, m_rotation, m_origin);
+			m_SpriteButtonOff->renderUI(m_position, m_size, m_rotation, m_origin);
 		}
 
 		if (m_typeButton == STANDART) {
@@ -98,11 +97,11 @@ namespace UserInterface {
 			}
 			else if (m_click && MOUSE::ifReleased(GLFW_MOUSE_BUTTON_LEFT)) {
 				m_click = false;
-				m_callback();
 				if (m_soundClick == nullptr) {
 					m_soundClick = MAKE_SOUND_PLAYER("UIButton", "UI");
 				}
-				m_soundClick->play(); 
+				m_soundClick->play();
+				m_callback();
 				return true;
 			}
 		}

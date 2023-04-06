@@ -2,7 +2,7 @@
 
 namespace UserInterface {
 	SwitchBool::SwitchBool(const glm::vec3& position, const glm::vec2& size, const bool& startFlag, const glm::vec2& origin){
-		create(position, size, startFlag);
+		create(position, size, startFlag, origin);
 	}
 
 	SwitchBool::SwitchBool(){
@@ -10,14 +10,12 @@ namespace UserInterface {
 		m_button.create(glm::vec3(0,0,0), glm::vec2(0,0), 0, E_NONE);
 	}
 
-	SwitchBool::~SwitchBool(){
-		m_button.~Button();
-	}
+	SwitchBool::~SwitchBool(){}
 
 	void SwitchBool::create(const glm::vec3& position, const glm::vec2& size, const bool& startFlag, const glm::vec2& origin){
 		m_flag = startFlag;
 		if (startFlag) {
-			m_button.create(position, size, 0,E_TRUE, origin);
+			m_button.create(position, size, 0, E_TRUE, origin);
 		}
 		else {
 			m_button.create(position, size, 0, E_FALSE, origin);

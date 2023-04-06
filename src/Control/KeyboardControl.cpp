@@ -10,8 +10,6 @@ namespace Control {
 	 //(RUS) установка ивента нажатой клавиши, проверка key
 	//(ENG) setting the event of the pressed key, checking the key
 	void KeyboardControl::setKey(GLFWwindow* pWindow, int key, int scancode, int action, int mode) {
-		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) { glfwSetWindowShouldClose(pWindow, GL_TRUE); }
-
 		if (key == -1) return;
 
 		if (action == GLFW_REPEAT) {

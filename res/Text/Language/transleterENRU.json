@@ -7,26 +7,82 @@
 				"name" : "newGame",
 				"EN" : "New Game",
 				"RU" : "Новая Игра"
-			},
-			{
+			},{
 				"name" : "continue",
 				"EN" : "Continue",
 				"RU" : "Продолжить"
-			},
-			{
+			},{
 				"name" : "loadGame",
 				"EN" : "Load Game",
 				"RU" : "Загрузить Игру"
-			},
-			{
+			},{
 				"name" : "settings",
 				"EN" : "Settings",
 				"RU" : "Настройки"
-			},
-			{
+			},{
 				"name" : "exit",
 				"EN" : "Exit",
 				"RU" : "Выход"
+			},{
+				"name" : "sure",
+				"EN" : "Quit the game?",
+				"RU" : "Выйти из игры?"
+			},{
+				"name" : "yes",
+				"EN" : "Yes",
+				"RU" : "Да"
+			},{
+				"name" : "no",
+				"EN" : "No",
+				"RU" : "Нет"
+			},{
+				"name" : "masterVolume",
+				"EN" : "Master volume",
+				"RU" : "Общая громкость"
+			},{
+				"name" : "UIVolume",
+				"EN" : "Interface volume",
+				"RU" : "Громкость интерфейса"
+			},{
+				"name" : "MusicVolume",
+				"EN" : "Music volume",
+				"RU" : "Громкость музыки"
+			},{
+				"name" : "fullScreen",
+				"EN" : "Full Screen",
+				"RU" : "Полный экран"
+			},{
+				"name" : "VSync",
+				"EN" : "Vertical Sync",
+				"RU" : "Вертикальная синхронизация"
+			},{
+				"name" : "sample",
+				"EN" : "Smoothing (need a reboot)",
+				"RU" : "Сглаживание (нужна перезагрузка)"
+			},{
+				"name" : "windowSize",
+				"EN" : "Window size",
+				"RU" : "Разрешение"
+			},{
+				"name" : "display",
+				"EN" : "Display",
+				"RU" : "Монитор"
+			},{
+				"name" : "language",
+				"EN" : "Language",
+				"RU" : "Язык"
+			},{
+				"name" : "apply",
+				"EN" : "Apply",
+				"RU" : "Применить"
+			},{
+				"name" : "audioRestart",
+				"EN" : "Reloading audio (when output device is changed)",
+				"RU" : "Перезагрузка аудио (при изменения устрайства вывода)"
+			},{
+				"name" : "restart",
+				"EN" : "Reloading",
+				"RU" : "Перезагрузка"
 			}
 		]
 	}

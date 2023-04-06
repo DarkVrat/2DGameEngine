@@ -11,26 +11,21 @@
 				{
 					"sprite":"Attack1_1",
 					"duration":150
-				},
-				{
+				},{
 					"sprite":"Attack1_2",
 					"duration":150
-				},
-				{
+				},{
 					"sprite":"Attack1_3",
 					"duration":150
-				},
-				{
+				},{
 					"sprite":"Attack1_4",
 					"duration":150
-				},
-				{
+				},{
 					"sprite":"Attack1_5",
 					"duration":150
 				}
 			]
-		},
-		{
+		},{
 			"nameState":"Idle",
 			"uninterrupted":false,
 			"nextState":"Idle",
@@ -42,18 +37,85 @@
 				{
 					"sprite":"Idle_1",
 					"duration":350
-				},
-				{
+				},{
 					"sprite":"Idle_2",
 					"duration":350
-				},
-				{
+				},{
 					"sprite":"Idle_3",
 					"duration":350
-				},
-				{
+				},{
 					"sprite":"Idle_4",
 					"duration":350
+				}
+			]
+		},{
+			"nameState":"background",
+			"uninterrupted":true,
+			"nextState":"background",
+			"sources":[
+				"background"
+			],
+			"frames":[
+				{
+					"sprite":"backAnimation_1",
+					"duration":150
+				},{
+					"sprite":"backAnimation_2",
+					"duration":150
+				},{
+					"sprite":"backAnimation_3",
+					"duration":150
+				},{
+					"sprite":"backAnimation_4",
+					"duration":150
+				},{
+					"sprite":"backAnimation_5",
+					"duration":150
+				},{
+					"sprite":"backAnimation_6",
+					"duration":150
+				},{
+					"sprite":"backAnimation_7",
+					"duration":150
+				},{
+					"sprite":"backAnimation_8",
+					"duration":150
+				},{
+					"sprite":"backAnimation_9",
+					"duration":150
+				},{
+					"sprite":"backAnimation_10",
+					"duration":150
+				},{
+					"sprite":"backAnimation_11",
+					"duration":150
+				},{
+					"sprite":"backAnimation_12",
+					"duration":150
+				},{
+					"sprite":"backAnimation_13",
+					"duration":150
+				},{
+					"sprite":"backAnimation_14",
+					"duration":150
+				},{
+					"sprite":"backAnimation_15",
+					"duration":150
+				},{
+					"sprite":"backAnimation_16",
+					"duration":150
+				},{
+					"sprite":"backAnimation_17",
+					"duration":150
+				},{
+					"sprite":"backAnimation_18",
+					"duration":150
+				},{
+					"sprite":"backAnimation_19",
+					"duration":150
+				},{
+					"sprite":"backAnimation_20",
+					"duration":150
 				}
 			]
 		}

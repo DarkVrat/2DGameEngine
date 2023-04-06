@@ -9,16 +9,17 @@ namespace UserInterface {
 	template<class T>
 	class ListParameter : public UIElement{
 	public:
-		ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const glm::vec2& origin=glm::vec2(0.5,0.5));
+		ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const int& startIndex ,const glm::vec2& origin=glm::vec2(0.5,0.5));
 		ListParameter();
 		~ListParameter();
 
-		void create(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const glm::vec2& origin = glm::vec2(0.5, 0.5));
+		void create(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const int& startIndex, const glm::vec2& origin = glm::vec2(0.5, 0.5));
 
 		void render() override;
 		void update() override;
 		bool checkClick() override;
 
+		void setCallBack(std::function<void(T value)> callBack);
 		void setTypeToString(std::function<std::string(T value)> typeToStringFunction);
 		void setColorText(const glm::vec3& color);
 
@@ -42,11 +43,12 @@ namespace UserInterface {
 		float m_scaleText;
 		std::vector<T> m_vectorParametrs;
 		std::function<std::string(T value)> m_typeToString;
+		std::function<void(T value)> m_callBack;
 	};
 
 	template<class T>
-	inline ListParameter<T>::ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const glm::vec2& origin) {
-		create(position, size, scaleText, vectorParam, origin);
+	inline ListParameter<T>::ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const int& startIndex, const glm::vec2& origin) {
+		create(position, size, scaleText, vectorParam, startIndex,origin);
 	}
 
 	template<class T>
@@ -64,12 +66,11 @@ namespace UserInterface {
 
 	template<class T>
 	inline ListParameter<T>::~ListParameter() {
-		m_spriteBackGroung.~shared_ptr();
 	}
 
 	template<class T>
-	inline void ListParameter<T>::create(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const glm::vec2& origin) {
-		m_index = 0;
+	inline void ListParameter<T>::create(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const int& startIndex, const glm::vec2& origin) {
+		m_index = startIndex;
 		m_position = position;
 		m_spriteBackGroung = RESOURCE_MANAGER::getSprite("Button_Off");
 		m_text.ms_scale = scaleText * size.y;
@@ -103,7 +104,7 @@ namespace UserInterface {
 	inline void ListParameter<T>::render() {
 		m_buttonLeft.render();
 		m_buttonRight.render();
-		m_spriteBackGroung->render(m_positionSprite, m_sizeSprite, 0.f, m_origin);
+		m_spriteBackGroung->renderUI(m_positionSprite, m_sizeSprite, 0.f, m_origin);
 		PRINT_TEXT::printText(m_text);
 	}
 
@@ -141,9 +142,15 @@ namespace UserInterface {
 	template<class T>
 	inline bool ListParameter<T>::checkClick() {
 		if (m_buttonLeft.checkClick() || m_buttonRight.checkClick()) {
+			m_callBack(m_vectorParametrs[m_index]);
 			return true;
 		}
 		return false;
+	}
+
+	template<class T>
+	inline void ListParameter<T>::setCallBack(std::function<void(T value)> callBack){
+		m_callBack = callBack;
 	}
 
 	template<class T>

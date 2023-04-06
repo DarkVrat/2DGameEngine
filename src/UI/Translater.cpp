@@ -1,6 +1,7 @@
 #include "Translater.h"
 
 #include "../Managers/ResourceManager.h"
+#include "../Managers/ConfigManager.h"
 
 std::map<std::string, std::map<std::string, Translater::Dictionary>> Translater::m_transleter;
 std::string Translater::m_language;
@@ -19,11 +20,11 @@ void Translater::init(rapidjson::Document language){
 		}
 	}
 
-	m_language = "EN";
+	m_language = CONFIG_MANAGER::getLanguage();
 }
 
-std::string Translater::find(const std::string& subject, const std::string& text){
-	if(m_language == "RU")
+std::string Translater::find(const std::string& subject, const std::string& text) {
+	if (m_language == "RU")
 		return m_transleter.at(subject).at(text).getRU();
 	if (m_language == "EN")
 		return m_transleter.at(subject).at(text).getEN();

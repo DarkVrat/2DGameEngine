@@ -2,14 +2,7 @@
 
 #include <memory>
 #include <glm/vec2.hpp>
-#include "GameObject.h"
-#include "../UI/Button.h"
-#include "../UI/SwitchBool.h"
-#include "../UI/Slider.h"
-#include "../UI/ListParameter.h"
-#include "../UI/Translater.h"
-#include "../UI/InputField.h"
-#include "../UI/UIElement.h"
+#include "StatesMenu.h"
 
 #define MAIN_GAME_CLASS MainGameClass
 
@@ -24,7 +17,6 @@ public:
 	static void render();
 
 	static void events();
-	static void sortGameObject();
 	static void setProjectionMat(const glm::ivec2& window);
 
 	static void terminate();
@@ -33,36 +25,8 @@ private:
 	MainGameClass();
 	~MainGameClass() {};
 
-	static std::vector<std::shared_ptr<GameObject>> m_vectorGameObject;
-
-	enum E_GAME_STATE : int8_t{
-		MAIN_MENU,
-		NEW_GAME,
-		PAUSE,
-		SAVE_AND_LOAD,
-		SETTINGS,
-		EXIT
-	};
+	static StatesMenu m_StateMenu;
 	static glm::ivec2 m_window;
-	static E_GAME_STATE m_GameState;
 	static double m_time;
 	static int m_fps;
-	static float size;
-
-	static std::shared_ptr<UserInterface::UIElement> m_testButton;
-
-	/*static std::array<UserInterface::Button, 2> m_testButton;
-	static UserInterface::SwitchBool m_testSwich;
-	static UserInterface::Slider m_testSliderVertical;
-	static UserInterface::Slider m_testSliderHorizontal;
-	static glm::vec2 m_vecToTestSliders;
-	static UserInterface::ListParameter<glm::ivec2> m_testList;
-	static UserInterface::InputField m_testInputField;*/
-
-	/*static std::array<UserInterface::Slider, 8> m_SliderForSpriteSetting;
-	static glm::vec3 m_vecForSpritePosition;
-	static glm::vec2 m_vecForSpriteSize;
-	static float m_floatForSpriteRotation;
-	static glm::vec2 m_vecForSpriteOrigin;
-	static std::shared_ptr<Renderer::Sprite> m_sprite;*/
 };

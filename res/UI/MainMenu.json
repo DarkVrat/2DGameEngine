@@ -1,0 +1,57 @@
+{
+	"musicBackGround":{
+		"nameMusic" : "musicBackground",
+		"nameSample":"Music"
+	},
+	
+	"staticSprites":[
+	{
+		"spriteName":"logo",
+		"position":{"x":0.5,"y":0.7,"z":10},
+		"size":{"x":0,"y":0.2},
+		"rotation":0,
+		"origin":{"x":0.5,"y":0.5}
+	}
+	],
+	
+	"animatedSprite":[
+	{
+		"StateName":"background",
+		"position":{"x":0.5,"y":0.5,"z":0},
+		"size":{"x":1,"y":1},
+		"rotation":0,
+		"origin":{"x":0.5,"y":0.5}
+	}
+	],
+	
+	"buttons":[
+	{
+		"function":"SettingFunction",
+		"position":{"x":0.5,"y":0.35,"z":10},
+		"size":{"x":0,"y":0.1},
+		"subjectTranslete":"menu",
+		"textForTranslete":"settings",
+		"scaleTextForButton":0.9,
+		"color":{"r":0,"g":0,"b":0},
+		"origin":{"x":0.5,"y":0.5}
+	},{
+		"function":"NewGameFunction",
+		"position":{"x":0.5,"y":0.5,"z":11},
+		"size":{"x":0,"y":0.1},
+		"subjectTranslete":"menu",
+		"textForTranslete":"newGame",
+		"scaleTextForButton":0.9,
+		"color":{"r":0,"g":0,"b":0},
+		"origin":{"x":0.5,"y":0.5}
+	},{
+		"function":"ExitFunction",
+		"position":{"x":0.5,"y":0.2,"z":10},
+		"size":{"x":0,"y":0.1},
+		"subjectTranslete":"menu",
+		"textForTranslete":"exit",
+		"scaleTextForButton":0.9,
+		"color":{"r":0,"g":0,"b":0},
+		"origin":{"x":0.5,"y":0.5}
+	}
+	]
+}

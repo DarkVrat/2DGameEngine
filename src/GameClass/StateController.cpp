@@ -66,8 +66,12 @@ void StateController::update(const double& duration){
 	}
 }
 
+void StateController::renderUI(const glm::vec3& position, const glm::vec2& size, const float& rotation, const glm::vec2& origin){
+	m_sprites[m_indexFrame].first->renderUI(position, size, rotation, origin);
+}
+
  //(RUS) Рендеринг спрайта
 //(ENG) Sprite rendering
-void StateController::render(const glm::vec3& position, const glm::vec2& size, const float& rotation){
-	m_sprites[m_indexFrame].first->render(position, size, rotation);
+void StateController::render(const glm::vec3& position, const glm::vec2& size, const float& rotation, const glm::vec2& origin){
+	m_sprites[m_indexFrame].first->render(position, size, rotation, origin);
 }

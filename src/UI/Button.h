@@ -59,7 +59,7 @@ namespace UserInterface {
 		E_BUTTON_TYPE m_typeButton;
 
 		bool m_click;
-		std::shared_ptr<Audio::SoundEffectsPlayer> m_soundClick;
+		static std::shared_ptr<Audio::SoundEffectsPlayer> m_soundClick;
 		std::function<void()> m_callback;
 	};
 }

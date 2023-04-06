@@ -84,11 +84,18 @@ namespace Renderer {
 		static std::string getVersion();
 		
 		static GLFWmonitor* getMonitor();
+		static int getCountMonitor();
+		static std::vector<glm::ivec2> getScreenResolutions();
+
+		static void setWindow(GLFWwindow* window);
+		static void applySettings();
+		static void closeWindow();
 	private:
 
 		static std::shared_ptr<VertexArray> m_VAO;
 		static VertexBuffer  m_textureCoordsBuffer;
 		static VertexBuffer  m_modelMatBuffer[4];
+		static GLFWwindow* m_pWindow;
 
 		static std::map<std::shared_ptr<Texture2D>, SpritesForRender> m_Sprites;
 		static std::map<std::shared_ptr<Texture2D>, SpritesForRender> m_SpritesWithBlend;

@@ -1,0 +1,45 @@
+{
+	"staticSprites":[
+	{
+		"spriteName":"darkForBackground",
+		"position":{"x":0.5,"y":0.5,"z":9},
+		"size":{"x":1,"y":0.5},
+		"rotation":0,
+		"origin":{"x":0.5,"y":0.5}
+	}
+	],
+	
+	"buttons":[
+	{
+		"function":"ExitYes",
+		"position":{"x":0.35,"y":0.35,"z":10},
+		"size":{"x":0.2,"y":0.1},
+		"subjectTranslete":"menu",
+		"textForTranslete":"yes",
+		"scaleTextForButton":0.9,
+		"color":{"r":0,"g":0,"b":0},
+		"origin":{"x":0.5,"y":0.5}
+	},{
+		"function":"ExitNo",
+		"position":{"x":0.65,"y":0.35,"z":10},
+		"size":{"x":0.2,"y":0.1},
+		"subjectTranslete":"menu",
+		"textForTranslete":"no",
+		"scaleTextForButton":0.9,
+		"color":{"r":0,"g":0,"b":0},
+		"origin":{"x":0.5,"y":0.5}
+	}
+	],
+	
+	"TextForMenu":[
+	{
+		"subjectTranslete":"menu",
+		"textForTranslete":"sure",
+		"position":{"x":0,"y":0.45,"z":11},
+		"scaleText":0.25,
+		"color":{"r":1,"g":1,"b":1},
+		"sizeByXScreen":1,
+		"center":true
+	}
+	]
+}

@@ -9,11 +9,11 @@ namespace UserInterface {
 	template<class T>
 	class ListParameter : public UIElement{
 	public:
-		ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const int& startIndex ,const glm::vec2& origin=glm::vec2(0.5,0.5));
+		ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const T& startValue ,const glm::vec2& origin=glm::vec2(0.5,0.5));
 		ListParameter();
 		~ListParameter();
 
-		void create(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const int& startIndex, const glm::vec2& origin = glm::vec2(0.5, 0.5));
+		void create(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const T& startValue, const glm::vec2& origin = glm::vec2(0.5, 0.5));
 
 		void render() override;
 		void update() override;
@@ -24,9 +24,6 @@ namespace UserInterface {
 		void setColorText(const glm::vec3& color);
 
 		void updateText();
-
-		T getParametr();
-
 	private:
 		Button m_buttonLeft;
 		Button m_buttonRight;
@@ -38,7 +35,7 @@ namespace UserInterface {
 		glm::vec2 m_size;
 		glm::vec2 m_origin;
 
-		PRINT_TEXT::Text m_text;
+		TEXT m_text;
 		int m_index;
 		float m_scaleText;
 		std::vector<T> m_vectorParametrs;
@@ -47,8 +44,8 @@ namespace UserInterface {
 	};
 
 	template<class T>
-	inline ListParameter<T>::ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const int& startIndex, const glm::vec2& origin) {
-		create(position, size, scaleText, vectorParam, startIndex,origin);
+	inline ListParameter<T>::ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const T& startValue, const glm::vec2& origin) {
+		create(position, size, scaleText, vectorParam, startValue,origin);
 	}
 
 	template<class T>
@@ -69,8 +66,17 @@ namespace UserInterface {
 	}
 
 	template<class T>
-	inline void ListParameter<T>::create(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const int& startIndex, const glm::vec2& origin) {
-		m_index = startIndex;
+	inline void ListParameter<T>::create(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const T& startValue, const glm::vec2& origin) {
+		m_index=0;
+		for (auto& current:vectorParam) {
+			if (current != startValue) {
+				m_index++;
+			}
+			else {
+				break;
+			}
+		}
+
 		m_position = position;
 		m_spriteBackGroung = RESOURCE_MANAGER::getSprite("Button_Off");
 		m_text.ms_scale = scaleText * size.y;
@@ -85,6 +91,9 @@ namespace UserInterface {
 		update();
 		
 		m_vectorParametrs = vectorParam;
+		if (m_index == m_vectorParametrs.size()) {
+			m_vectorParametrs.push_back(startValue);
+		}
 
 		m_buttonLeft.setCallBack([&]() {
 			m_index--;
@@ -179,10 +188,5 @@ namespace UserInterface {
 		posText.y = m_positionSprite.y + (0.5 - m_origin.y) * m_sizeSprite.y - m_text.ms_scale / 2.0;
 		posText.x = m_positionSprite.x + (0.5 - m_origin.x) * m_sizeSprite.x - Renderer::PrintText::sizeText(m_text.ms_text, m_text.ms_scale) / 2.0;
 		m_text.ms_position = posText;
-	}
-
-	template<class T>
-	inline T ListParameter<T>::getParametr() {
-		return m_vectorParametrs[m_index];
 	}
 }

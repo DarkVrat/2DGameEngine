@@ -78,7 +78,7 @@
 			},{
 				"name" : "audioRestart",
 				"EN" : "Reloading audio (when output device is changed)",
-				"RU" : "Перезагрузка аудио (при изменения устрайства вывода)"
+				"RU" : "Перезагрузка аудио (при изменении устрайства вывода)"
 			},{
 				"name" : "restart",
 				"EN" : "Reloading",

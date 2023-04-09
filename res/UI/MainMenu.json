@@ -1,6 +1,6 @@
 {
-	"musicBackGround":{
-		"nameMusic" : "musicBackground",
+	"soundEffect":{
+		"nameSound" : "musicBackground",
 		"nameSample":"Music"
 	},
 	

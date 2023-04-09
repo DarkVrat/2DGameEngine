@@ -29,6 +29,7 @@ add_executable(${PROJECT}
 	src/Managers/SoundManager.cpp
 	src/Managers/ConfigManager.h
 	src/Managers/ConfigManager.cpp
+	src/Managers/JSONtoType.h
 	
 	src/Audio/SoundEffectsPlayer.cpp
 	src/Audio/SoundEffectsPlayer.h
@@ -47,12 +48,21 @@ add_executable(${PROJECT}
 	
 	src/GameClass/MainGameClass.cpp
 	src/GameClass/MainGameClass.h
-	src/GameClass/StatesMenu.cpp
-	src/GameClass/StatesMenu.h
 	src/GameClass/GameObject.cpp
 	src/GameClass/GameObject.h
-	src/GameClass/StateController.cpp
-	src/GameClass/StateController.h
+	
+	src/GameClass/Animation/StateAnimationController.cpp
+	src/GameClass/Animation/StateAnimationController.h
+	
+	src/GameClass/UIGame/Menu.cpp
+	src/GameClass/UIGame/Menu.h
+	src/GameClass/UIGame/staticAnimatedSprite.cpp
+	src/GameClass/UIGame/staticAnimatedSprite.h
+	src/GameClass/UIGame/staticSprite.cpp
+	src/GameClass/UIGame/staticSprite.h
+	src/GameClass/UIGame/staticTextForUI.cpp
+	src/GameClass/UIGame/staticTextForUI.h
+	src/GameClass/UIGame/functions.h
 	
 	src/UI/Button.cpp
 	src/UI/Button.h
@@ -66,6 +76,7 @@ add_executable(${PROJECT}
 	src/UI/InputField.cpp
 	src/UI/InputField.h
 	src/UI/UIElement.h
+	src/UI/valuesControl.h
 )
 
 target_compile_features(${PROJECT} PUBLIC cxx_std_17)

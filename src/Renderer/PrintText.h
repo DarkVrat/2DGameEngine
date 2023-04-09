@@ -11,6 +11,7 @@
 #include "VertexArray.h"
 
 #define PRINT_TEXT Renderer::PrintText
+#define TEXT Renderer::PrintText::Text
 #define CENTR true
 #define LEFT false
 

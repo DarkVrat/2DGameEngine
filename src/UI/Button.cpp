@@ -38,7 +38,7 @@ namespace UserInterface {
 		m_rotation = 0.f;
 		m_click = false;
 		m_scaleText = scale;
-		m_textButton = PRINT_TEXT::Text(text, m_position, scale, color);
+		m_textButton = TEXT(text, m_position, scale, color);
 		m_origin = origin;
 
 		update();

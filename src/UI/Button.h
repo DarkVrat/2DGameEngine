@@ -55,7 +55,7 @@ namespace UserInterface {
 		glm::vec2 m_origin;
 		float m_rotation;
 		float m_scaleText;
-		PRINT_TEXT::Text m_textButton;
+		TEXT m_textButton;
 		E_BUTTON_TYPE m_typeButton;
 
 		bool m_click;

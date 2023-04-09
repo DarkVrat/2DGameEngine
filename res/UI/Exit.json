@@ -9,6 +9,16 @@
 	}
 	],
 	
+	"animatedSprite":[
+	{
+		"StateName":"background",
+		"position":{"x":0.5,"y":0.5,"z":0},
+		"size":{"x":1,"y":1},
+		"rotation":0,
+		"origin":{"x":0.5,"y":0.5}
+	}
+	],
+	
 	"buttons":[
 	{
 		"function":"ExitYes",

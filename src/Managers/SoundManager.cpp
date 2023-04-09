@@ -26,11 +26,17 @@ namespace Audio {
 	//(ENG) Updating the sound system, saving the necessary non-permanent parameters, and creating everything from scratch
 	void SoundManager::updateSoundSystem(){
 		std::map<std::shared_ptr<Audio::SoundEffectsPlayer>, glm::vec3> position;
+		std::map<std::shared_ptr<Audio::SoundEffectsPlayer>, bool> playingSound;
 		for (int i = 0; i < m_vectorSoundPlayers.size();i++) {
 			std::shared_ptr<Audio::SoundEffectsPlayer> current = m_vectorSoundPlayers.at(i);
+
 			glm::vec3 val;
 			current->getVec3Param(AL_POSITION,val);
 			position.emplace(current, val);
+
+			bool play = !current->isStopped();
+			playingSound.emplace(current, play);
+
 			current->deleteSourse();
 		}
 
@@ -55,6 +61,9 @@ namespace Audio {
 			std::shared_ptr<Audio::SoundEffectsPlayer> current = m_vectorSoundPlayers.at(i);
 			current->createEffect();
 			current->setVec3Param(AL_POSITION,position.find(current)->second);
+			if (playingSound.at(current)) {
+				current->play();
+			}
 		}
 	}
 

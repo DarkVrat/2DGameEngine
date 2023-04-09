@@ -2,7 +2,7 @@
 
 #include <glm/vec2.hpp>
 #include <memory>
-#include "StateController.h"
+#include "Animation/StateAnimationController.h"
 #include "../Audio/SoundEffectsPlayer.h"
 
      //(RUS) игровой объект, имеющий map аудио::SoundEffectPlayer для востпроизведения звуков, 
@@ -32,7 +32,7 @@ public:
 
 private:
 	std::map<std::string, std::shared_ptr<Audio::SoundEffectsPlayer>> m_mapPlayer;
-	std::shared_ptr<StateController> m_stateControll;
+	std::shared_ptr<StateAnimationController> m_stateControll;
 	glm::vec3 m_position;
 	glm::vec2 m_size;
 	float m_rotation;

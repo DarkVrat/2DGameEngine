@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <glm/vec2.hpp>
-#include "StatesMenu.h"
+#include "UIGame/Menu.h"
 
 #define MAIN_GAME_CLASS MainGameClass
 
@@ -21,11 +21,13 @@ public:
 
 	static void terminate();
 
+	static Menu& getMenu();
+
 private:
 	MainGameClass();
 	~MainGameClass() {};
 
-	static StatesMenu m_StateMenu;
+	static Menu m_Menu;
 	static glm::ivec2 m_window;
 	static double m_time;
 	static int m_fps;

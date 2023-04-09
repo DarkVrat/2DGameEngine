@@ -8,7 +8,7 @@
  //(RUS) Создание игрового объекта со всеми параметрами
 //(ENG) Creating a game object with all parameters
 GameObject::GameObject(const std::string& startState, const glm::vec3& position, const glm::vec2& size, const float& rotation){
-	m_stateControll = std::make_shared<StateController>(startState);
+	m_stateControll = std::make_shared<StateAnimationController>(startState);
 	m_position=position;
 	m_size=size;
 	m_rotation=rotation;

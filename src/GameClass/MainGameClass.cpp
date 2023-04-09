@@ -12,7 +12,7 @@
 #include "../Renderer/PrintText.h"
 #include "../Renderer/RenderEngine.h"
 
-StatesMenu MainGameClass::m_StateMenu;
+Menu MainGameClass::m_Menu;
 glm::ivec2 MainGameClass::m_window;
 double MainGameClass::m_time;
 int MainGameClass::m_fps;
@@ -32,12 +32,12 @@ void MainGameClass::update(const double& duration){
     m_fps++;
     m_time += duration;
     if (m_time > 1000) {
-        PRINT_TEXT::printText(PRINT_TEXT::Text(std::to_string(m_fps), glm::vec3(0, 0.97, 10), 0.03, glm::vec3(1, 1, 1)), 1000);
+        PRINT_TEXT::printText(TEXT(std::to_string(m_fps), glm::vec3(0, 0.97, 10), 0.03, glm::vec3(1, 1, 1)), 1000);
         m_fps = 0;
         m_time -= 1000;
     }
 
-    m_StateMenu.update(duration);
+    m_Menu.update(duration);
 
     PRINT_TEXT::updateBuffer(duration);
     MOUSE::updatePositionAndScroll();
@@ -46,7 +46,7 @@ void MainGameClass::update(const double& duration){
  //(RUS) отрисовка объектов и текста
 //(ENG) drawing objects and text
 void MainGameClass::render() {
-    m_StateMenu.render();
+    m_Menu.render();
 
     RENDER_ENGINE::render();
     PRINT_TEXT::renderBuffer();
@@ -65,7 +65,7 @@ bool MainGameClass::init(glm::vec2 window) {
 
     setProjectionMat(window);
 
-    m_StateMenu.init("MainMenu");
+    m_Menu.init("MainMenu");
 
     return true;
 }
@@ -73,7 +73,7 @@ bool MainGameClass::init(glm::vec2 window) {
  //(RUS) Обработка нажатий
 //(ENG) Handling clicks
 void MainGameClass::events(){ 
-    m_StateMenu.events();
+    m_Menu.events();
 }
 
  //(RUS) Установка матрицы проекции для отрисовки
@@ -87,11 +87,15 @@ void MainGameClass::setProjectionMat(const glm::ivec2& window){
     PRINT_TEXT::setWindow(m_window);
     Renderer::Sprite::setWindow(m_window);
     MOUSE::setWindowSize(m_window);
-    m_StateMenu.updateButton();
+    m_Menu.updateButton();
 }
 
  //(RUS) Уничтожение игровых объектов
 //(ENG) Destruction of game objects
 void MainGameClass::terminate(){
     
+}
+
+Menu& MainGameClass::getMenu(){
+    return m_Menu;
 }

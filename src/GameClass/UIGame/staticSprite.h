@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Renderer/Sprite.h"
+#include <glad/glad.h>
 
 class staticSprite {
 public:

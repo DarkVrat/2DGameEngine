@@ -52,9 +52,9 @@ void Menu::events(){
 }
 
 void Menu::init(const std::string& gameState){
+	std::string jsonPath = "res/UI/" + gameState + ".json";
+	
 	clear();
-
-	std::string jsonPath = "res/UI/" + gameState + ".json"; 
 
 	rapidjson::Document JSONDoc = RESOURCE_MANAGER::loadJSONDoc(jsonPath);
 	if (!JSONDoc.IsNull()) {

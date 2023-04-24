@@ -11,6 +11,7 @@
 #include "../Renderer/RenderEngine.h"
 #include "../Renderer/PrintText.h"
 #include "../UI/Translater.h"
+#include "../Renderer/MapRender.h"
 
 ResourceManager::StateAnimationMap ResourceManager::m_stateAnimation;
 ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
@@ -116,7 +117,7 @@ std::shared_ptr<Renderer::ShaderProgram>  ResourceManager::getShader(const std::
 void ResourceManager::loadOneTexture(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const bool& blend) {
 	int channels, widht, height;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* pixels = stbi_load(std::string(m_path + "/" + texturePatn).c_str(), &widht, &height, &channels, 0);
+	uint8_t* pixels = stbi_load(std::string(m_path + "/" + texturePatn).c_str(), &widht, &height, &channels, 0);
 	if (!pixels) {
 		std::cerr << "(!) ERROR TEXTUR LOAD" << textureName << std::endl;
 		return;
@@ -255,20 +256,18 @@ std::shared_ptr<Audio::SampleSourse> ResourceManager::getSampleSourse(const std:
 //(ENG) Loading resources from a JSON file
 bool ResourceManager::loadJSONResurces() {
 
-	std::thread audio([&]() {
-			LoadAudioResurces("res/Audio/Audio.json");
-		});
+	std::thread audio([&]() {LoadAudioResurces("res/Audio/Audio.json"); });
 
 	LoadTextureResurces("res/Textures/Textures.json");
 	
-	std::thread Animation([&]() {
-			LoadAnimationResurces("res/Animation/Animation.json");
-		});
+	std::thread Animation([&]() {LoadAnimationResurces("res/Animation/Animation.json"); });
+	std::thread Map([&]() {LoadMapResurces("res/Textures/Map/TextureMapConfig.json"); });
 	
 	LoadTextResurces("res/Text/Text.json");
 
 	audio.join();
 	Animation.join();
+	Map.join();
 
 	return true;
 }
@@ -445,4 +444,14 @@ void ResourceManager::LoadTextureResurces(const std::string& JSONPath) {
 	}
 
 	RENDER_ENGINE::init(m_textures);
+}
+
+void ResourceManager::LoadMapResurces(const std::string& JSONPath){
+	rapidjson::Document JSONDoc = loadJSONDoc(JSONPath);
+
+	std::string nameTexture = JSONDoc.FindMember("nameTexture")->value.GetString(); 
+	int mapCellSize = JSONDoc.FindMember("mapCellSize")->value.GetInt();
+
+	MAP::init(getTexture(nameTexture), mapCellSize);
+	MAP::setLayer(1);
 }

@@ -10,16 +10,7 @@ out vec2 texCoord;
 uniform mat4 projection;
 
 void main() {
-	
-
-   if(vertex.x<0.5)
-		texCoord.x = texture.x;
-	else
-		texCoord.x = texture.z;
-	if(vertex.y<0.5)
-		texCoord.y = texture.y;
-	else
-		texCoord.y = texture.w;
-		
-   gl_Position = projection * mat4(forMat0,forMat1,forMat2,forMat3) * vec4(vertex, 1.0, 1.0);
+    gl_Position = projection * mat4(forMat0,forMat1,forMat2,forMat3) * vec4(vertex, 1.0, 1.0);
+    texCoord.x=mix(texture.x, texture.z, vertex.x);
+	texCoord.y=mix(texture.y, texture.w, vertex.y);
 }

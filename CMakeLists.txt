@@ -21,6 +21,8 @@ add_executable(${PROJECT}
 	src/Renderer/PrintText.h
 	src/Renderer/RenderEngine.cpp
 	src/Renderer/RenderEngine.h
+	src/Renderer/MapRender.cpp
+	src/Renderer/MapRender.h
 	
 	src/Managers/ResourceManager.cpp
 	src/Managers/ResourceManager.h
@@ -64,6 +66,24 @@ add_executable(${PROJECT}
 	src/GameClass/UIGame/staticTextForUI.h
 	src/GameClass/UIGame/functions.h
 	
+	src/GameEngine/GameScene.cpp
+	src/GameEngine/GameScene.h
+	src/GameEngine/GameSceneResources.cpp
+	src/GameEngine/GameSceneResources.h
+	
+	src/GameEngine/Objects/Camera.h
+	src/GameEngine/Objects/Camera.cpp
+	src/GameEngine/Objects/IObject.h
+	
+	src/GameEngine/PhysicsAndLogic/CircleCollision.h
+	src/GameEngine/PhysicsAndLogic/CircleCollision.cpp
+	src/GameEngine/PhysicsAndLogic/ICollision.h
+	src/GameEngine/PhysicsAndLogic/ICollision.cpp
+	src/GameEngine/PhysicsAndLogic/RectangleCollision.h
+	src/GameEngine/PhysicsAndLogic/RectangleCollision.cpp
+	src/GameEngine/PhysicsAndLogic/TriangleCollision.h
+	src/GameEngine/PhysicsAndLogic/TriangleCollision.cpp
+	
 	src/UI/Button.cpp
 	src/UI/Button.h
 	src/UI/ListParameter.h
@@ -75,8 +95,9 @@ add_executable(${PROJECT}
 	src/UI/Translater.h
 	src/UI/InputField.cpp
 	src/UI/InputField.h
-	src/UI/UIElement.h
+	src/UI/IElementUI.h
 	src/UI/valuesControl.h
+	
 )
 
 target_compile_features(${PROJECT} PUBLIC cxx_std_17)

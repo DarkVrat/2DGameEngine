@@ -26,7 +26,7 @@
 	
 	"buttons":[
 	{
-		"function":"SettingFunction",
+		"function":"call Settings;",
 		"position":{"x":0.5,"y":0.35,"z":10},
 		"size":{"x":0,"y":0.1},
 		"subjectTranslete":"menu",
@@ -35,7 +35,7 @@
 		"color":{"r":0,"g":0,"b":0},
 		"origin":{"x":0.5,"y":0.5}
 	},{
-		"function":"NewGameFunction",
+		"function":"call NewGame;",
 		"position":{"x":0.5,"y":0.5,"z":11},
 		"size":{"x":0,"y":0.1},
 		"subjectTranslete":"menu",
@@ -44,7 +44,7 @@
 		"color":{"r":0,"g":0,"b":0},
 		"origin":{"x":0.5,"y":0.5}
 	},{
-		"function":"ExitFunction",
+		"function":"call Exit;",
 		"position":{"x":0.5,"y":0.2,"z":10},
 		"size":{"x":0,"y":0.1},
 		"subjectTranslete":"menu",

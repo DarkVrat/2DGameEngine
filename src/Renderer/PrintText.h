@@ -5,9 +5,7 @@
 #include <memory>
 #include <vector>
 #include <iostream>
-#include "ShaderProgram.h"
 #include "Texture2D.h"
-#include "VertexBuffer.h"
 #include "VertexArray.h"
 
 #define PRINT_TEXT Renderer::PrintText

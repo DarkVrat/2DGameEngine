@@ -21,16 +21,25 @@
 	
 	"buttons":[
 	{
-		"function":"SaveConfig",
-		"position":{"x":0.5,"y":0.1,"z":10},
+		"function":"applySettings; call Settings;",
+		"position":{"x":0.1,"y":0.1,"z":10},
 		"size":{"x":0,"y":0.1},
 		"subjectTranslete":"menu",
 		"textForTranslete":"apply",
 		"scaleTextForButton":0.9,
 		"color":{"r":0,"g":0,"b":0},
-		"origin":{"x":0.5,"y":0.5}
+		"origin":{"x":0,"y":0.5}
 	},{
-		"function":"audioRestart",
+		"function":"saveConfig; call MainMenu;",
+		"position":{"x":0.9,"y":0.1,"z":10},
+		"size":{"x":0,"y":0.1},
+		"subjectTranslete":"menu",
+		"textForTranslete":"exit",
+		"scaleTextForButton":0.9,
+		"color":{"r":0,"g":0,"b":0},
+		"origin":{"x":1,"y":0.5}
+	},{
+		"function":"updateSoundSystem;",
 		"position":{"x":0.95,"y":0.33,"z":10},
 		"size":{"x":0.1,"y":0.05},
 		"subjectTranslete":"menu",
@@ -147,21 +156,24 @@
 	
 	"sliders":[
 	{
-		"function":"masterVolume",
+		"function":"set sound master;",
+		"startValue":"sound master;",
 		"position":{"x":0.95,"y":0.9,"z":12},
 		"size":{"x":0.3,"y":0.05},
 		"view":true,
 		"minMax":{"x":0,"y":1},
 		"origin":{"x":1,"y":0}
 	},{
-		"function":"UIVolume",
+		"function":"set sound UI;",
+		"startValue":"sound UI;",
 		"position":{"x":0.95,"y":0.84,"z":12},
 		"size":{"x":0.3,"y":0.05},
 		"view":true,
 		"minMax":{"x":0,"y":1},
 		"origin":{"x":1,"y":0}
 	},{
-		"function":"MusicVolume",
+		"function":"set sound Music;",
+		"startValue":"sound Music;",
 		"position":{"x":0.95,"y":0.78,"z":12},
 		"size":{"x":0.3,"y":0.05},
 		"view":true,
@@ -172,12 +184,14 @@
 	
 	"switchBool":[
 	{
-		"function":"fullScreen",
+		"function":"set window fullScreen;",
+		"startValue":"window fullScreen;",
 		"position":{"x":0.95,"y":0.71,"z":12},
 		"size":{"x":0,"y":0.05},
 		"origin":{"x":1,"y":0}
 	},{
-		"function":"VSync",
+		"function":"set window VSync;",
+		"startValue":"window VSync;",
 		"position":{"x":0.95,"y":0.65,"z":12},
 		"size":{"x":0,"y":0.05},
 		"origin":{"x":1,"y":0}
@@ -187,28 +201,32 @@
 	"listParametrs":[
 	{
 		"type":"glm::ivec2",
-		"function":"windowSize",
+		"function":"set window size;",
+		"startValue":"window size;",
 		"position":{"x":0.95,"y":0.59,"z":12},
 		"size":{"x":0.3,"y":0.05},
 		"scaleText":0.9,
 		"origin":{"x":1,"y":0}
 	},{
 		"type":"int",
-		"function":"samples",
+		"function":"set window samples;",
+		"startValue":"window samples;",
 		"position":{"x":0.95,"y":0.53,"z":12},
 		"size":{"x":0.3,"y":0.05},
 		"scaleText":0.9,
 		"origin":{"x":1,"y":0}
 	},{
 		"type":"int",
-		"function":"display",
+		"function":"set window display;",
+		"startValue":"window display;",
 		"position":{"x":0.95,"y":0.47,"z":12},
 		"size":{"x":0.3,"y":0.05},
 		"scaleText":0.9,
 		"origin":{"x":1,"y":0}
 	},{
 		"type":"std::string",
-		"function":"language",
+		"function":"set language;",
+		"startValue":"language;",
 		"position":{"x":0.95,"y":0.4,"z":12},
 		"size":{"x":0.3,"y":0.05},
 		"scaleText":0.9,

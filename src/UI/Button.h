@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <functional>
-#include "UIElement.h"
+#include "IElementUI.h"
 #include "../Renderer/Sprite.h"
 #include "../Renderer/PrintText.h"
 #include "../Audio/SoundEffectsPlayer.h"
@@ -14,7 +14,7 @@
 #define E_NONE UserInterface::Button::E_BUTTON_TYPE::NONE
   
 namespace UserInterface {
-	class Button : public UIElement{
+	class Button : public IElementUI {
 	public:
 
 		enum E_BUTTON_TYPE : uint8_t {

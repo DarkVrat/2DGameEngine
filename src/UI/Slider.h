@@ -6,7 +6,7 @@
 #define UI_HORIZONTAL_SLIDER false
 
 namespace UserInterface{
-	class Slider : public UIElement{
+	class Slider : public IElementUI {
 	public:
 		Slider(const glm::vec3& position, const glm::vec2& size, const bool& view, const glm::vec2& minMax, const float& startValue, const glm::vec2& origin=glm::vec2(0.5, 0.5));
 		Slider();

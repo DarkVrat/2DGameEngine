@@ -82,13 +82,13 @@ namespace Renderer {
         m_VAO->addBuffer(vertexVBO, 0, 2);
 
         m_PositionVBO.init(NULL, NULL);
-        m_VAO->addBuffer(m_PositionVBO, 1, 4, true);
+        m_VAO->addBuffer(m_PositionVBO, 1, 4, GL_FLOAT, true);
 
         m_ColorVBO.init(NULL, NULL);
-        m_VAO->addBuffer(m_ColorVBO, 2, 3, true);
+        m_VAO->addBuffer(m_ColorVBO, 2, 3, GL_FLOAT, true);
 
         m_TextureVBO.init(NULL, NULL);
-        m_VAO->addBuffer(m_TextureVBO, 3, 4, true);
+        m_VAO->addBuffer(m_TextureVBO, 3, 4, GL_FLOAT, true);
 
         m_TextureVBO.unbind();
         m_VAO->unbind();

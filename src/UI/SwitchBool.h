@@ -3,7 +3,7 @@
 #include "Button.h"
 
 namespace UserInterface {
-	class SwitchBool:public UIElement {
+	class SwitchBool:public IElementUI {
 	public:
 		SwitchBool(const glm::vec3& position, const glm::vec2& size, const bool& startFlag, const glm::vec2& origin = glm::vec2(0.5, 0.5));
 		SwitchBool();

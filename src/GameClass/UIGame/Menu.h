@@ -5,14 +5,10 @@
 #include <memory>
 #include <functional>
 #include <rapidjson/document.h>
-#include "../../UI/UIElement.h"
-#include "../../Renderer/Sprite.h"
-#include "../Animation/StateAnimationController.h"
-#include "../../Renderer/PrintText.h"
+#include "../../UI/IElementUI.h"
 #include "../../Audio/SoundEffectsPlayer.h"
 #include "../../Renderer/RenderEngine.h"
 #include "../../Managers/ConfigManager.h"
-#include "../../UI/Translater.h"
 #include "staticSprite.h"
 #include "staticTextForUI.h"
 #include "staticAnimatedSprite.h"
@@ -31,5 +27,5 @@ private:
 	std::vector<std::shared_ptr<staticTextForUI>> m_textVector;
 	std::vector<std::shared_ptr<staticAnimatedSprite>> m_animationVector;
 	std::vector<std::shared_ptr<staticSprite>> m_staticSpriteVector;
-	std::vector<std::shared_ptr<UserInterface::UIElement>> m_UIElementVector;
+	std::vector<std::shared_ptr<UserInterface::IElementUI>> m_UIElementVector;
 };

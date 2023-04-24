@@ -12,7 +12,7 @@
 	
 	"samples":1,
 	
-	"volume" : 0,
+	"volume" : 0.1,
 	
 	"volumeSample":[
 		{

@@ -5,8 +5,6 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-#include "VertexBuffer.h"
-#include "VertexArray.h"
 
  //(RUS) Класс спрайта, хранит буферы, ссылку на шейдер, и ссылку на текстуру, необходимые для отрисовки
 //(ENG) Sprite class, stores the buffers, shader reference, and texture reference required for rendering

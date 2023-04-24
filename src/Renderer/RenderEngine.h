@@ -1,7 +1,6 @@
 #pragma once
 
 #include "VertexArray.h"
-#include "ShaderProgram.h"
 #include <rapidjson/error/en.h>
 #include <algorithm>
 #include <rapidjson/document.h>

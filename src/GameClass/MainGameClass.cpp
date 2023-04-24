@@ -11,11 +11,14 @@
 #include "../Managers/ResourceManager.h"
 #include "../Renderer/PrintText.h"
 #include "../Renderer/RenderEngine.h"
+#include "../GameEngine/Objects/Camera.h"
 
 Menu MainGameClass::m_Menu;
 glm::ivec2 MainGameClass::m_window;
 double MainGameClass::m_time;
 int MainGameClass::m_fps;
+bool MainGameClass::m_StateGame;
+GameScene MainGameClass::m_gameScene;
 
  //(RUS) первоначальная инициализация переменных
 //(ENG) initial initialization of variables
@@ -27,7 +30,7 @@ MainGameClass::MainGameClass() {
 
  //(RUS) обновление объектов, буферов текста, позиции мыши
 //(ENG) updating objects, text buffers, mouse positions
-void MainGameClass::update(const double& duration){ 
+void MainGameClass::update(const double& duration) {
 
     m_fps++;
     m_time += duration;
@@ -37,7 +40,12 @@ void MainGameClass::update(const double& duration){
         m_time -= 1000;
     }
 
-    m_Menu.update(duration);
+    if (m_StateGame) {
+        m_gameScene.update(duration);
+    }
+    else {
+        m_Menu.update(duration);
+    }
 
     PRINT_TEXT::updateBuffer(duration);
     MOUSE::updatePositionAndScroll();
@@ -46,7 +54,12 @@ void MainGameClass::update(const double& duration){
  //(RUS) отрисовка объектов и текста
 //(ENG) drawing objects and text
 void MainGameClass::render() {
-    m_Menu.render();
+    if (m_StateGame) {
+        m_gameScene.render();
+    }
+    else {
+        m_Menu.render();
+    }
 
     RENDER_ENGINE::render();
     PRINT_TEXT::renderBuffer();
@@ -65,6 +78,8 @@ bool MainGameClass::init(glm::vec2 window) {
 
     setProjectionMat(window);
 
+    m_StateGame = false;
+
     m_Menu.init("MainMenu");
 
     return true;
@@ -73,7 +88,12 @@ bool MainGameClass::init(glm::vec2 window) {
  //(RUS) Обработка нажатий
 //(ENG) Handling clicks
 void MainGameClass::events(){ 
-    m_Menu.events();
+    if (m_StateGame) {
+        m_gameScene.events();
+    }
+    else {
+        m_Menu.events();
+    }
 }
 
  //(RUS) Установка матрицы проекции для отрисовки
@@ -81,13 +101,17 @@ void MainGameClass::events(){
 void MainGameClass::setProjectionMat(const glm::ivec2& window){
     m_window = window;
 
-    glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 100.f);
+    glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 100.f); 
 
     RESOURCE_MANAGER::setProjection(projectionMatrix);
     PRINT_TEXT::setWindow(m_window);
     Renderer::Sprite::setWindow(m_window);
     MOUSE::setWindowSize(m_window);
     m_Menu.updateButton();
+}
+
+void MainGameClass::setGame(const bool& flag){
+    m_StateGame = flag;
 }
 
  //(RUS) Уничтожение игровых объектов
@@ -98,4 +122,8 @@ void MainGameClass::terminate(){
 
 Menu& MainGameClass::getMenu(){
     return m_Menu;
+}
+
+GameScene& MainGameClass::getScene(){
+    return m_gameScene;
 }

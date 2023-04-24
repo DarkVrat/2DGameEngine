@@ -43,16 +43,16 @@ namespace Renderer {
 		m_VAO->addBuffer(vertexCoordsBuffer, 0, 2);
 
 		m_textureCoordsBuffer.init(NULL, sizeof(GLfloat)*4);
-		m_VAO->addBuffer(m_textureCoordsBuffer, 1, 4, true);
+		m_VAO->addBuffer(m_textureCoordsBuffer, 1, 4, GL_FLOAT, true);
 
 		m_modelMatBuffer[0].init(NULL, sizeof(GLfloat) * 4);
 		m_modelMatBuffer[1].init(NULL, sizeof(GLfloat) * 4);
 		m_modelMatBuffer[2].init(NULL, sizeof(GLfloat) * 4);
 		m_modelMatBuffer[3].init(NULL, sizeof(GLfloat) * 4);
-		m_VAO->addBuffer(m_modelMatBuffer[0], 2, 4, true);
-		m_VAO->addBuffer(m_modelMatBuffer[1], 3, 4, true);
-		m_VAO->addBuffer(m_modelMatBuffer[2], 4, 4, true);
-		m_VAO->addBuffer(m_modelMatBuffer[3], 5, 4, true);
+		m_VAO->addBuffer(m_modelMatBuffer[0], 2, 4, GL_FLOAT, true);
+		m_VAO->addBuffer(m_modelMatBuffer[1], 3, 4, GL_FLOAT, true);
+		m_VAO->addBuffer(m_modelMatBuffer[2], 4, 4, GL_FLOAT, true);
+		m_VAO->addBuffer(m_modelMatBuffer[3], 5, 4, GL_FLOAT, true);
 
 		m_VAO->unbind();
 	}
@@ -86,7 +86,7 @@ namespace Renderer {
 
 			drawInstanced(*m_VAO, currentSrites.second.Size());
 
-			currentSrites.second.Clear();
+			currentSrites.second.Clear(); 
 		}
 		for (auto& currentSrites : m_SpritesWithBlend) {
 			if (currentSrites.second.Size() < 1) {

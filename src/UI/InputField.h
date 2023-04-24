@@ -3,7 +3,7 @@
 #include "Button.h"
 
 namespace UserInterface {
-	class InputField : public UIElement {
+	class InputField : public IElementUI {
 	public:
 		InputField(const glm::vec3& position, const glm::vec2& size, const std::string& text="", const GLfloat& scale=0.9, const glm::vec3& color=glm::vec3(0,0,0), const glm::vec2& origin=glm::vec2(0.5,0.5));
 		InputField();

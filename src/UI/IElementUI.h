@@ -1,7 +1,7 @@
 #pragma once
 
 namespace UserInterface {
-	class UIElement {
+	class IElementUI{
 	public:
 		virtual void render() = 0;
 		virtual void update() = 0;

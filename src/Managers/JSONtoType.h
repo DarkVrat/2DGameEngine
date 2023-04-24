@@ -1,15 +1,5 @@
 #pragma once
 
-#include <rapidjson/document.h>
-#include <rapidjson/error/en.h>
-#include "../GameClass/UIGame/functions.h"
-#include "../UI/Button.h"
-#include "../GameClass/UIGame/staticSprite.h"
-#include "../Managers/ResourceManager.h"
-#include "../UI/Translater.h"
-#include "../GameClass/UIGame/staticAnimatedSprite.h"
-#include "../UI/ListParameter.h"
-
 class JSONtoType {
 public:
 	template<class Type>
@@ -17,8 +7,45 @@ public:
 
 	template<class Type>
 	static std::shared_ptr<Type> loadOneFromJSON(const std::string& JSONpath);
+
+	static glm::vec3 extractPosition(const rapidjson::Value& From);
+	static glm::vec3 extractColor(const rapidjson::Value& From);
+	static glm::vec2 extractSize(const rapidjson::Value& From);
+	static glm::vec2 extractOrigin(const rapidjson::Value& From);
+
+private:
 };
 
+//---------------------------------------------------------------------------------------------//
+glm::vec3 JSONtoType::extractPosition(const rapidjson::Value& From) {
+	glm::vec3 position(0, 0, 0);
+	position.x = From.FindMember("position")->value["x"].GetFloat();
+	position.y = From.FindMember("position")->value["y"].GetFloat();
+	position.z = From.FindMember("position")->value["z"].GetFloat();
+	return position;
+}
+
+glm::vec3 JSONtoType::extractColor(const rapidjson::Value& From) {
+	glm::vec3 color(0, 0, 0);
+	color.r = From.FindMember("color")->value["r"].GetFloat();
+	color.g = From.FindMember("color")->value["g"].GetFloat();
+	color.b = From.FindMember("color")->value["b"].GetFloat();
+	return color;
+}
+
+glm::vec2 JSONtoType::extractSize(const rapidjson::Value& From) {
+	glm::vec2 size(0, 0);
+	size.x = From.FindMember("size")->value["x"].GetFloat();
+	size.y = From.FindMember("size")->value["y"].GetFloat();
+	return size;
+}
+
+glm::vec2 JSONtoType::extractOrigin(const rapidjson::Value& From) {
+	glm::vec2 origin(0, 0);
+	origin.x = From.FindMember("origin")->value["x"].GetFloat();
+	origin.y = From.FindMember("origin")->value["y"].GetFloat();
+	return origin;
+}
 //---------------------------------------------vector------------------------------------//
 template<class Type>
 inline std::vector<std::shared_ptr<Type>> JSONtoType::loadFromJSONDoc(const std::string& JSONpath){
@@ -36,28 +63,13 @@ inline std::vector<std::shared_ptr<UserInterface::Button>> JSONtoType::loadFromJ
 	if (staticButtonsIT != JSONDoc.MemberEnd()) {
 		for (const auto& currentButton : staticButtonsIT->value.GetArray()) {
 			const std::string functionName = currentButton["function"].GetString();
-
-			glm::vec3 position = glm::vec3(0, 0, 0);
-			position.x = currentButton.FindMember("position")->value["x"].GetFloat();
-			position.y = currentButton.FindMember("position")->value["y"].GetFloat();
-			position.z = currentButton.FindMember("position")->value["z"].GetFloat();
-
-			glm::vec2 size = glm::vec2(0, 0);
-			size.x = currentButton.FindMember("size")->value["x"].GetFloat();
-			size.y = currentButton.FindMember("size")->value["y"].GetFloat();
-
 			const std::string subjectTranslete = currentButton["subjectTranslete"].GetString();
 			const std::string textForTranslete = currentButton["textForTranslete"].GetString();
 			const GLfloat scaleTextForButton = currentButton["scaleTextForButton"].GetFloat();
-
-			glm::vec3 color = glm::vec3(0, 0, 0);
-			color.r = currentButton.FindMember("color")->value["r"].GetFloat();
-			color.g = currentButton.FindMember("color")->value["g"].GetFloat();
-			color.b = currentButton.FindMember("color")->value["b"].GetFloat();
-
-			glm::vec2 origin = glm::vec2(0, 0);
-			origin.x = currentButton.FindMember("origin")->value["x"].GetFloat();
-			origin.y = currentButton.FindMember("origin")->value["y"].GetFloat();
+			const glm::vec3 position = extractPosition(currentButton);
+			const glm::vec3 color = extractColor(currentButton);
+			const glm::vec2 size = extractSize(currentButton);
+			const glm::vec2 origin = extractOrigin(currentButton);
 
 			auto button = std::make_shared<UserInterface::Button>(	position,
 																	size,
@@ -84,21 +96,10 @@ inline std::vector<std::shared_ptr<staticSprite>> JSONtoType::loadFromJSONDoc(co
 	if (staticSpriteIT != JSONDoc.MemberEnd()) {
 		for (const auto& currentStaticSprites : staticSpriteIT->value.GetArray()) {
 			const std::string name = currentStaticSprites["spriteName"].GetString();
-
-			glm::vec3 position = glm::vec3(0, 0, 0);
-			position.x = currentStaticSprites.FindMember("position")->value["x"].GetFloat();
-			position.y = currentStaticSprites.FindMember("position")->value["y"].GetFloat();
-			position.z = currentStaticSprites.FindMember("position")->value["z"].GetFloat();
-
-			glm::vec2 size = glm::vec2(0, 0);
-			size.x = currentStaticSprites.FindMember("size")->value["x"].GetFloat();
-			size.y = currentStaticSprites.FindMember("size")->value["y"].GetFloat();
-
 			const GLfloat rotation = currentStaticSprites["rotation"].GetFloat();
-
-			glm::vec2 origin = glm::vec2(0, 0);
-			origin.x = currentStaticSprites.FindMember("origin")->value["x"].GetFloat();
-			origin.y = currentStaticSprites.FindMember("origin")->value["y"].GetFloat();
+			const glm::vec3 position = extractPosition(currentStaticSprites);
+			const glm::vec2 size = extractSize(currentStaticSprites);
+			const glm::vec2 origin = extractOrigin(currentStaticSprites);
 
 			sprites.push_back(std::make_shared<staticSprite>(RESOURCE_MANAGER::getSprite(name), position, size, rotation, origin));
 		}
@@ -117,21 +118,10 @@ inline std::vector<std::shared_ptr<staticAnimatedSprite>> JSONtoType::loadFromJS
 	if (animatedSpriteIT != JSONDoc.MemberEnd()) {
 		for (const auto& currentAnimetedSprites : animatedSpriteIT->value.GetArray()) {
 			const std::string name = currentAnimetedSprites["StateName"].GetString();
-
-			glm::vec3 position = glm::vec3(0, 0, 0);
-			position.x = currentAnimetedSprites.FindMember("position")->value["x"].GetFloat();
-			position.y = currentAnimetedSprites.FindMember("position")->value["y"].GetFloat();
-			position.z = currentAnimetedSprites.FindMember("position")->value["z"].GetFloat();
-
-			glm::vec2 size = glm::vec2(0, 0);
-			size.x = currentAnimetedSprites.FindMember("size")->value["x"].GetFloat();
-			size.y = currentAnimetedSprites.FindMember("size")->value["y"].GetFloat();
-
 			const GLfloat rotation = currentAnimetedSprites["rotation"].GetFloat();
-
-			glm::vec2 origin = glm::vec2(0, 0);
-			origin.x = currentAnimetedSprites.FindMember("origin")->value["x"].GetFloat();
-			origin.y = currentAnimetedSprites.FindMember("origin")->value["y"].GetFloat();
+			const glm::vec3 position = extractPosition(currentAnimetedSprites);
+			const glm::vec2 size = extractSize(currentAnimetedSprites);
+			const glm::vec2 origin = extractOrigin(currentAnimetedSprites);
 
 			animatedSprite.push_back(std::make_shared<staticAnimatedSprite>(name, position, size, rotation, origin));
 		}
@@ -152,22 +142,11 @@ inline std::vector<std::shared_ptr<staticTextForUI>> JSONtoType::loadFromJSONDoc
 		for (const auto& currentText : TextIT->value.GetArray()) {
 			const std::string subjectTranslete = currentText["subjectTranslete"].GetString();
 			const std::string textForTranslete = currentText["textForTranslete"].GetString();
-
-			glm::vec3 position = glm::vec3(0, 0, 0);
-			position.x = currentText.FindMember("position")->value["x"].GetFloat();
-			position.y = currentText.FindMember("position")->value["y"].GetFloat();
-			position.z = currentText.FindMember("position")->value["z"].GetFloat();
-
 			const float scaleText = currentText["scaleText"].GetFloat();
-
-			glm::vec3 color = glm::vec3(0, 0, 0);
-			color.r = currentText.FindMember("color")->value["r"].GetFloat();
-			color.g = currentText.FindMember("color")->value["g"].GetFloat();
-			color.b = currentText.FindMember("color")->value["b"].GetFloat();
-
 			const float sizeByXScreen = currentText["sizeByXScreen"].GetFloat();
-
 			const bool center = currentText["center"].GetBool();
+			const glm::vec3 position = extractPosition(currentText);
+			const glm::vec3 color = extractColor(currentText);
 
 			std::shared_ptr<Renderer::Sprite> backSprite = nullptr;
 			float shift = 0;
@@ -201,31 +180,21 @@ inline std::vector<std::shared_ptr<UserInterface::ListParameter<int>>> JSONtoTyp
 			}
 
 			const std::string functionName = currentList["function"].GetString();
-
-			glm::vec3 position = glm::vec3(0, 0, 0);
-			position.x = currentList.FindMember("position")->value["x"].GetFloat();
-			position.y = currentList.FindMember("position")->value["y"].GetFloat();
-			position.z = currentList.FindMember("position")->value["z"].GetFloat();
-
-			glm::vec2 size = glm::vec2(0, 0);
-			size.x = currentList.FindMember("size")->value["x"].GetFloat();
-			size.y = currentList.FindMember("size")->value["y"].GetFloat();
-
+			const std::string startValue = currentList["startValue"].GetString();
+			const glm::vec3 position = extractPosition(currentList);
+			const glm::vec2 size = extractSize(currentList);
+			const glm::vec2 origin = extractOrigin(currentList);
 			const GLfloat scaleText = currentList["scaleText"].GetFloat();
 
-			glm::vec2 origin = glm::vec2(0, 0);
-			origin.x = currentList.FindMember("origin")->value["x"].GetFloat();
-			origin.y = currentList.FindMember("origin")->value["y"].GetFloat();
-
-			auto vec = valuesControl::getList<int>(functionName);
+			auto vec = valuesControl::getList<int>(startValue);
 			auto list = std::make_shared<UserInterface::ListParameter<int>>(position,
 																			size,
 																			scaleText,
 																			vec,
-																			valuesControl::getStartValue<int>(functionName),
+																			valuesControl::getStartValue<int>(startValue),
 																			origin);
 			list->setCallBack(Functions::getCallBack<void, int>(functionName));
-			list->setTypeToString(valuesControl::getTypeToString<int>(functionName));
+			list->setTypeToString(valuesControl::getTypeToString<int>(startValue));
 			ListInt.push_back(list);
 			
 		}
@@ -250,31 +219,21 @@ inline std::vector<std::shared_ptr<UserInterface::ListParameter<glm::ivec2>>> JS
 			}
 
 			const std::string functionName = currentList["function"].GetString();
-
-			glm::vec3 position = glm::vec3(0, 0, 0);
-			position.x = currentList.FindMember("position")->value["x"].GetFloat();
-			position.y = currentList.FindMember("position")->value["y"].GetFloat();
-			position.z = currentList.FindMember("position")->value["z"].GetFloat();
-
-			glm::vec2 size = glm::vec2(0, 0);
-			size.x = currentList.FindMember("size")->value["x"].GetFloat();
-			size.y = currentList.FindMember("size")->value["y"].GetFloat();
-
+			const std::string startValue = currentList["startValue"].GetString();
+			const glm::vec3 position = extractPosition(currentList);
+			const glm::vec2 size = extractSize(currentList);
+			const glm::vec2 origin = extractOrigin(currentList);
 			const GLfloat scaleText = currentList["scaleText"].GetFloat();
 
-			glm::vec2 origin = glm::vec2(0, 0);
-			origin.x = currentList.FindMember("origin")->value["x"].GetFloat();
-			origin.y = currentList.FindMember("origin")->value["y"].GetFloat();
-
-			auto vec = valuesControl::getList<glm::ivec2>(functionName);
+			auto vec = valuesControl::getList<glm::ivec2>(startValue);
 			auto list = std::make_shared<UserInterface::ListParameter<glm::ivec2>>(	position,
 																					size,
 																					scaleText,
 																					vec,
-																					valuesControl::getStartValue<glm::ivec2>(functionName),
+																					valuesControl::getStartValue<glm::ivec2>(startValue),
 																					origin);
 			list->setCallBack(Functions::getCallBack<void, glm::ivec2>(functionName));
-			list->setTypeToString(valuesControl::getTypeToString<glm::ivec2>(functionName));
+			list->setTypeToString(valuesControl::getTypeToString<glm::ivec2>(startValue));
 			ListInt.push_back(list);
 
 		}
@@ -299,31 +258,21 @@ inline std::vector<std::shared_ptr<UserInterface::ListParameter<std::string>>> J
 			}
 
 			const std::string functionName = currentList["function"].GetString();
-
-			glm::vec3 position = glm::vec3(0, 0, 0);
-			position.x = currentList.FindMember("position")->value["x"].GetFloat();
-			position.y = currentList.FindMember("position")->value["y"].GetFloat();
-			position.z = currentList.FindMember("position")->value["z"].GetFloat();
-
-			glm::vec2 size = glm::vec2(0, 0);
-			size.x = currentList.FindMember("size")->value["x"].GetFloat();
-			size.y = currentList.FindMember("size")->value["y"].GetFloat();
-
+			const std::string startValue = currentList["startValue"].GetString();
+			const glm::vec3 position = extractPosition(currentList);
+			const glm::vec2 size = extractSize(currentList);
+			const glm::vec2 origin = extractOrigin(currentList);
 			const GLfloat scaleText = currentList["scaleText"].GetFloat();
 
-			glm::vec2 origin = glm::vec2(0, 0);
-			origin.x = currentList.FindMember("origin")->value["x"].GetFloat();
-			origin.y = currentList.FindMember("origin")->value["y"].GetFloat();
-
-			auto vec = valuesControl::getList<std::string>(functionName);
+			auto vec = valuesControl::getList<std::string>(startValue);
 			auto list = std::make_shared<UserInterface::ListParameter<std::string>>(position,
 																					size,
 																					scaleText,
 																					vec,
-																					valuesControl::getStartValue<std::string>(functionName),
+																					valuesControl::getStartValue<std::string>(startValue),
 																					origin);
 			list->setCallBack(Functions::getCallBack<void, std::string>(functionName));
-			list->setTypeToString(valuesControl::getTypeToString<std::string>(functionName));
+			list->setTypeToString(valuesControl::getTypeToString<std::string>(startValue));
 			ListInt.push_back(list);
 		}
 	}
@@ -342,23 +291,14 @@ inline std::vector<std::shared_ptr<UserInterface::SwitchBool>> JSONtoType::loadF
 	if (staticSwitchBoolIT != JSONDoc.MemberEnd()) {
 		for (const auto& currentSwichBool : staticSwitchBoolIT->value.GetArray()) {
 			const std::string functionName = currentSwichBool["function"].GetString();
-
-			glm::vec3 position = glm::vec3(0, 0, 0);
-			position.x = currentSwichBool.FindMember("position")->value["x"].GetFloat();
-			position.y = currentSwichBool.FindMember("position")->value["y"].GetFloat();
-			position.z = currentSwichBool.FindMember("position")->value["z"].GetFloat();
-
-			glm::vec2 size = glm::vec2(0, 0);
-			size.x = currentSwichBool.FindMember("size")->value["x"].GetFloat();
-			size.y = currentSwichBool.FindMember("size")->value["y"].GetFloat();
-
-			glm::vec2 origin = glm::vec2(0, 0);
-			origin.x = currentSwichBool.FindMember("origin")->value["x"].GetFloat();
-			origin.y = currentSwichBool.FindMember("origin")->value["y"].GetFloat();
+			const std::string startValue = currentSwichBool["startValue"].GetString();
+			const glm::vec3 position = extractPosition(currentSwichBool);
+			const glm::vec2 size = extractSize(currentSwichBool);
+			const glm::vec2 origin = extractOrigin(currentSwichBool);
 
 			auto switchBool = std::make_shared<UserInterface::SwitchBool>(	position,
 																			size,
-																			valuesControl::getStartValue<bool>(functionName),
+																			valuesControl::getStartValue<bool>(startValue),
 																			origin);
 			switchBool->setCallBack(Functions::getCallBack<void, bool>(functionName));
 
@@ -380,32 +320,22 @@ inline std::vector<std::shared_ptr<UserInterface::Slider>> JSONtoType::loadFromJ
 	if (staticSlidersIT != JSONDoc.MemberEnd()) {
 		for (const auto& currentSlider : staticSlidersIT->value.GetArray()) {
 			const std::string functionName = currentSlider["function"].GetString();
-
-			glm::vec3 position = glm::vec3(0, 0, 0);
-			position.x = currentSlider.FindMember("position")->value["x"].GetFloat();
-			position.y = currentSlider.FindMember("position")->value["y"].GetFloat();
-			position.z = currentSlider.FindMember("position")->value["z"].GetFloat();
-
-			glm::vec2 size = glm::vec2(0, 0);
-			size.x = currentSlider.FindMember("size")->value["x"].GetFloat();
-			size.y = currentSlider.FindMember("size")->value["y"].GetFloat();
-
+			const std::string startValue = currentSlider["startValue"].GetString();
+			const glm::vec3 position = extractPosition(currentSlider);
+			const glm::vec2 size = extractSize(currentSlider);
+			const glm::vec2 origin = extractOrigin(currentSlider);
 			const bool view = currentSlider["view"].GetBool();
 
 			glm::vec2 minMax = glm::vec2(0, 0);
 			minMax.x = currentSlider.FindMember("minMax")->value["x"].GetFloat();
 			minMax.y = currentSlider.FindMember("minMax")->value["y"].GetFloat();
 
-			glm::vec2 origin = glm::vec2(0, 0);
-			origin.x = currentSlider.FindMember("origin")->value["x"].GetFloat();
-			origin.y = currentSlider.FindMember("origin")->value["y"].GetFloat();
-
-			auto slider = std::make_shared<UserInterface::Slider>(position,
-				size,
-				view,
-				minMax,
-				valuesControl::getStartValue<float>(functionName),
-				origin);
+			auto slider = std::make_shared<UserInterface::Slider>(	position,
+																	size,
+																	view,
+																	minMax,
+																	valuesControl::getStartValue<float>(startValue),
+																	origin);
 			slider->setCallBack(Functions::getCallBack<void, float>(functionName));
 
 			sliders.push_back(slider);
@@ -436,3 +366,4 @@ inline std::shared_ptr<Audio::SoundEffectsPlayer> JSONtoType::loadOneFromJSON(co
 	return backgroundMusic;
 }
 //---------------------------------------------one---------------------------------------// 
+ 

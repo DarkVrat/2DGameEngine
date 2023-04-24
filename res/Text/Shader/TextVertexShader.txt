@@ -11,13 +11,9 @@ uniform mat4 projection;
 void main()
 {
     gl_Position = projection * vec4(vertex.x*pos.w+pos.x, vertex.y*pos.w+pos.y, pos.z, 1.0);
-	if(vertex.x<0.5)
-		TexCoords.x = cordsTex.x;
-	else
-		TexCoords.x = cordsTex.z;
-	if(vertex.y<0.5)
-		TexCoords.y = cordsTex.y;
-	else
-		TexCoords.y = cordsTex.w;
+	
+	TexCoords.x=mix(cordsTex.x, cordsTex.z, vertex.x);
+	TexCoords.y=mix(cordsTex.y, cordsTex.w, vertex.y);
+
     ColorChar = color;
 }

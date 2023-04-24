@@ -3,11 +3,10 @@
 #include <vector>
 #include <cmath>
 #include "Button.h"
-#include "../Renderer/PrintText.h"
 
 namespace UserInterface {
 	template<class T>
-	class ListParameter : public UIElement{
+	class ListParameter : public IElementUI {
 	public:
 		ListParameter(const glm::vec3& position, const glm::vec2& size, const GLfloat& scaleText, const std::vector<T>& vectorParam, const T& startValue ,const glm::vec2& origin=glm::vec2(0.5,0.5));
 		ListParameter();

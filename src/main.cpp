@@ -99,7 +99,7 @@ int main(int argc, char** argv){
     RENDER_ENGINE::setWindow(PWindow);
 
     RENDER_ENGINE::enableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    RENDER_ENGINE::setClearColor(0, 0, 0, 255);
+    RENDER_ENGINE::setClearColor(55, 0, 0, 255);
     RENDER_ENGINE::setDetphTest(true);
        
     SOUND_DEVICE::init();

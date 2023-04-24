@@ -5,9 +5,7 @@
 #include <map>
 #include <vector>
 #include <rapidjson/document.h>
-#include "../Renderer/ShaderProgram.h"
 #include "../Renderer/Texture2D.h"
-#include "../Renderer/Sprite.h"
 #include "../Renderer/StateAnimation.h"
 #include "../Audio/FileOfSound.h"
 #include "../Audio/SampleSourse.h"
@@ -57,6 +55,7 @@ public:
 	static void LoadAudioResurces(const std::string& JSONPath);
 	static void LoadTextResurces(const std::string& JSONPath);
 	static void LoadTextureResurces(const std::string& JSONPath);
+	static void LoadMapResurces(const std::string& JSONPath);
 
 private:
 	typedef std::map<const std::string, std::shared_ptr<Renderer::StateAnimation>> StateAnimationMap;

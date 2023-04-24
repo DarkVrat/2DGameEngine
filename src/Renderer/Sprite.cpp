@@ -27,7 +27,14 @@ namespace Renderer {
 
         glm::vec3 PositionSprite = glm::vec3(position.x * m_window.x, position.y * m_window.y, position.z);
 
-        render(PositionSprite, SizeSprite, rotation, origin);
+        glm::mat4 model(1.f);
+
+        model = glm::translate(model, glm::vec3(PositionSprite.x, PositionSprite.y, 0.f));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f));
+        model = glm::translate(model, glm::vec3(-origin.x * SizeSprite.x, -origin.y * SizeSprite.y, 0.f));
+        model = glm::scale(model, glm::vec3(SizeSprite, PositionSprite.z));
+
+        RENDER_ENGINE::draw(m_texture, m_coordTexture, model);
     }
 
     //(RUS) Отрисовка спрайта

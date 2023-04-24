@@ -21,11 +21,20 @@
 	
 	"buttons":[
 	{
-		"function":"SaveConfig",
-		"position":{"x":0.5,"y":0.5,"z":10},
+		"function":"call MainMenu;",
+		"position":{"x":0.5,"y":0.44,"z":10},
 		"size":{"x":0,"y":0.1},
 		"subjectTranslete":"menu",
 		"textForTranslete":"exit",
+		"scaleTextForButton":0.9,
+		"color":{"r":0,"g":0,"b":0},
+		"origin":{"x":0.5,"y":0.5}
+	},{
+		"function":"toGame; load scene001;",
+		"position":{"x":0.5,"y":0.56,"z":10},
+		"size":{"x":0,"y":0.1},
+		"subjectTranslete":"menu",
+		"textForTranslete":"game",
 		"scaleTextForButton":0.9,
 		"color":{"r":0,"g":0,"b":0},
 		"origin":{"x":0.5,"y":0.5}

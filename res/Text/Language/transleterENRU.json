@@ -8,6 +8,10 @@
 				"EN" : "New Game",
 				"RU" : "Новая Игра"
 			},{
+				"name" : "game",
+				"EN" : "Start Game",
+				"RU" : "Начать Игру"
+			},{
 				"name" : "continue",
 				"EN" : "Continue",
 				"RU" : "Продолжить"

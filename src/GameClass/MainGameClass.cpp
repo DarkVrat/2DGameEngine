@@ -103,7 +103,7 @@ void MainGameClass::setProjectionMat(const glm::ivec2& window){
 
     glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 100.f); 
 
-    RESOURCE_MANAGER::setProjection(projectionMatrix);
+    RESOURCE_MANAGER::setProjection(projectionMatrix, false);
     PRINT_TEXT::setWindow(m_window);
     Renderer::Sprite::setWindow(m_window);
     MOUSE::setWindowSize(m_window);
@@ -112,6 +112,9 @@ void MainGameClass::setProjectionMat(const glm::ivec2& window){
 
 void MainGameClass::setGame(const bool& flag){
     m_StateGame = flag;
+    if (flag) {
+        m_Menu.stopSound();
+    }
 }
 
  //(RUS) ”ничтожение игровых объектов

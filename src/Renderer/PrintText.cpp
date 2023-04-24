@@ -266,8 +266,5 @@ namespace Renderer {
 
     void PrintText::setWindow(const glm::vec2& window){
         m_window = window;
-        glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_window.x), 0.f, static_cast<float>(m_window.y), -100.f, 100.f);
-        m_texture->getShader()->use();
-        m_texture->getShader()->setMatrix4("projection", projectionMatrix);
     }
 }

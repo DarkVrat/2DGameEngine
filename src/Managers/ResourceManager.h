@@ -32,7 +32,8 @@ public:
 	static std::string getFileString(const std::string& relativeFilePath);
 	static rapidjson::Document loadJSONDoc(const std::string& JSONPath);
 
-	static void setProjection(const glm::mat4& projectionMatrix);
+	static void setProjection(const glm::mat4& projectionMatrix, const bool& camera);
+	static void setView(const glm::vec3& view);
 	static void unloadAllRes();
 
 	static void loadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);

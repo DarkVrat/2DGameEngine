@@ -1,7 +1,7 @@
 {
 	"map":{
 		"mapPath" : "res/Scenes/map001.png",
-		"sizeCell" : 64.0
+		"sizeCell" : 16.0
 	},
 	
 	"camera":{

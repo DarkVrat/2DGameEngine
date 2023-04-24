@@ -6,71 +6,136 @@
 #include "RenderEngine.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "cmath"
+#include <cmath>
 
 std::shared_ptr<Renderer::Texture2D> Renderer::MapRenderer::m_texture;
 int Renderer::MapRenderer::m_sizeCellTexture;
 
-std::map<uint32_t, glm::vec4> Renderer::MapRenderer::m_coordCells;
+glm::vec2 Renderer::MapRenderer::m_BufferCameraPos;
+glm::vec2 Renderer::MapRenderer::m_BufferCameraSize;
+int Renderer::MapRenderer::m_BufferCountCells;
+
+std::map<uint32_t, std::pair<glm::vec4, float>> Renderer::MapRenderer::m_coordCells;
 float Renderer::MapRenderer::m_sizeCellMap;
 float Renderer::MapRenderer::m_layer;
 
 uint32_t* Renderer::MapRenderer::m_mapPixels;
 glm::ivec2 Renderer::MapRenderer::m_sizeMap;
+
+std::shared_ptr<Renderer::VertexArray> Renderer::MapRenderer::m_VAO;
+Renderer::VertexBuffer Renderer::MapRenderer::m_PositionVBO;
+Renderer::VertexBuffer Renderer::MapRenderer::m_TextureVBO;
+Renderer::VertexBuffer Renderer::MapRenderer::m_RotateVBO;
     
 namespace Renderer {
 	void MapRenderer::init(const std::shared_ptr<Texture2D>& texture, const int& sizeCellTexture){
 		m_texture = texture;
 		m_sizeCellTexture = sizeCellTexture;
+
+		float vertex[] = {
+			0.f, 0.f,   // 0    1--2
+			0.f, 1.f,   // 1    | /|
+			1.f, 1.f,   // 2    |/ |
+			1.f, 0.f,   // 3    0--3  
+		};
+
+		m_VAO = std::make_shared<VertexArray>();
+		m_VAO->bind();
+
+		VertexBuffer vertexVBO;
+		vertexVBO.init(vertex, sizeof(vertex));
+		m_VAO->addBuffer(vertexVBO, 0, 2);
+
+		m_PositionVBO.init(NULL, NULL);
+		m_VAO->addBuffer(m_PositionVBO, 1, 4, GL_FLOAT, true);
+
+		m_TextureVBO.init(NULL, NULL);
+		m_VAO->addBuffer(m_TextureVBO, 2, 4, GL_FLOAT, true);
+
+		m_RotateVBO.init(NULL, NULL);
+		m_VAO->addBuffer(m_RotateVBO, 3, 1, GL_FLOAT, true);
+
+		m_TextureVBO.unbind();
+		m_VAO->unbind();
 	}
 
 	void MapRenderer::setLayer(const float& layer){
 		m_layer = layer;
 	}
-
+	 
 	void MapRenderer::render(){
-		glm::vec2 posCamera = CAMERA::getCoords();
-		glm::vec2 sizeCamera = CAMERA::getSize();
+		bool flag = false;
+		glm::vec2 camPos = CAMERA::getCoords();
+		glm::vec2 camSiz = CAMERA::getSize();
 
-		glm::ivec2 leftButtonBorderCamera = glm::ivec2(	std::round((posCamera.x - (sizeCamera.x + m_sizeCellMap) / 2) / m_sizeCellMap),
-														std::round((posCamera.y - (sizeCamera.y + m_sizeCellMap) / 2) / m_sizeCellMap));
-		glm::ivec2 rightTopBorderCamera = glm::ivec2(	std::round((posCamera.x + (sizeCamera.x + m_sizeCellMap) / 2) / m_sizeCellMap),
-														std::round((posCamera.y + (sizeCamera.y + m_sizeCellMap) / 2) / m_sizeCellMap)); 
-
-		if (leftButtonBorderCamera.x < 0) { leftButtonBorderCamera.x = 0; }
-		if (leftButtonBorderCamera.y < 0) { leftButtonBorderCamera.y = 0; }
-		if (rightTopBorderCamera.x > m_sizeMap.x ) { rightTopBorderCamera.x = m_sizeMap.x; } 
-		if (rightTopBorderCamera.y > m_sizeMap.y ) { rightTopBorderCamera.y = m_sizeMap.y; }
-
-		int countPixels = (rightTopBorderCamera.x - leftButtonBorderCamera.x) * (rightTopBorderCamera.y - leftButtonBorderCamera.y);
-
-		float startXCellPosition = leftButtonBorderCamera.x * m_sizeCellMap;
-		float offsetXCell = startXCellPosition;
-		float offsetYCell = leftButtonBorderCamera.y * m_sizeCellMap;
-
-		for (int h = leftButtonBorderCamera.y; h < rightTopBorderCamera.y; h++) {
-			for (int w = leftButtonBorderCamera.x; w < rightTopBorderCamera.x; w++) {
-				uint32_t pixel = m_mapPixels[h * m_sizeMap.x + w];
-
-				glm::mat4 model(1.f);
-
-				float rotation = 90 * (pixel & 3); 
-
-				model = glm::translate(model, glm::vec3(offsetXCell, offsetYCell, 0.f));
-				model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f));
-				model = glm::translate(model, glm::vec3(-0.5f * m_sizeCellMap, -0.5f * m_sizeCellMap, 0.f));
-				model = glm::scale(model, glm::vec3(m_sizeCellMap, m_sizeCellMap, m_layer));
-
-				if (pixel & 4) {model = glm::scale(model, glm::vec3(-1.f, 1.f, 1.f));}
-				if (pixel & 8) {model = glm::scale(model, glm::vec3(1.f, -1.f, 1.f));}
-
-				RENDER_ENGINE::draw(m_texture, m_coordCells[pixel >> 8], model);
-
-				offsetXCell += m_sizeCellMap;
-			}
-			offsetXCell = startXCellPosition;
-			offsetYCell += m_sizeCellMap;
+		if (std::abs(camPos.x - m_BufferCameraPos.x) > 0.1 || std::abs(camPos.y - m_BufferCameraPos.y) > 0.1) {
+			m_BufferCameraPos = camPos;
+			flag = true;
 		}
+		if (std::abs(camSiz.x - m_BufferCameraSize.x) > 1 || std::abs(camSiz.y - m_BufferCameraSize.y) > 1) {
+			m_BufferCameraSize = camSiz;
+			flag = true;
+		}
+
+		if (flag) {
+
+			glm::ivec2 leftButtonBorderCamera = glm::ivec2(	std::round((m_BufferCameraPos.x - (m_BufferCameraSize.x + m_sizeCellMap) / 2) / m_sizeCellMap),
+															std::round((m_BufferCameraPos.y - (m_BufferCameraSize.y + m_sizeCellMap) / 2) / m_sizeCellMap));
+			glm::ivec2 rightTopBorderCamera = glm::ivec2(	std::round((m_BufferCameraPos.x + (m_BufferCameraSize.x + m_sizeCellMap) / 2) / m_sizeCellMap),
+															std::round((m_BufferCameraPos.y + (m_BufferCameraSize.y + m_sizeCellMap) / 2) / m_sizeCellMap));
+
+			if (leftButtonBorderCamera.x < 0) { leftButtonBorderCamera.x = 0; }
+			if (leftButtonBorderCamera.y < 0) { leftButtonBorderCamera.y = 0; }
+			if (rightTopBorderCamera.x > m_sizeMap.x) { rightTopBorderCamera.x = m_sizeMap.x; }
+			if (rightTopBorderCamera.y > m_sizeMap.y) { rightTopBorderCamera.y = m_sizeMap.y; }
+
+			if (leftButtonBorderCamera.y >= rightTopBorderCamera.y || leftButtonBorderCamera.x >= rightTopBorderCamera.x) {
+				return;
+			}
+
+			m_BufferCountCells = (rightTopBorderCamera.x - leftButtonBorderCamera.x) * (rightTopBorderCamera.y - leftButtonBorderCamera.y);
+
+			float startXCellPosition = leftButtonBorderCamera.x * m_sizeCellMap;
+			float offsetXCell = startXCellPosition;
+			float offsetYCell = leftButtonBorderCamera.y * m_sizeCellMap;
+
+			std::vector<glm::vec4> Position;
+			std::vector<glm::vec4> Texture;
+			std::vector<float> Rotate;
+			Position.reserve(m_BufferCountCells);
+			Texture.reserve(m_BufferCountCells);
+			Rotate.reserve(m_BufferCountCells);
+
+			for (int h = leftButtonBorderCamera.y; h < rightTopBorderCamera.y; h++) {
+				for (int w = leftButtonBorderCamera.x; w < rightTopBorderCamera.x; w++) {
+					auto& pixelData = m_coordCells.at(m_mapPixels[h * m_sizeMap.x + w]);
+
+					Position.push_back(glm::vec4(offsetXCell, offsetYCell, m_layer, m_sizeCellMap));
+					Texture.push_back(pixelData.first);
+					Rotate.push_back(pixelData.second);
+
+					offsetXCell += m_sizeCellMap;
+				}
+				offsetXCell = startXCellPosition;
+				offsetYCell += m_sizeCellMap;
+			}
+			m_PositionVBO.update(&Position[0], Position.size() * sizeof(glm::vec4));
+			m_TextureVBO.update(&Texture[0], Texture.size() * sizeof(glm::vec4));
+			m_RotateVBO.update(&Rotate[0], Rotate.size() * sizeof(float));
+
+			Position.clear();
+			Texture.clear();
+			Rotate.clear();
+		}
+
+		m_texture->bind();
+
+		RENDER_ENGINE::drawInstanced(*m_VAO, m_BufferCountCells);
+
+		m_VAO->unbind();
+		m_TextureVBO.unbind();
+		glBindTexture(GL_TEXTURE_2D, 0);
+
 	}
 
 	void MapRenderer::setMap(const std::string& mapPath, const float& sizeCellMap){
@@ -101,8 +166,8 @@ namespace Renderer {
 
 				m_mapPixels[pixelIndex] = (red << 16) | (green << 8) | blue;
 
-				if (m_coordCells.count(m_mapPixels[pixelIndex]>>8) < 1) {
-					m_coordCells.emplace(m_mapPixels[pixelIndex]>>8, glm::vec4(pixelToTextureCoords(red, green)));
+				if (m_coordCells.count(m_mapPixels[pixelIndex]) < 1) {
+					m_coordCells.emplace(m_mapPixels[pixelIndex], pixelToTextureCoords(red, green, blue));
 				}
 			}
 		}
@@ -110,17 +175,30 @@ namespace Renderer {
 		stbi_image_free(Pixels);
 	} 
 
-	glm::vec4 MapRenderer::pixelToTextureCoords(const uint8_t& red, const uint8_t& green){
-		float cellTexWidth = static_cast<float>(m_sizeCellTexture) / static_cast<float>(m_texture->getWidth());
-		float cellTexHeight = static_cast<float>(m_sizeCellTexture) / static_cast<float>(m_texture->getHeight());
+	std::pair<glm::vec4, float> MapRenderer::pixelToTextureCoords(const uint8_t& red, const uint8_t& green, const uint8_t& blue) {
+		float cellTexWidth = static_cast<float>(m_sizeCellTexture + 2) / static_cast<float>(m_texture->getWidth());
+		float cellTexHeight = static_cast<float>(m_sizeCellTexture + 2) / static_cast<float>(m_texture->getHeight());
+		float amortPixelWidth = 1.f / static_cast<float>(m_texture->getWidth());
+		float amortPixelHeight = 1.f / static_cast<float>(m_texture->getHeight());
 
-		glm::vec4 coords(0,0,0,0);
+		glm::vec4 coords(0, 0, 0, 0);
 
-		coords.x = red * cellTexWidth + cellTexWidth/1000.0;
-		coords.y = green * cellTexHeight + cellTexHeight / 1000.0;
-		coords.z = coords.x + cellTexWidth - cellTexWidth / 500.0;
-		coords.w = coords.y + cellTexHeight - cellTexHeight / 500.0;
+		coords.x = red * cellTexWidth + amortPixelWidth;
+		coords.y = green * cellTexHeight + amortPixelHeight;
+		coords.z = (red + 1) * cellTexWidth - amortPixelWidth;
+		coords.w = (green + 1) * cellTexHeight - amortPixelHeight;
 
-		return coords;
+		if (blue & 1) {
+			float temp = coords.x;
+			coords.x = coords.z;
+			coords.z = temp;
+		}
+		if (blue & 2) {
+			float temp = coords.y;
+			coords.y = coords.w;
+			coords.w = temp;
+		}
+
+		return std::pair<glm::vec4, float>(coords, static_cast<float> (blue & 4));
 	}
 }

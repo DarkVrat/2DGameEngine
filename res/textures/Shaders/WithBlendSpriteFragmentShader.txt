@@ -5,6 +5,5 @@ out vec4 flag_color;
 uniform sampler2D tex;
 
 void main() {
-	vec4 texCollor=texture(tex,texCoord);
-	flag_color=texCollor;
+	flag_color=texture(tex,texCoord);
 }

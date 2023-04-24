@@ -12,6 +12,8 @@ public:
 	static void setSize(const float& width);
 	static glm::vec2 getSize();
 
+	static void updateProjection();
+
 	static void update();
 	static void setSettings(const glm::vec2& RectangleFollowing, const float& baseSpeed, const float& distanceSpeed);
 private:

@@ -20,13 +20,15 @@ namespace Renderer {
 			return;
 		}
 
+		m_cameraShader = vertexShader.find("uniform vec3 view;") != std::string::npos;
+
 		m_ID = glCreateProgram();				
 		glAttachShader(m_ID, vertexShaderID);	
 		glAttachShader(m_ID, fragmentShaderID);	
 		glLinkProgram(m_ID);					
 
 		GLint success;
-		glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
+		glGetProgramiv(m_ID, GL_LINK_STATUS, &success); 
 		if (!success) {
 			GLchar infoLog[1024];
 			glGetShaderInfoLog(m_ID, 1024, nullptr, infoLog);
@@ -91,20 +93,28 @@ namespace Renderer {
 		glUniform3f(glGetUniformLocation(m_ID, name.c_str()), vec3.x,vec3.y,vec3.z);
 	}
 
+	bool ShaderProgram::getCameraShader(){
+		return m_cameraShader;
+	}
+
 	 //(RUS) Конструктор переноса шейдера
 	//(ENG) Shader transfer constructor
 	ShaderProgram& ShaderProgram::operator=(ShaderProgram&& shaderProgram) noexcept {
 		glDeleteProgram(m_ID);
 		m_ID = shaderProgram.m_ID;
 		m_isCompiled = shaderProgram.m_isCompiled;
+		m_cameraShader = shaderProgram.m_cameraShader;
 		shaderProgram.m_ID = 0;
 		shaderProgram.m_isCompiled = false;
+		shaderProgram.m_cameraShader = false;
 		return *this;
 	}
 	ShaderProgram::ShaderProgram(ShaderProgram && shaderProgram) noexcept {
 		m_ID = shaderProgram.m_ID;
 		m_isCompiled = shaderProgram.m_isCompiled;
+		m_cameraShader = shaderProgram.m_cameraShader;
 		shaderProgram.m_ID = 0;
 		shaderProgram.m_isCompiled = false;
+		shaderProgram.m_cameraShader = false;
 	}
 }

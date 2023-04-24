@@ -22,6 +22,7 @@ public:
 
 	void init(const std::string& gameState);
 	void clear();
+	void stopSound();
 private:
 	std::shared_ptr<Audio::SoundEffectsPlayer> m_backgroundMusic;
 	std::vector<std::shared_ptr<staticTextForUI>> m_textVector;

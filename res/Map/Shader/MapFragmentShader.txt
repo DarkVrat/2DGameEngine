@@ -1,0 +1,9 @@
+#version 330 core
+in vec2 TexCoords;
+out vec4 flag_color;
+
+uniform sampler2D text;
+
+void main(){
+    flag_color=texture(text,TexCoords);
+}

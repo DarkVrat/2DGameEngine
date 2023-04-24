@@ -90,3 +90,7 @@ void Menu::clear(){
 	m_textVector.clear();
 }
 
+void Menu::stopSound(){
+	m_backgroundMusic->stop();
+}
+

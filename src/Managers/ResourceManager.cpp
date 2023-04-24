@@ -66,10 +66,21 @@ rapidjson::Document ResourceManager::loadJSONDoc(const std::string& JSONPath) {
 	return JSONDoc;
 }
 
-void ResourceManager::setProjection(const glm::mat4& projectionMatrix) {
+void ResourceManager::setProjection(const glm::mat4& projectionMatrix, const bool& camera) {
 	for (auto& currentShader : m_shaderPrograms) {
-		currentShader.second->use();
-		currentShader.second->setMatrix4("projection", projectionMatrix);
+		if (currentShader.second->getCameraShader()==camera) {
+			currentShader.second->use();
+			currentShader.second->setMatrix4("projection", projectionMatrix);
+		}
+	}
+}
+
+void ResourceManager::setView(const glm::vec3& view){
+	for (auto& currentShader : m_shaderPrograms) {
+		if (currentShader.second->getCameraShader()) {
+			currentShader.second->use();
+			currentShader.second->setVec3("view", view);
+		}
 	}
 }
 
@@ -261,13 +272,12 @@ bool ResourceManager::loadJSONResurces() {
 	LoadTextureResurces("res/Textures/Textures.json");
 	
 	std::thread Animation([&]() {LoadAnimationResurces("res/Animation/Animation.json"); });
-	std::thread Map([&]() {LoadMapResurces("res/Textures/Map/TextureMapConfig.json"); });
 	
 	LoadTextResurces("res/Text/Text.json");
+	LoadMapResurces("res/Map/TextureMapConfig.json");
 
 	audio.join();
 	Animation.join();
-	Map.join();
 
 	return true;
 }
@@ -347,34 +357,16 @@ void ResourceManager::LoadAudioResurces(const std::string& JSONPath) {
 void ResourceManager::LoadTextResurces(const std::string& JSONPath) {
 	rapidjson::Document JSONDoc = loadJSONDoc(JSONPath);
 
-	std::string vertexString = getFileString(JSONDoc.FindMember("textVertexShaderPath")->value.GetString());
-	std::string fragmentString = getFileString(JSONDoc.FindMember("textFragmentShaderPath")->value.GetString());
+	std::string vertexString = JSONDoc.FindMember("textVertexShaderPath")->value.GetString();
+	std::string fragmentString = JSONDoc.FindMember("textFragmentShaderPath")->value.GetString();
+	std::string textureFontPath = JSONDoc.FindMember("textureFontPath")->value.GetString();
+	std::string TTFPath = JSONDoc.FindMember("TTFPath")->value.GetString();
+	std::string languagePath = JSONDoc.FindMember("languagePath")->value.GetString();
 
-	if (vertexString.empty() || fragmentString.empty()) {
-		std::cerr << "(!) Vertex or fragment is empty" << std::endl;
-		return;
-	}
-
-	std::shared_ptr<Renderer::ShaderProgram> shader = std::make_shared<Renderer::ShaderProgram>(vertexString, fragmentString);
-	if (!shader->isCompiled()) {
-		std::cerr << "(!) Can't load shader" << std::endl;
-	}
-
-	int channels, widht, height;
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char* pixels = stbi_load(std::string(m_path + "/" + JSONDoc.FindMember("textureFontPath")->value.GetString()).c_str(), &widht, &height, &channels, 0);
-	if (!pixels) {
-		std::cerr << "(!) ERROR TEXTUR LOAD 'FONT.PNG'" << std::endl;
-		return;
-	}
-
-	std::shared_ptr<Renderer::Texture2D> texture = std::make_shared<Renderer::Texture2D>(widht, height, pixels, false, shader, channels, GL_NEAREST, GL_CLAMP_TO_EDGE);
-
-	stbi_image_free(pixels);
-
-	Renderer::PrintText::init(JSONDoc.FindMember("TTFPath")->value.GetString(), texture);
-
-	Translater::init(loadJSONDoc(JSONDoc.FindMember("languagePath")->value.GetString()));
+	loadShader("TextShader", vertexString, fragmentString);
+	loadOneTexture("FontTexture", textureFontPath, "TextShader", false);
+	Renderer::PrintText::init(TTFPath, getTexture("FontTexture"));
+	Translater::init(loadJSONDoc(languagePath));
 }
 
 void ResourceManager::LoadTextureResurces(const std::string& JSONPath) {
@@ -449,9 +441,14 @@ void ResourceManager::LoadTextureResurces(const std::string& JSONPath) {
 void ResourceManager::LoadMapResurces(const std::string& JSONPath){
 	rapidjson::Document JSONDoc = loadJSONDoc(JSONPath);
 
-	std::string nameTexture = JSONDoc.FindMember("nameTexture")->value.GetString(); 
+	std::string mapVertexShaderPath = JSONDoc.FindMember("mapVertexShaderPath")->value.GetString();
+	std::string mapFragmentShaderPath = JSONDoc.FindMember("mapFragmentShaderPath")->value.GetString();
+	std::string texturePath = JSONDoc.FindMember("texturePath")->value.GetString();
 	int mapCellSize = JSONDoc.FindMember("mapCellSize")->value.GetInt();
 
-	MAP::init(getTexture(nameTexture), mapCellSize);
-	MAP::setLayer(1);
+	loadShader("MapShader", mapVertexShaderPath, mapFragmentShaderPath);
+	loadOneTexture("MapTexture", texturePath, "MapShader", false);
+
+	MAP::init(getTexture("MapTexture"), mapCellSize);
+	MAP::setLayer(0);
 }

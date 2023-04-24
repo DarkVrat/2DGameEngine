@@ -1,0 +1,6 @@
+{
+	"mapVertexShaderPath":"res/Map/Shader/MapVertexShader.txt",
+	"mapFragmentShaderPath":"res/Map/Shader/MapFragmentShader.txt",
+	"texturePath":"res/Map/Blocks.png",
+	"mapCellSize":16
+}

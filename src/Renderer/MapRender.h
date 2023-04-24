@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Texture2D.h"
+#include "VertexArray.h"
 
 #define MAP Renderer::MapRenderer
 
@@ -14,16 +15,25 @@ namespace Renderer {
 
 		static void setMap(const std::string& mapPath, const float& sizeCellMap);
 	private:
-		static glm::vec4 pixelToTextureCoords(const uint8_t& red, const uint8_t& green);
+		static std::pair<glm::vec4, float> pixelToTextureCoords(const uint8_t& red, const uint8_t& green, const uint8_t& blue);
+
+		static glm::vec2 m_BufferCameraPos;
+		static glm::vec2 m_BufferCameraSize;
+		static int m_BufferCountCells;
 
 		static std::shared_ptr<Texture2D> m_texture;
 		static int m_sizeCellTexture;
 
-		static std::map<uint32_t, glm::vec4> m_coordCells;
+		static std::map<uint32_t, std::pair<glm::vec4, float>> m_coordCells;
 		static float m_sizeCellMap;
 		static float m_layer;
 
 		static uint32_t* m_mapPixels;
 		static glm::ivec2 m_sizeMap; 
+
+		static std::shared_ptr<VertexArray> m_VAO;
+		static VertexBuffer m_PositionVBO;
+		static VertexBuffer m_TextureVBO;
+		static VertexBuffer m_RotateVBO;
 	};
 }

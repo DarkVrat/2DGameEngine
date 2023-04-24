@@ -22,11 +22,6 @@
 			"filePath" : "res/Textures/darkForBackground.png",
 			"shader" : "WithBlendSpriteShader",
 			"blend":true
-		},{
-			"name" : "blocks",
-			"filePath" : "res/Textures/Map/Blocks.png",
-			"shader" : "NoBlendSpriteShader",
-			"blend":false
 		}
 	],
 	

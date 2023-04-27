@@ -14,14 +14,14 @@ namespace Renderer {
 	class Texture2D {
 	public:
 
-		Texture2D(const GLuint& width, const GLuint& height, const unsigned char* data, bool blend, std::shared_ptr<ShaderProgram> shader, const unsigned& channels = 4, const GLenum& filter = GL_LINEAR, const GLenum& wrapMode = GL_CLAMP_TO_EDGE);
+		Texture2D(const GLuint& width, const GLuint& height, const unsigned char* data, std::shared_ptr<ShaderProgram> shader, const unsigned& channels = 4, const GLenum& filter = GL_LINEAR, const GLenum& wrapMode = GL_CLAMP_TO_EDGE);
 		Texture2D& operator=(Texture2D&& texture2d) noexcept;
 		Texture2D(Texture2D&& texture2d)noexcept;
 		~Texture2D();
 
 		unsigned int getWidth()const{return m_widht;}
 		unsigned int getHeight()const{return m_height;}
-		bool getBleng() { return m_blend; }
+		uint8_t getShaderSettings() { return m_shader->getSettings(); }
 		std::shared_ptr<ShaderProgram> getShader() { return m_shader; }
 
 		void bind()const;
@@ -31,7 +31,6 @@ namespace Renderer {
 		GLenum m_mode; 
 		unsigned int m_widht; 
 		unsigned int m_height; 
-		bool m_blend;
 		std::shared_ptr<ShaderProgram> m_shader;
 	};
 }

@@ -68,7 +68,7 @@ rapidjson::Document ResourceManager::loadJSONDoc(const std::string& JSONPath) {
 
 void ResourceManager::setProjection(const glm::mat4& projectionMatrix, const bool& camera) {
 	for (auto& currentShader : m_shaderPrograms) {
-		if (currentShader.second->getCameraShader()==camera) {
+		if (static_cast<bool>(currentShader.second->getSettings()>>1)!=camera) {
 			currentShader.second->use();
 			currentShader.second->setMatrix4("projection", projectionMatrix);
 		}
@@ -77,7 +77,7 @@ void ResourceManager::setProjection(const glm::mat4& projectionMatrix, const boo
 
 void ResourceManager::setView(const glm::vec3& view){
 	for (auto& currentShader : m_shaderPrograms) {
-		if (currentShader.second->getCameraShader()) {
+		if (!(currentShader.second->getSettings()&0x02)) {
 			currentShader.second->use();
 			currentShader.second->setVec3("view", view);
 		}
@@ -125,7 +125,7 @@ std::shared_ptr<Renderer::ShaderProgram>  ResourceManager::getShader(const std::
   //-------------------------------Texture-----------------------------------//
  //(RUS) Загрузка текстуры
 //(ENG) Loading a textures
-void ResourceManager::loadOneTexture(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const bool& blend) {
+void ResourceManager::loadOneTexture(const std::string& textureName, const std::string& texturePatn, const std::string& shader) {
 	int channels, widht, height;
 	stbi_set_flip_vertically_on_load(true);
 	uint8_t* pixels = stbi_load(std::string(m_path + "/" + texturePatn).c_str(), &widht, &height, &channels, 0);
@@ -134,15 +134,15 @@ void ResourceManager::loadOneTexture(const std::string& textureName, const std::
 		return;
 	}
 
-	m_textures.emplace(textureName, std::make_shared<Renderer::Texture2D>(widht, height, pixels, blend, getShader(shader), channels, GL_NEAREST, GL_CLAMP_TO_EDGE));
+	m_textures.emplace(textureName, std::make_shared<Renderer::Texture2D>(widht, height, pixels, getShader(shader), channels, GL_NEAREST, GL_CLAMP_TO_EDGE));
 
 	stbi_image_free(pixels);
 
 	loadSprite(textureName, textureName, glm::ivec2(widht, height));
 }
 
-void ResourceManager::loadTextureCut(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const bool& blend, const int& heightSprite, const int& widthSprite, const std::vector<std::string>& sprites){
-	loadOneTexture(textureName, texturePatn, shader, blend);
+void ResourceManager::loadTextureCut(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const int& heightSprite, const int& widthSprite, const std::vector<std::string>& sprites){
+	loadOneTexture(textureName, texturePatn, shader);
 
 	auto pTexture = getTexture(textureName);
 
@@ -167,8 +167,8 @@ void ResourceManager::loadTextureCut(const std::string& textureName, const std::
 	}
 }
 
-void ResourceManager::loadTextureAtlas(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const bool& blend, const std::map<std::string, glm::ivec4>& sprites){
-	loadOneTexture(textureName, texturePatn, shader, blend);
+void ResourceManager::loadTextureAtlas(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const std::map<std::string, glm::ivec4>& sprites){
+	loadOneTexture(textureName, texturePatn, shader);
 
 	auto pTexture = getTexture(textureName);
 
@@ -364,7 +364,7 @@ void ResourceManager::LoadTextResurces(const std::string& JSONPath) {
 	std::string languagePath = JSONDoc.FindMember("languagePath")->value.GetString();
 
 	loadShader("TextShader", vertexString, fragmentString);
-	loadOneTexture("FontTexture", textureFontPath, "TextShader", false);
+	loadOneTexture("FontTexture", textureFontPath, "TextShader");
 	Renderer::PrintText::init(TTFPath, getTexture("FontTexture"));
 	Translater::init(loadJSONDoc(languagePath));
 }
@@ -389,9 +389,8 @@ void ResourceManager::LoadTextureResurces(const std::string& JSONPath) {
 			const std::string name = currentTexture["name"].GetString();
 			const std::string filePath = currentTexture["filePath"].GetString();
 			const std::string shader = currentTexture["shader"].GetString();
-			const bool blend = currentTexture["blend"].GetBool();
 
-			loadOneTexture(name, filePath, shader, blend);
+			loadOneTexture(name, filePath, shader);
 		}
 	}
 
@@ -401,7 +400,6 @@ void ResourceManager::LoadTextureResurces(const std::string& JSONPath) {
 			const std::string name = currentTexture["name"].GetString();
 			const std::string filePath = currentTexture["filePath"].GetString();
 			const std::string shader = currentTexture["shader"].GetString();
-			const bool blend = currentTexture["blend"].GetBool();
 			const int heightSprite = currentTexture["heightSprite"].GetInt();
 			const int widthSprite = currentTexture["widthSprite"].GetInt();
 			std::vector<std::string> sprites;
@@ -409,7 +407,7 @@ void ResourceManager::LoadTextureResurces(const std::string& JSONPath) {
 				sprites.push_back(currentSprite.GetString());
 			}
 
-			loadTextureCut(name, filePath, shader, blend, heightSprite, widthSprite, sprites);
+			loadTextureCut(name, filePath, shader, heightSprite, widthSprite, sprites);
 		}
 	}
 
@@ -419,7 +417,6 @@ void ResourceManager::LoadTextureResurces(const std::string& JSONPath) {
 			const std::string name = currentTexture["name"].GetString();
 			const std::string filePath = currentTexture["filePath"].GetString();
 			const std::string shader = currentTexture["shader"].GetString();
-			const bool blend = currentTexture["blend"].GetBool();
 			std::map<std::string, glm::ivec4> sprites;
 			for (const auto& currentSprite : currentTexture["sprites"].GetArray()) {
 				std::string name = currentSprite["name"].GetString();
@@ -431,7 +428,7 @@ void ResourceManager::LoadTextureResurces(const std::string& JSONPath) {
 				sprites.emplace(name, glm::vec4(left, bottom, width, height));
 			}
 
-			loadTextureAtlas(name, filePath, shader, blend, sprites);
+			loadTextureAtlas(name, filePath, shader, sprites);
 		}
 	}
 
@@ -447,7 +444,7 @@ void ResourceManager::LoadMapResurces(const std::string& JSONPath){
 	int mapCellSize = JSONDoc.FindMember("mapCellSize")->value.GetInt();
 
 	loadShader("MapShader", mapVertexShaderPath, mapFragmentShaderPath);
-	loadOneTexture("MapTexture", texturePath, "MapShader", false);
+	loadOneTexture("MapTexture", texturePath, "MapShader");
 
 	MAP::init(getTexture("MapTexture"), mapCellSize);
 	MAP::setLayer(0);

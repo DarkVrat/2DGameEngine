@@ -7,6 +7,8 @@
 #include <string>
 #include <glm/vec2.hpp>
 #include <GLFW/glfw3.h>
+#include <functional>
+#include <glm/gtx/hash.hpp>
 #include "../Managers/ResourceManager.h"
 
 #define RENDER_ENGINE Renderer::RenderEngine
@@ -19,44 +21,17 @@ namespace Renderer {
 	public:
 		
 		struct SpritesForRender{
-			std::vector<std::pair<glm::vec4, glm::mat4>> ms_sprites;
-
-			SpritesForRender() { 
-				Clear();
-			}
+		public:
+			SpritesForRender();
 
 			void Clear() {ms_sprites.clear();}
-			void AddSprite(const glm::vec4& texture, const glm::mat4& model) {ms_sprites.push_back(std::make_pair(texture, model));}
+			void AddSprite(const glm::vec4& texture, const glm::mat4& model) {
+				ms_sprites.push_back(std::make_pair(texture, model));
+			}
 			int Size() { return ms_sprites.size(); }
 
-			void Load(const VertexBuffer& textureCoordsBuffer, const VertexBuffer* modelMatBuffer) {
-				int size = Size();
-
-				std::vector<glm::vec4> textures;
-				std::vector<glm::vec4> model0;
-				std::vector<glm::vec4> model1;
-				std::vector<glm::vec4> model2;
-				std::vector<glm::vec4> model3;
-				textures.reserve(size);
-				model0.reserve(size);
-				model0.reserve(size);
-				model0.reserve(size);
-				model0.reserve(size);
-
-				for (auto& current : ms_sprites) {
-					textures.push_back(current.first);
-					model0.push_back(current.second[0]);
-					model1.push_back(current.second[1]);
-					model2.push_back(current.second[2]);
-					model3.push_back(current.second[3]);
-				}
-
-				textureCoordsBuffer.update(&textures[0], size * sizeof(glm::vec4));
-				modelMatBuffer[0].update(&model0[0], size * sizeof(glm::vec4));
-				modelMatBuffer[1].update(&model1[0], size * sizeof(glm::vec4));
-				modelMatBuffer[2].update(&model2[0], size * sizeof(glm::vec4));
-				modelMatBuffer[3].update(&model3[0], size * sizeof(glm::vec4));
-			}
+			void Load();
+			std::shared_ptr<VertexArray> getVAO() { return ms_VAO; }
 
 			void Sort() {
 				auto comp = [](std::pair<glm::vec4, glm::mat4> a, std::pair<glm::vec4, glm::mat4> b) {
@@ -64,6 +39,16 @@ namespace Renderer {
 				};
 				std::sort(ms_sprites.begin(), ms_sprites.end(), comp);
 			}
+		private:
+			size_t ms_hashBuffer;
+			template <class T>
+			void hash_combine(size_t& seed, const T& value);
+			std::size_t getHash();
+
+			std::vector<std::pair<glm::vec4, glm::mat4>> ms_sprites;
+			std::shared_ptr<VertexArray> ms_VAO;
+			VertexBuffer  ms_textureCoordsBuffer;
+			VertexBuffer  ms_modelMatBuffer[4];
 		};
 
 		static void init(const std::map<const std::string, std::shared_ptr<Renderer::Texture2D>>& Texture);
@@ -90,13 +75,15 @@ namespace Renderer {
 		static void applySettings();
 		static void closeWindow();
 	private:
-
-		static std::shared_ptr<VertexArray> m_VAO;
-		static VertexBuffer  m_textureCoordsBuffer;
-		static VertexBuffer  m_modelMatBuffer[4];
 		static GLFWwindow* m_pWindow;
 
-		static std::map<std::shared_ptr<Texture2D>, SpritesForRender> m_Sprites;
-		static std::map<std::shared_ptr<Texture2D>, SpritesForRender> m_SpritesWithBlend;
+		static std::map<uint8_t, std::map<std::shared_ptr<Texture2D>, std::shared_ptr<SpritesForRender>>> m_Sprites;
 	};
+
+
+	template<class T>
+	inline void RenderEngine::SpritesForRender::hash_combine(size_t& seed, const T& value){
+		std::hash<T> hasher;
+		seed ^= hasher(value) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+	}
 }

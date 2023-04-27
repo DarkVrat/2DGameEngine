@@ -12,9 +12,8 @@ public:
 	static void setSize(const float& width);
 	static glm::vec2 getSize();
 
-	static void updateProjection();
-
 	static void update();
+	static void updateSize();
 	static void setSettings(const glm::vec2& RectangleFollowing, const float& baseSpeed, const float& distanceSpeed);
 private:
 	static std::shared_ptr<IObject> m_Object;

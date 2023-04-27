@@ -3,8 +3,8 @@
 namespace Renderer {
 	 //(RUS) —оздание текстуры, заполнение данных о текстуре
 	//(ENG) Creating a texture, filling in texture data
-	Texture2D::Texture2D(const GLuint& width, const GLuint& height, const unsigned char* data, bool blend, std::shared_ptr<ShaderProgram> shader, const unsigned& channels, const GLenum& filter, const GLenum& wrapMode)
-		:m_widht(width), m_height(height), m_blend(blend), m_shader(shader) {
+	Texture2D::Texture2D(const GLuint& width, const GLuint& height, const unsigned char* data, std::shared_ptr<ShaderProgram> shader, const unsigned& channels, const GLenum& filter, const GLenum& wrapMode)
+		:m_widht(width), m_height(height), m_shader(shader) {
 		switch (channels){
 		case 3:
 			m_mode = GL_RGB;
@@ -39,7 +39,6 @@ namespace Renderer {
 		m_mode = texture2d.m_mode;
 		m_height = texture2d.m_height;
 		m_widht = texture2d.m_widht;
-		m_blend = texture2d.m_blend;
 		m_shader = texture2d.m_shader;
 		return *this;
 	}
@@ -49,7 +48,6 @@ namespace Renderer {
 		m_mode = texture2d.m_mode;
 		m_height = texture2d.m_height;
 		m_widht = texture2d.m_widht;
-		m_blend = texture2d.m_blend;
 		m_shader = texture2d.m_shader;
 	}
 	

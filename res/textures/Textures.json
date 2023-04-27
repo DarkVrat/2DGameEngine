@@ -12,17 +12,6 @@
 	],
 	
 	"oneTexture":[
-		{
-			"name" : "logo",
-			"filePath" : "res/Textures/logo.png",
-			"shader" : "NoBlendSpriteShader",
-			"blend":false
-		},{
-			"name" : "darkForBackground",
-			"filePath" : "res/Textures/darkForBackground.png",
-			"shader" : "WithBlendSpriteShader",
-			"blend":true
-		}
 	],
 	
 	"textureAtlasesCut" : [
@@ -30,7 +19,6 @@
 			"name" : "Knight",
 			"filePath" : "res/textures/knight.png",
 			"shader" : "NoBlendSpriteShader",
-			"blend":false,
 			"heightSprite" : 86,
 			"widthSprite" : 86,
 			"sprites" :  [
@@ -48,7 +36,6 @@
 			"name" : "backAnimation",
 			"filePath" : "res/textures/backgroundAnimation.png",
 			"shader" : "NoBlendSpriteShader",
-			"blend":false,
 			"heightSprite" : 360,
 			"widthSprite" : 640,
 			"sprites" :  [
@@ -81,7 +68,6 @@
 			"name" : "UI",
 			"filePath" : "res/Textures/UI.png",
 			"shader" : "NoBlendSpriteShader",
-			"blend":false,
 			"sprites" :  [
 			{
 				"name":"Button_Off",
@@ -155,13 +141,18 @@
 				"bottom":0,
 				"width" : 20,
 				"height" : 20
+			},{
+				"name":"logo",
+				"left":0,
+				"bottom":121,
+				"width" : 180,
+				"height" : 80
 			}
 			]
 		},{
 			"name" : "UIWithBlend",
 			"filePath" : "res/Textures/UIWithBlend.png",
 			"shader" : "WithBlendSpriteShader",
-			"blend":true,
 			"sprites" :  [
 			{
 				"name":"backLine",
@@ -169,6 +160,12 @@
 				"bottom":0,
 				"width" : 160,
 				"height" : 20
+			},{
+				"name":"darkForBackground",
+				"left":0,
+				"bottom":21,
+				"width" : 640,
+				"height" : 360
 			}
 			]
 		}

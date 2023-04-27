@@ -17,9 +17,8 @@ namespace Renderer {
 	private:
 		static std::pair<glm::vec4, float> pixelToTextureCoords(const uint8_t& red, const uint8_t& green, const uint8_t& blue);
 
-		static glm::vec2 m_BufferCameraPos;
-		static glm::vec2 m_BufferCameraSize;
-		static int m_BufferCountCells;
+		static glm::ivec4 m_bufferPixelCoords;
+		static uint32_t m_bufferCountPixels;
 
 		static std::shared_ptr<Texture2D> m_texture;
 		static int m_sizeCellTexture;

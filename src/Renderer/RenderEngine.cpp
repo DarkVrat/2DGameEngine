@@ -8,64 +8,24 @@
 #include "../Managers/SoundManager.h"
 #include "../Managers/ConfigManager.h"
 
-std::shared_ptr<Renderer::VertexArray> Renderer::RenderEngine::m_VAO;
-Renderer::VertexBuffer  Renderer::RenderEngine::m_textureCoordsBuffer;
-Renderer::VertexBuffer  Renderer::RenderEngine::m_modelMatBuffer[4];
 GLFWwindow* Renderer::RenderEngine::m_pWindow;
 
-std::map<std::shared_ptr<Renderer::Texture2D>, Renderer::RenderEngine::SpritesForRender> Renderer::RenderEngine::m_Sprites;
-std::map<std::shared_ptr<Renderer::Texture2D>, Renderer::RenderEngine::SpritesForRender> Renderer::RenderEngine::m_SpritesWithBlend;
+std::map<uint8_t, std::map<std::shared_ptr<Renderer::Texture2D>, std::shared_ptr<Renderer::RenderEngine::SpritesForRender>>> Renderer::RenderEngine::m_Sprites;
 
-namespace Renderer {
+namespace Renderer { 
 	void RenderEngine::init(const std::map<const std::string, std::shared_ptr<Renderer::Texture2D>>& Texture){
-		SpritesForRender forMap;
-		for (auto& current : Texture) {
-			if (current.second->getBleng()) {
-				m_SpritesWithBlend.emplace(current.second, forMap);
-			}
-			else {
-				m_Sprites.emplace(current.second, forMap);
-			}
+		for (int i = 0; i < 4; i++) {
+			m_Sprites.emplace(i, std::map<std::shared_ptr<Texture2D>, std::shared_ptr<SpritesForRender>>());
 		}
-
-		m_VAO = std::make_shared<VertexArray>();
-		m_VAO->bind();
-
-		const GLfloat vertexCoords[] = {
-			// X  Y     //      1---2
-			0.f, 0.f,   //0     |  /|
-			0.f, 1.f,   //1     | / |
-			1.f, 1.f,   //2     |/  |
-			1.f, 0.f,   //3     0---3      
-		};
-		VertexBuffer vertexCoordsBuffer;
-		vertexCoordsBuffer.init(vertexCoords, sizeof(vertexCoords));
-		m_VAO->addBuffer(vertexCoordsBuffer, 0, 2);
-
-		m_textureCoordsBuffer.init(NULL, sizeof(GLfloat)*4);
-		m_VAO->addBuffer(m_textureCoordsBuffer, 1, 4, GL_FLOAT, true);
-
-		m_modelMatBuffer[0].init(NULL, sizeof(GLfloat) * 4);
-		m_modelMatBuffer[1].init(NULL, sizeof(GLfloat) * 4);
-		m_modelMatBuffer[2].init(NULL, sizeof(GLfloat) * 4);
-		m_modelMatBuffer[3].init(NULL, sizeof(GLfloat) * 4);
-		m_VAO->addBuffer(m_modelMatBuffer[0], 2, 4, GL_FLOAT, true);
-		m_VAO->addBuffer(m_modelMatBuffer[1], 3, 4, GL_FLOAT, true);
-		m_VAO->addBuffer(m_modelMatBuffer[2], 4, 4, GL_FLOAT, true);
-		m_VAO->addBuffer(m_modelMatBuffer[3], 5, 4, GL_FLOAT, true);
-
-		m_VAO->unbind();
+		for (auto& current : Texture) {
+			m_Sprites.at(current.second->getShaderSettings()).emplace(current.second, std::make_shared<SpritesForRender>());
+		}
 	}
 
 	//(RUS) отрисовка изображения
 	//(ENG) image rendering
 	void RenderEngine::draw(const std::shared_ptr<Texture2D>& PTRtexture2D, const glm::vec4& textureSprite, const glm::mat4& modelSprite){
-		if (PTRtexture2D->getBleng()) {
-			m_SpritesWithBlend.at(PTRtexture2D).AddSprite(textureSprite, modelSprite);
-		}
-		else {
-			m_Sprites.at(PTRtexture2D).AddSprite(textureSprite, modelSprite);
-		}
+		m_Sprites.at(PTRtexture2D->getShaderSettings()).at(PTRtexture2D)->AddSprite(textureSprite, modelSprite);
 	}
 
 	void RenderEngine::drawInstanced(const VertexArray& vertexArray, const GLuint& count){
@@ -75,33 +35,25 @@ namespace Renderer {
 	}
 
 	void RenderEngine::render(){
-		for (auto& currentSrites : m_Sprites) {
-			if (currentSrites.second.Size() < 1) {
-				continue;
+
+		for (uint8_t i = 0; i < 4; i++) {
+			for (auto& currentSprites : m_Sprites.at(i)) {
+				if (currentSprites.second->Size() < 1) {
+					continue;
+				}
+
+				currentSprites.first->bind();
+
+				if (i & 0x01) {
+					currentSprites.second->Sort();
+				}
+
+				currentSprites.second->Load();
+
+				drawInstanced(*currentSprites.second->getVAO(), currentSprites.second->Size());
+
+				currentSprites.second->Clear();
 			}
-
-			currentSrites.first->bind();
-
-			currentSrites.second.Load(m_textureCoordsBuffer, m_modelMatBuffer);
-
-			drawInstanced(*m_VAO, currentSrites.second.Size());
-
-			currentSrites.second.Clear(); 
-		}
-		for (auto& currentSrites : m_SpritesWithBlend) {
-			if (currentSrites.second.Size() < 1) {
-				continue;
-			}
-
-			currentSrites.first->bind();
-
-			currentSrites.second.Sort();
-
-			currentSrites.second.Load(m_textureCoordsBuffer, m_modelMatBuffer);
-
-			drawInstanced(*m_VAO, currentSrites.second.Size());
-
-			currentSrites.second.Clear();
 		}
 	}
 
@@ -211,5 +163,84 @@ namespace Renderer {
 
 	void RenderEngine::closeWindow() {
 		glfwSetWindowShouldClose(m_pWindow, GL_TRUE);
+	}
+	
+	
+	RenderEngine::SpritesForRender::SpritesForRender(){
+		ms_sprites.clear();
+
+		ms_VAO = std::make_shared<VertexArray>();
+		ms_VAO->bind();
+
+		const GLfloat vertexCoords[] = {
+			// X  Y     //      1---2
+			0.f, 0.f,   //0     |  /|
+			0.f, 1.f,   //1     | / |
+			1.f, 1.f,   //2     |/  |
+			1.f, 0.f,   //3     0---3      
+		};
+		VertexBuffer vertexCoordsBuffer;
+		vertexCoordsBuffer.init(vertexCoords, sizeof(vertexCoords));
+		ms_VAO->addBuffer(vertexCoordsBuffer, 0, 2);
+
+		ms_textureCoordsBuffer.init(NULL, sizeof(GLfloat) * 4);
+		ms_VAO->addBuffer(ms_textureCoordsBuffer, 1, 4, GL_FLOAT, true);
+
+		ms_modelMatBuffer[0].init(NULL, sizeof(GLfloat) * 4);
+		ms_modelMatBuffer[1].init(NULL, sizeof(GLfloat) * 4);
+		ms_modelMatBuffer[2].init(NULL, sizeof(GLfloat) * 4);
+		ms_modelMatBuffer[3].init(NULL, sizeof(GLfloat) * 4);
+		ms_VAO->addBuffer(ms_modelMatBuffer[0], 2, 4, GL_FLOAT, true);
+		ms_VAO->addBuffer(ms_modelMatBuffer[1], 3, 4, GL_FLOAT, true);
+		ms_VAO->addBuffer(ms_modelMatBuffer[2], 4, 4, GL_FLOAT, true);
+		ms_VAO->addBuffer(ms_modelMatBuffer[3], 5, 4, GL_FLOAT, true);
+
+		ms_VAO->unbind();
+	}
+
+	void RenderEngine::SpritesForRender::Load(){
+		size_t newHash = getHash();
+		if (ms_hashBuffer == newHash) {
+			return;
+		}
+		else {
+			ms_hashBuffer = newHash;
+		}
+
+		int size = Size();
+
+		std::vector<glm::vec4> textures;
+		std::vector<glm::vec4> model0;
+		std::vector<glm::vec4> model1;
+		std::vector<glm::vec4> model2;
+		std::vector<glm::vec4> model3;
+		textures.reserve(size);
+		model0.reserve(size);
+		model0.reserve(size);
+		model0.reserve(size);
+		model0.reserve(size);
+
+		for (auto& current : ms_sprites) {
+			textures.push_back(current.first);
+			model0.push_back(current.second[0]);
+			model1.push_back(current.second[1]);
+			model2.push_back(current.second[2]);
+			model3.push_back(current.second[3]);
+		}
+
+		ms_textureCoordsBuffer.update(&textures[0], size * sizeof(glm::vec4));
+		ms_modelMatBuffer[0].update(&model0[0], size * sizeof(glm::vec4));
+		ms_modelMatBuffer[1].update(&model1[0], size * sizeof(glm::vec4));
+		ms_modelMatBuffer[2].update(&model2[0], size * sizeof(glm::vec4));
+		ms_modelMatBuffer[3].update(&model3[0], size * sizeof(glm::vec4));
+	}
+
+	std::size_t RenderEngine::SpritesForRender::getHash(){
+		size_t hash = 0;
+		for (const auto& current : ms_sprites) {
+			hash_combine(hash, current.first);
+			hash_combine(hash, current.second);
+		}
+		return hash;
 	}
 }

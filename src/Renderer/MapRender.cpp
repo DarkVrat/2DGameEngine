@@ -11,9 +11,8 @@
 std::shared_ptr<Renderer::Texture2D> Renderer::MapRenderer::m_texture;
 int Renderer::MapRenderer::m_sizeCellTexture;
 
-glm::vec2 Renderer::MapRenderer::m_BufferCameraPos;
-glm::vec2 Renderer::MapRenderer::m_BufferCameraSize;
-int Renderer::MapRenderer::m_BufferCountCells;
+glm::ivec4 Renderer::MapRenderer::m_bufferPixelCoords;
+uint32_t Renderer::MapRenderer::m_bufferCountPixels;
 
 std::map<uint32_t, std::pair<glm::vec4, float>> Renderer::MapRenderer::m_coordCells;
 float Renderer::MapRenderer::m_sizeCellMap;
@@ -31,7 +30,7 @@ namespace Renderer {
 	void MapRenderer::init(const std::shared_ptr<Texture2D>& texture, const int& sizeCellTexture){
 		m_texture = texture;
 		m_sizeCellTexture = sizeCellTexture;
-
+		m_bufferPixelCoords = glm::ivec4(0, 0, 0, 0);
 		float vertex[] = {
 			0.f, 0.f,   // 0    1--2
 			0.f, 1.f,   // 1    | /|
@@ -63,37 +62,37 @@ namespace Renderer {
 		m_layer = layer;
 	}
 	 
-	void MapRenderer::render(){
-		bool flag = false;
+	void MapRenderer::render() {
 		glm::vec2 camPos = CAMERA::getCoords();
 		glm::vec2 camSiz = CAMERA::getSize();
 
-		if (std::abs(camPos.x - m_BufferCameraPos.x) > 0.1 || std::abs(camPos.y - m_BufferCameraPos.y) > 0.1) {
-			m_BufferCameraPos = camPos;
-			flag = true;
-		}
-		if (std::abs(camSiz.x - m_BufferCameraSize.x) > 1 || std::abs(camSiz.y - m_BufferCameraSize.y) > 1) {
-			m_BufferCameraSize = camSiz;
-			flag = true;
-		}
+		glm::ivec2 leftButtonBorderCamera = glm::ivec2(	std::round((camPos.x - (camSiz.x + m_sizeCellMap) / 2) / m_sizeCellMap),
+														std::round((camPos.y - (camSiz.y + m_sizeCellMap) / 2) / m_sizeCellMap));
+		glm::ivec2 rightTopBorderCamera = glm::ivec2(	std::round((camPos.x + (camSiz.x + m_sizeCellMap) / 2) / m_sizeCellMap),
+														std::round((camPos.y + (camSiz.y + m_sizeCellMap) / 2) / m_sizeCellMap));
 
-		if (flag) {
+		if (leftButtonBorderCamera.x < 0) { leftButtonBorderCamera.x = 0; }
+		if (leftButtonBorderCamera.y < 0) { leftButtonBorderCamera.y = 0; }
+		if (rightTopBorderCamera.x > m_sizeMap.x) { rightTopBorderCamera.x = m_sizeMap.x; }
+		if (rightTopBorderCamera.y > m_sizeMap.y) { rightTopBorderCamera.y = m_sizeMap.y; }
 
-			glm::ivec2 leftButtonBorderCamera = glm::ivec2(	std::round((m_BufferCameraPos.x - (m_BufferCameraSize.x + m_sizeCellMap) / 2) / m_sizeCellMap),
-															std::round((m_BufferCameraPos.y - (m_BufferCameraSize.y + m_sizeCellMap) / 2) / m_sizeCellMap));
-			glm::ivec2 rightTopBorderCamera = glm::ivec2(	std::round((m_BufferCameraPos.x + (m_BufferCameraSize.x + m_sizeCellMap) / 2) / m_sizeCellMap),
-															std::round((m_BufferCameraPos.y + (m_BufferCameraSize.y + m_sizeCellMap) / 2) / m_sizeCellMap));
 
+		if (m_bufferPixelCoords.x > leftButtonBorderCamera.x || m_bufferPixelCoords.y > leftButtonBorderCamera.y || m_bufferPixelCoords.z < rightTopBorderCamera.x || m_bufferPixelCoords.w < rightTopBorderCamera.y) {
+
+			leftButtonBorderCamera = glm::ivec2((camPos.x - camSiz.x) / m_sizeCellMap, (camPos.y - camSiz.y) / m_sizeCellMap);
+			rightTopBorderCamera = glm::ivec2((camPos.y + camSiz.x) / m_sizeCellMap, (camPos.y + camSiz.y) / m_sizeCellMap);
 			if (leftButtonBorderCamera.x < 0) { leftButtonBorderCamera.x = 0; }
 			if (leftButtonBorderCamera.y < 0) { leftButtonBorderCamera.y = 0; }
 			if (rightTopBorderCamera.x > m_sizeMap.x) { rightTopBorderCamera.x = m_sizeMap.x; }
 			if (rightTopBorderCamera.y > m_sizeMap.y) { rightTopBorderCamera.y = m_sizeMap.y; }
 
+			m_bufferPixelCoords = glm::ivec4(leftButtonBorderCamera, rightTopBorderCamera);
+
 			if (leftButtonBorderCamera.y >= rightTopBorderCamera.y || leftButtonBorderCamera.x >= rightTopBorderCamera.x) {
 				return;
 			}
 
-			m_BufferCountCells = (rightTopBorderCamera.x - leftButtonBorderCamera.x) * (rightTopBorderCamera.y - leftButtonBorderCamera.y);
+			m_bufferCountPixels = (rightTopBorderCamera.x - leftButtonBorderCamera.x) * (rightTopBorderCamera.y - leftButtonBorderCamera.y);
 
 			float startXCellPosition = leftButtonBorderCamera.x * m_sizeCellMap;
 			float offsetXCell = startXCellPosition;
@@ -102,9 +101,9 @@ namespace Renderer {
 			std::vector<glm::vec4> Position;
 			std::vector<glm::vec4> Texture;
 			std::vector<float> Rotate;
-			Position.reserve(m_BufferCountCells);
-			Texture.reserve(m_BufferCountCells);
-			Rotate.reserve(m_BufferCountCells);
+			Position.reserve(m_bufferCountPixels);
+			Texture.reserve(m_bufferCountPixels);
+			Rotate.reserve(m_bufferCountPixels);
 
 			for (int h = leftButtonBorderCamera.y; h < rightTopBorderCamera.y; h++) {
 				for (int w = leftButtonBorderCamera.x; w < rightTopBorderCamera.x; w++) {
@@ -130,7 +129,7 @@ namespace Renderer {
 
 		m_texture->bind();
 
-		RENDER_ENGINE::drawInstanced(*m_VAO, m_BufferCountCells);
+		RENDER_ENGINE::drawInstanced(*m_VAO, m_bufferCountPixels);
 
 		m_VAO->unbind();
 		m_TextureVBO.unbind();

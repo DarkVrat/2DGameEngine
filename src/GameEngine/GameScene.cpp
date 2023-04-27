@@ -43,7 +43,7 @@ void GameScene::update(const double& duration){
 void GameScene::events(){
 	float s = MOUSE::getScroll().y;
 	if (std::abs(s) > 0) {
-		CAMERA::setSize(CAMERA::getSize().x - s * 10);
+		CAMERA::setSize(CAMERA::getSize().x * (100-s)/100.f);
 	}
 }
 

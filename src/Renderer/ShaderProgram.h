@@ -24,13 +24,13 @@ namespace Renderer {
 		void setMatrix4(const std::string& name, const glm::mat4& matrix);
 		void setVec3(const std::string& name, const glm::vec3& vec3);
 
-		bool getCameraShader();
+		uint8_t getSettings() { return m_settings; }
 
 	private:
 		GLuint m_ID = 0; 
 		bool m_isCompiled = false; 
 
 		bool createShader(const std::string& source, const GLenum& shaderType, GLuint& shaderID); 
-		bool m_cameraShader;
+		uint8_t m_settings;
 	};
 }

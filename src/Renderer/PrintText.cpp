@@ -14,6 +14,7 @@ glm::vec2 Renderer::PrintText::m_window;
 
 std::vector<std::pair<Renderer::PrintText::Text, double>> Renderer::PrintText::m_timeBufferText;
 std::vector<Renderer::PrintText::Text> Renderer::PrintText::m_bufferText;
+size_t Renderer::PrintText::m_hashBuffer=0;
 
 std::shared_ptr<Renderer::VertexArray> Renderer::PrintText::m_VAO;
 Renderer::VertexBuffer Renderer::PrintText::m_PositionVBO;
@@ -29,7 +30,8 @@ namespace Renderer {
         m_advanceChar.clear();
         m_timeBufferText.clear();
         m_texture = nullptr;
-    } 
+    }
+
 
      //(RUS) Создание символов, и установка параметров
     //(ENG) Creating Symbols and Setting Parameters
@@ -208,33 +210,40 @@ namespace Renderer {
             return;
         }
 
-        std::vector<glm::vec4> Position;
-        std::vector<glm::vec3> Color;
-        std::vector<glm::vec4> Texture;
-        Position.reserve(countChar);
-        Color.reserve(countChar);
-        Texture.reserve(countChar);
+        size_t hash = getHash();
+        if (hash != m_hashBuffer) {
+            m_hashBuffer = hash;
 
-        for (Text t : m_bufferText) {
-             
-            float posX = t.ms_position.x;
+            std::vector<glm::vec4> Position;
+            std::vector<glm::vec3> Color;
+            std::vector<glm::vec4> Texture;
+            Position.reserve(countChar);
+            Color.reserve(countChar);
+            Texture.reserve(countChar);
 
-            for (char c : t.ms_text) {
-                uint8_t index= c;
+            for (Text t : m_bufferText) {
 
-                Position.push_back(glm::vec4(posX*m_window.x, t.ms_position.y*m_window.y, t.ms_position.z, t.ms_scale*m_window.y));
-                Color.push_back(t.ms_color);
-                Texture.push_back(m_textureChar.at(index));
-                 
-                posX += m_advanceChar[index] * t.ms_scale * (m_window.y / m_window.x);
-            } 
+                float posX = t.ms_position.x;
+
+                for (char c : t.ms_text) {
+                    uint8_t index = c;
+
+                    Position.push_back(glm::vec4(posX * m_window.x, t.ms_position.y * m_window.y, t.ms_position.z, t.ms_scale * m_window.y));
+                    Color.push_back(t.ms_color);
+                    Texture.push_back(m_textureChar.at(index));
+
+                    posX += m_advanceChar[index] * t.ms_scale * (m_window.y / m_window.x);
+                }
+            }
+            m_PositionVBO.update(&Position[0], Position.size() * sizeof(glm::vec4));
+            m_ColorVBO.update(&Color[0], Color.size() * sizeof(glm::vec3));
+            m_TextureVBO.update(&Texture[0], Texture.size() * sizeof(glm::vec4));
+            Position.clear();
+            Color.clear();
+            Texture.clear();
         }
 
         m_texture->bind();
-
-        m_PositionVBO.update(&Position[0], Position.size() * sizeof(glm::vec4));
-        m_ColorVBO.update(&Color[0], Color.size() * sizeof(glm::vec3));
-        m_TextureVBO.update(&Texture[0], Texture.size() * sizeof(glm::vec4));
 
         RENDER_ENGINE::drawInstanced(*m_VAO, countChar);
 
@@ -243,9 +252,6 @@ namespace Renderer {
         glBindTexture(GL_TEXTURE_2D, 0);
         
         m_bufferText.clear();
-        Position.clear();
-        Color.clear();
-        Texture.clear();
     }
 
     float PrintText::sizeText(std::string text, GLfloat scale){
@@ -266,5 +272,16 @@ namespace Renderer {
 
     void PrintText::setWindow(const glm::vec2& window){
         m_window = window;
+    }
+
+    size_t PrintText::getHash(){
+        size_t hash = 0;
+        for (const auto& currentText : m_bufferText) {
+            hash_combine(hash, currentText.ms_text);
+            hash_combine(hash, currentText.ms_position);
+            hash_combine(hash, currentText.ms_scale);
+            hash_combine(hash, currentText.ms_color);
+        }
+        return hash;
     }
 }

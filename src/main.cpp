@@ -40,8 +40,6 @@ int main(int argc, char** argv){
         return -1;
     }
 
-    Audio::SampleSourse s;
-
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -99,7 +97,7 @@ int main(int argc, char** argv){
     RENDER_ENGINE::setWindow(PWindow);
 
     RENDER_ENGINE::enableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    RENDER_ENGINE::setClearColor(55, 0, 0, 255);
+    RENDER_ENGINE::setClearColor(0, 0, 0, 255);
     RENDER_ENGINE::setDetphTest(true);
        
     SOUND_DEVICE::init();

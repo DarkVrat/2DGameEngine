@@ -107,6 +107,7 @@ void MainGameClass::setProjectionMat(const glm::ivec2& window){
     PRINT_TEXT::setWindow(m_window);
     Renderer::Sprite::setWindow(m_window);
     MOUSE::setWindowSize(m_window);
+    CAMERA::updateSize();
     m_Menu.updateButton();
 }
 

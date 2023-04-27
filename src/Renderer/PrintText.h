@@ -5,6 +5,8 @@
 #include <memory>
 #include <vector>
 #include <iostream>
+#include <functional>
+#include <glm/gtx/hash.hpp>
 #include "Texture2D.h"
 #include "VertexArray.h"
 
@@ -52,6 +54,10 @@ namespace Renderer {
 		PrintText();
 		~PrintText() {};
 
+		template <class T>
+		static void hash_combine(size_t& seed, const T& value);
+		static std::size_t getHash();
+
 		static std::vector<float> m_advanceChar;
 		static std::vector<glm::vec4> m_textureChar;
 		static std::shared_ptr<Texture2D> m_texture;
@@ -65,5 +71,12 @@ namespace Renderer {
 
 		static std::vector<std::pair<Text, double>> m_timeBufferText;
 		static std::vector<Text> m_bufferText;
+		static size_t m_hashBuffer;
 	};
+
+	template<class T>
+	inline void PrintText::hash_combine(size_t& seed, const T& value){
+		std::hash<T> hasher;
+		seed ^= hasher(value) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+	}
 }

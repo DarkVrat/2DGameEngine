@@ -37,9 +37,9 @@ public:
 	static void unloadAllRes();
 
 	static void loadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
-	static void loadOneTexture(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const bool& blend);
-	static void loadTextureCut(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const bool& blend, const int& heightSprite, const int& widthSprite, const std::vector<std::string>& sprites);
-	static void loadTextureAtlas(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const bool& blend, const std::map<std::string, glm::ivec4>& sprites);
+	static void loadOneTexture(const std::string& textureName, const std::string& texturePatn, const std::string& shader);
+	static void loadTextureCut(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const int& heightSprite, const int& widthSprite, const std::vector<std::string>& sprites);
+	static void loadTextureAtlas(const std::string& textureName, const std::string& texturePatn, const std::string& shader, const std::map<std::string, glm::ivec4>& sprites);
 	static void loadSprite(const std::string& spriteName, const std::string& textureName, const glm::ivec2& aspectRatio, const glm::vec4& coords=glm::vec4(0,0,1,1));
 	static void loadStateAnimation(const std::string& stateName, const  std::vector<std::pair<std::shared_ptr<Renderer::Sprite>, double>>& frames, const std::vector<std::string>& sources, const std::string& nextState, const bool& uninterrupted);
 	static void loadSound(const std::string& soundName, const std::string& soundPath);

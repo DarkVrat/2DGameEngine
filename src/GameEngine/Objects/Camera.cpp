@@ -53,6 +53,10 @@ void Camera::update(){
 	}
 }
 
+void Camera::updateSize(){
+	setSize(m_size.x);
+}
+
 void Camera::setSettings(const glm::vec2& RectangleFollowing, const float& baseSpeed, const float& distanceSpeed){
 	m_followingRectangle.x = RectangleFollowing.x / 2;
 	m_followingRectangle.y = RectangleFollowing.y / 2;

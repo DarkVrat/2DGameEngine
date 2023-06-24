@@ -11,6 +11,7 @@
 #include "Renderer/PrintText.h"
 #include "Managers/SoundManager.h"
 #include "UI/Translater.h"
+#include "GameEngine/PhysicsAndLogic/DebugRender.h"
 
 //Проверить позже на ноутбуке
 //extern "C" {
@@ -92,7 +93,7 @@ int main(int argc, char** argv){
 
     std::cout << "Renderer: " << RENDER_ENGINE::getRender() << std::endl;
     std::cout << "OpenGL version: " << RENDER_ENGINE::getVersion() << std::endl;
-
+    glEnable(GL_PROGRAM_POINT_SIZE);
     MOUSE::setWindow(PWindow);
     RENDER_ENGINE::setWindow(PWindow);
 
@@ -102,6 +103,8 @@ int main(int argc, char** argv){
        
     SOUND_DEVICE::init();
     SOUND_LIBRARY::init();
+
+    DebugRender::init();
 
     MAIN_GAME_CLASS::init(window);
 

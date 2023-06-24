@@ -80,7 +80,7 @@ namespace Renderer {
 		if (m_bufferPixelCoords.x > leftButtonBorderCamera.x || m_bufferPixelCoords.y > leftButtonBorderCamera.y || m_bufferPixelCoords.z < rightTopBorderCamera.x || m_bufferPixelCoords.w < rightTopBorderCamera.y) {
 
 			leftButtonBorderCamera = glm::ivec2((camPos.x - camSiz.x) / m_sizeCellMap, (camPos.y - camSiz.y) / m_sizeCellMap);
-			rightTopBorderCamera = glm::ivec2((camPos.y + camSiz.x) / m_sizeCellMap, (camPos.y + camSiz.y) / m_sizeCellMap);
+			rightTopBorderCamera = glm::ivec2((camPos.x + camSiz.x) / m_sizeCellMap, (camPos.y + camSiz.y) / m_sizeCellMap);
 			if (leftButtonBorderCamera.x < 0) { leftButtonBorderCamera.x = 0; }
 			if (leftButtonBorderCamera.y < 0) { leftButtonBorderCamera.y = 0; }
 			if (rightTopBorderCamera.x > m_sizeMap.x) { rightTopBorderCamera.x = m_sizeMap.x; }
@@ -153,7 +153,7 @@ namespace Renderer {
 			return;
 		}
 
-		m_mapPixels = new uint32_t[m_sizeMap.x*m_sizeMap.y];
+		m_mapPixels = new uint32_t[static_cast<long long>(m_sizeMap.x) * static_cast<long long>(m_sizeMap.y)];
 
 		for (int h = 0; h < m_sizeMap.y; h++) {
 			for (int w = 0; w < m_sizeMap.x; w++) {

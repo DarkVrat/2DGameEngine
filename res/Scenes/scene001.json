@@ -6,9 +6,9 @@
 	
 	"camera":{
 		"position" : {
-			"x":800.0,
-			"y":450.0
+			"x":50.0,
+			"y":50.0
 		},
-		"sizeCamera" : 1600.0
+		"sizeCamera" : 200.0
 	}
 }

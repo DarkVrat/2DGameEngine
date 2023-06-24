@@ -1,0 +1,55 @@
+{
+	"staticSprites":[
+	{
+		"spriteName":"darkForBackground",
+		"position":{"x":0.5,"y":0.5,"z":9},
+		"size":{"x":0.5,"y":1},
+		"rotation":0,
+		"origin":{"x":0.5,"y":0.5}
+	}
+	],
+	
+	"animatedSprite":[
+	{
+		"StateName":"background",
+		"position":{"x":0.5,"y":0.5,"z":0},
+		"size":{"x":1,"y":1},
+		"rotation":0,
+		"origin":{"x":0.5,"y":0.5}
+	}
+	],
+	
+	"buttons":[
+	{
+		"function":"toGame;",
+		"position":{"x":0.5,"y":0.49,"z":10},
+		"size":{"x":0.2,"y":0.1},
+		"subjectTranslete":"menu",
+		"textForTranslete":"continue",
+		"scaleTextForButton":0.9,
+		"color":{"r":0,"g":0,"b":0},
+		"origin":{"x":0.5,"y":0.5}
+	},{
+		"function":"call MainMenu;",
+		"position":{"x":0.5,"y":0.38,"z":10},
+		"size":{"x":0.2,"y":0.1},
+		"subjectTranslete":"menu",
+		"textForTranslete":"exit",
+		"scaleTextForButton":0.9,
+		"color":{"r":0,"g":0,"b":0},
+		"origin":{"x":0.5,"y":0.5}
+	}
+	],
+	
+	"TextForMenu":[
+	{
+		"subjectTranslete":"menu",
+		"textForTranslete":"pause",
+		"position":{"x":0,"y":0.55,"z":11},
+		"scaleText":0.25,
+		"color":{"r":1,"g":1,"b":1},
+		"sizeByXScreen":1,
+		"center":true
+	}
+	]
+}

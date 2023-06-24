@@ -447,5 +447,5 @@ void ResourceManager::LoadMapResurces(const std::string& JSONPath){
 	loadOneTexture("MapTexture", texturePath, "MapShader");
 
 	MAP::init(getTexture("MapTexture"), mapCellSize);
-	MAP::setLayer(0);
+	MAP::setLayer(-99);
 }

@@ -98,6 +98,9 @@ namespace Renderer {
 	void ShaderProgram::setVec3(const std::string& name, const glm::vec3& vec3) {
 		glUniform3f(glGetUniformLocation(m_ID, name.c_str()), vec3.x,vec3.y,vec3.z);
 	}
+	void ShaderProgram::setVec4(const std::string& name, const glm::vec4& vec4){
+		glUniform4f(glGetUniformLocation(m_ID, name.c_str()), vec4.x, vec4.y, vec4.z, vec4.w);
+	}
 
 	 //(RUS) Конструктор переноса шейдера
 	//(ENG) Shader transfer constructor

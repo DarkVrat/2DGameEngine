@@ -75,14 +75,12 @@ add_executable(${PROJECT}
 	src/GameEngine/Objects/Camera.cpp
 	src/GameEngine/Objects/IObject.h
 	
-	src/GameEngine/PhysicsAndLogic/CircleCollision.h
-	src/GameEngine/PhysicsAndLogic/CircleCollision.cpp
-	src/GameEngine/PhysicsAndLogic/ICollision.h
-	src/GameEngine/PhysicsAndLogic/ICollision.cpp
-	src/GameEngine/PhysicsAndLogic/RectangleCollision.h
-	src/GameEngine/PhysicsAndLogic/RectangleCollision.cpp
-	src/GameEngine/PhysicsAndLogic/TriangleCollision.h
-	src/GameEngine/PhysicsAndLogic/TriangleCollision.cpp
+	src/GameEngine/PhysicsAndLogic/Collision.h
+	src/GameEngine/PhysicsAndLogic/Collision.cpp
+	src/GameEngine/PhysicsAndLogic/DebugRender.h
+	src/GameEngine/PhysicsAndLogic/DebugRender.cpp
+	src/GameEngine/PhysicsAndLogic/Shape.h
+	src/GameEngine/PhysicsAndLogic/Shape.cpp
 	
 	src/UI/Button.cpp
 	src/UI/Button.h

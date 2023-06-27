@@ -23,9 +23,5 @@ void GameSceneResources::load(const std::string& gameScene){
 }
 
 void GameSceneResources::clear(){
-	m_mapSamples.clear();
 }
 
-std::shared_ptr<IObject> GameSceneResources::createFromID(const uint32_t& id){
-	return m_mapSamples.at(id)->copy();
-}

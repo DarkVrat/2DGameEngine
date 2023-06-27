@@ -19,7 +19,7 @@ Shape::Shape(Shape&& shape) noexcept{
 	m_position = std::move(shape.m_position);
 }
 
-Shape Shape::copy() const{
+Shape Shape::copyShape() const{
 	return Shape(m_position, m_points);
 }
 
@@ -32,7 +32,8 @@ void Shape::ShapeIsPolygon(const std::vector<glm::vec2>& points){
 	SetPoints(points);
 }
 
-void Shape::ShapeIsCircle(const float& radius, const int& numSegments){
+void Shape::ShapeIsCircle(const float& radius, const uint8_t& numSegments){
+	if (numSegments < 2) return ShapeIsPoint();
 	m_points.clear();
 	const float angleIncrement = 2.0f * 3.1415926f / numSegments;
 

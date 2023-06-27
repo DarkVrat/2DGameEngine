@@ -13,11 +13,16 @@ struct EPAResult {
 
 class Collision :public Shape {
 public:
-	Collision() : Shape() {};
-	Collision(const Shape shape) :Shape(shape) {};
+	Collision(const glm::vec2& position = glm::vec2(0, 0)) :Shape(position) {};
+	Collision(const glm::vec2& position, const std::vector<glm::vec2>& points) :Shape(position, points) {};
+	Collision(const Shape& shape) :Shape(shape) {};
+	Collision(const Collision& collision) :Shape(collision.m_position, collision.m_points) {};
+	Collision(Collision&& collision) noexcept;
 
-	EPAResult CheckCollision(const Collision other);
-private:
+	std::shared_ptr<Collision> copyCollision();
+
+	EPAResult CheckCollision(const Collision& other);
+protected:
 	static bool IsSimplexColinear(std::vector<glm::vec2>& simplex, glm::vec2& direction);
-	EPAResult ProcessEPA(const Collision other, std::vector<glm::vec2>& simplex);
+	EPAResult ProcessEPA(const Collision& other, std::vector<glm::vec2>& simplex);
 };

@@ -5,7 +5,6 @@
 #include "../../Managers/ConfigManager.h"
 #include "../../Managers/ResourceManager.h"
 
-std::shared_ptr<IObject> Camera::m_Object;
 glm::vec2 Camera::m_followingRectangle;
 float Camera::m_BaseSpeed;
 float Camera::m_DistanceSpeed;
@@ -39,7 +38,7 @@ glm::vec2 Camera::getSize(){
 
 
 void Camera::update(){
-	glm::vec2 posObject = m_Object->getPosition();
+	glm::vec2 posObject = glm::vec2(0, 0); //m_Object->getPosition();
 	float distanceToTargetX = std::abs(posObject.x - m_coordsCamera.x);
 	float distanceToTargetY = std::abs(posObject.y - m_coordsCamera.y);
 

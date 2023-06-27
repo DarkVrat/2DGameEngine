@@ -6,8 +6,13 @@
 #include "Objects/Camera.h"
 #include "PhysicsAndLogic/DebugRender.h"
 
-void GameScene::init(const std::string& gameScene){
-	std::string jsonPath = "res/Scenes/" + gameScene + ".json";
+GameScene::GameScene(){
+	std::function<void(Entity& entity, const double& duration)> fun = [](Entity& entity, const double& duration) {
+		entity.Rotate(duration / 20);
+	};
+
+	EntityData dat1(1, 20, 1);
+	//TriggerData dat2(true, true, fun);
 
 	std::vector<glm::vec2> vecPol;
 	vecPol.push_back(glm::vec2(32, 32));
@@ -15,11 +20,12 @@ void GameScene::init(const std::string& gameScene){
 	vecPol.push_back(glm::vec2(-32, -32));
 	vecPol.push_back(glm::vec2(-32, 32));
 
-	col_1.SetPosition(glm::vec2(0, 0));
-	col_1.ShapeIsPolygon(vecPol);
+	col_1 = Entity(dat1, glm::vec2(0, 0), vecPol);
+	col_2 = Collider(glm::vec2(0, 70), vecPol);
+}
 
-	col_2.SetPosition(glm::vec2(0, 70));
-	col_2.ShapeIsCircle(32.f, 32);
+void GameScene::init(const std::string& gameScene){
+	std::string jsonPath = "res/Scenes/" + gameScene + ".json";
 
 	clear();
 
@@ -27,27 +33,18 @@ void GameScene::init(const std::string& gameScene){
 }
 
 void GameScene::render(){
+	
 	if (debug) {
 		DebugRender::updateUniform();
-		EPAResult result = col_1.CheckCollision(col_2);
-		if (result.hasCollision) {
-			col_1.Move(-result.penetrationVector);
-			DebugRender::drawShape(col_1, glm::vec4(1, 0, 0, 1));
-			DebugRender::drawShape(col_2, glm::vec4(1, 0, 0, 1));
-		}
-		else {
-			DebugRender::drawShape(col_1, glm::vec4(0, 1, 0, 1));
-			DebugRender::drawShape(col_2, glm::vec4(0, 1, 0, 1));
-		}
-	}
-	else {
-		col_1.Move(-col_1.CheckCollision(col_2).penetrationVector);
+		DebugRender::drawShape(col_1, glm::vec4(0, 1, 0, 1));
+		DebugRender::drawShape(col_2, glm::vec4(0, 1, 0, 1));
 	}
 
 	MAP::render();
 }
 
 void GameScene::update(const double& duration){
+	
 	if (KEYBOARD::ifClamped(GLFW_KEY_LEFT)) {
 		glm::vec2 pos = CAMERA::getCoords(); 
 		pos.x -= duration * CAMERA::getSize().x / 1000;
@@ -96,15 +93,15 @@ void GameScene::update(const double& duration){
 	if (KEYBOARD::ifPressed(GLFW_KEY_1)) {
 		col_2.Scale(1.5f, -45.f);
 	}
+	col_1.CheckCollision(col_2);
 }
 
 void GameScene::events(){
 	float s = MOUSE::getScroll().y;
 	if (std::abs(s) > 0) {
-		CAMERA::setSize(CAMERA::getSize().x * (100-s)/100.f);
+		CAMERA::setSize(CAMERA::getSize().x * (20-s)/20);
 	}
 }
 
 void GameScene::clear(){
-	m_Objects.clear();
 }

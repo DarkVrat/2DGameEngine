@@ -2,7 +2,6 @@
 
 #include <glm/vec2.hpp>
 #include <memory>
-#include "IObject.h"
 #define CAMERA Camera
 
 class Camera {
@@ -16,7 +15,6 @@ public:
 	static void updateSize();
 	static void setSettings(const glm::vec2& RectangleFollowing, const float& baseSpeed, const float& distanceSpeed);
 private:
-	static std::shared_ptr<IObject> m_Object;
 	static glm::vec2 m_followingRectangle;
 	static float m_BaseSpeed;
 	static float m_DistanceSpeed;

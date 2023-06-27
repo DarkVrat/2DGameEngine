@@ -10,11 +10,11 @@ public:
 	Shape(const Shape& shape);
 	Shape(Shape&& shape) noexcept;
 
-	Shape copy() const;
+	Shape copyShape() const;
 
 	void ShapeIsPoint();
 	void ShapeIsPolygon(const std::vector<glm::vec2>& points);
-	void ShapeIsCircle(const float& radius, const int& numSegments = 16);
+	void ShapeIsCircle(const float& radius, const uint8_t& numSegments = 16);
 
 	void Rotate(const float& gradus);
 	void Scale(const float& factor);

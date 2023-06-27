@@ -3,7 +3,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 
-EPAResult Collision::CheckCollision(const Collision other){
+Collision::Collision(Collision&& collision) noexcept{
+	m_position = std::move(collision.m_position);
+	m_points = std::move(collision.m_points);
+}
+
+std::shared_ptr<Collision> Collision::copyCollision(){
+	return std::make_shared<Collision>(copyShape());
+}
+
+EPAResult Collision::CheckCollision(const Collision& other){
 	glm::vec2 direction(1.0f, 0.0f);
 
 	glm::vec2 supportA = this->Support(direction);
@@ -80,7 +89,8 @@ bool Collision::IsSimplexColinear(std::vector<glm::vec2>& simplex, glm::vec2& di
 	return false;
 }
 
-EPAResult Collision::ProcessEPA(const Collision other, std::vector<glm::vec2>& simplex) {
+EPAResult Collision::ProcessEPA(const Collision& other, std::vector<glm::vec2>& simplex) {
+	int maxSimplex = this->m_points.size() * other.m_points.size();
 	while (true) {
 		size_t closestEdgeIndex{};
 		float minDistance = std::numeric_limits<float>::max();
@@ -109,7 +119,7 @@ EPAResult Collision::ProcessEPA(const Collision other, std::vector<glm::vec2>& s
 
 		float distance = glm::dot(normal, support);
 
-		if (distance - minDistance < 1e-4f) {
+		if (distance - minDistance < 1e-4f || simplex.size()>=maxSimplex) {
 			glm::vec2 penetrationVector = distance * normal; 
 			return EPAResult(true, penetrationVector);
 		}

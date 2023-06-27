@@ -1,14 +1,17 @@
 #pragma once
 
-#include "Objects/IObject.h"
 #include <memory>
 #include <string>
 #include <vector>
 #include "GameSceneResources.h"
-#include "PhysicsAndLogic/Collision.h"
+#include "Objects/Collider.h"
+#include "Objects/Entity.h"
+#include "Objects/Object.h"
+#include "Objects/Trigger.h"
 
 class GameScene {
 public:
+	GameScene();
 	void init(const std::string& gameScene);
 	void render();
 	void update(const double& duration);
@@ -16,8 +19,7 @@ public:
 	void clear();
 private:
 	GameSceneResources m_Resources;
-	std::vector<std::shared_ptr<IObject>> m_Objects;
-	Collision col_1;
-	Collision col_2;
+	Entity col_1;
+	Collider col_2;
 	bool debug = false;
 };

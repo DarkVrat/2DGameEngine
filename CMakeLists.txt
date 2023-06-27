@@ -73,7 +73,14 @@ add_executable(${PROJECT}
 	
 	src/GameEngine/Objects/Camera.h
 	src/GameEngine/Objects/Camera.cpp
-	src/GameEngine/Objects/IObject.h
+	src/GameEngine/Objects/Collider.h
+	src/GameEngine/Objects/Collider.cpp
+	src/GameEngine/Objects/Entity.h
+	src/GameEngine/Objects/Entity.cpp
+	src/GameEngine/Objects/Object.h
+	src/GameEngine/Objects/Object.cpp
+	src/GameEngine/Objects/Trigger.h
+	src/GameEngine/Objects/Trigger.cpp
 	
 	src/GameEngine/PhysicsAndLogic/Collision.h
 	src/GameEngine/PhysicsAndLogic/Collision.cpp
@@ -81,6 +88,8 @@ add_executable(${PROJECT}
 	src/GameEngine/PhysicsAndLogic/DebugRender.cpp
 	src/GameEngine/PhysicsAndLogic/Shape.h
 	src/GameEngine/PhysicsAndLogic/Shape.cpp
+	src/GameEngine/PhysicsAndLogic/GameSpaceTree.h
+	src/GameEngine/PhysicsAndLogic/GameSpaceTree.cpp
 	
 	src/UI/Button.cpp
 	src/UI/Button.h

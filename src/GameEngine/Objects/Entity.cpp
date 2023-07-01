@@ -26,7 +26,7 @@ Entity Entity::operator=(Entity&& entity)noexcept {
 	return *this;
 }
 
-void Entity::CheckCollision(const Trigger& trigger, const double& duration){
+void Entity::CheckCollision(Trigger& trigger, const double& duration){
 	if (Collision::CheckCollision(trigger).hasCollision) {
 		trigger.run(*this, duration);
 	}

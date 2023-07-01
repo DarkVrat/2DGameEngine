@@ -29,7 +29,7 @@ public:
 	Entity operator=(const Entity& entity);
 	Entity operator=(Entity&& entity)noexcept;
 
-	void CheckCollision(const Trigger& trigger, const double& duration);
+	void CheckCollision(Trigger& trigger, const double& duration);
 	void CheckCollision(const Collider& collider);
 	void CheckCollision(const Object& object);
 	void CheckCollision(Entity& entity);

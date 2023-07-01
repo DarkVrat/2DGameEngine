@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include "../Objects/Camera.h"
 #include "../Objects/Collider.h"
 #include "../Objects/Entity.h"
@@ -8,48 +9,49 @@
 
 class GameSpaceTree {
 public:
-	GameSpaceTree(const glm::vec2& size);
-	 
+	GameSpaceTree(const glm::vec2& size=glm::vec2(0,0));
+	GameSpaceTree(const GameSpaceTree& GST);
+	GameSpaceTree(GameSpaceTree&& GST)noexcept;
+
+	void operator=(const GameSpaceTree& GST);
+	void operator=(GameSpaceTree&& GST)noexcept;
+
 	void Render();
 	void DebugRender();
 	void Update(const double& duration);
 
-	void addMainEntity(const Entity& entity);
 	void addToTree(const Entity& entity);
 	void addToTree(const Object& object);
 	void addToTree(const Collider& collider);
 	void addToTree(const Trigger& trigger);
+
+	void addToTree(const std::shared_ptr<Entity>& entity);
+	void addToTree(const std::shared_ptr<Object>& object);
+	void addToTree(const std::shared_ptr<Collider>& collider);
+	void addToTree(const std::shared_ptr<Trigger>& trigger);
 
 	static void updatePositionCamera();
 	static void updateSizeCamera();
 private:
 	GameSpaceTree(const std::vector<glm::vec2>& points, const glm::vec2 leftBottomPoint, GameSpaceTree* parrent);
 
-	void addMainEntity(const std::shared_ptr<Entity>& entity);
-	void addToTree(const std::shared_ptr<Entity>& entity);
-	void addToTree(const std::shared_ptr<Object>& object);
-	void addToTree(const std::shared_ptr<Collider>& collider);
-	void addToTree(const std::shared_ptr<Trigger>& trigger);
+	void Update(std::shared_ptr<Entity> entity, const double& duration);
 
-	template<class T>
-	void distributionVector(std::vector<std::shared_ptr<T>>& vector);
 	void setNeighbours(GameSpaceTree* LeftNeighbour, GameSpaceTree* RightNeighbour, GameSpaceTree* TopNeighbour, GameSpaceTree* BottomNeighbour);
-	
 	template<class T>
-	void linkedVectot(std::vector<std::shared_ptr<T>>& vectorTo, std::vector<std::shared_ptr<T>>& vector0, std::vector<std::shared_ptr<T>>& vector1, std::vector<std::shared_ptr<T>>& vector2, std::vector<std::shared_ptr<T>>& vector3);
+	void distributionObject(const std::shared_ptr<T>& obj);
+	template<class T>
+	void linkedSet(std::set<std::shared_ptr<T>>& setTo, std::set<std::shared_ptr<T>>& set0, std::set<std::shared_ptr<T>>& set1, std::set<std::shared_ptr<T>>& set2, std::set<std::shared_ptr<T>>& set3);
 
 	void split();
-	void link();
-
-	Collision& getCollision() { return m_collision; }
+	bool link();
 
 	Collision m_collision;
 
-	std::shared_ptr<Entity> m_MainEntity;
-	std::vector<std::shared_ptr<Entity>> m_Entitys;
-	std::vector<std::shared_ptr<Object>> m_Objects;
-	std::vector<std::shared_ptr<Collider>> m_Colliders;
-	std::vector<std::shared_ptr<Trigger>> m_Triggers;
+	std::set<std::shared_ptr<Entity>> m_Entitys;
+	std::set<std::shared_ptr<Object>> m_Objects;
+	std::set<std::shared_ptr<Collider>> m_Colliders;
+	std::set<std::shared_ptr<Trigger>> m_Triggers;
 
 	GameSpaceTree* m_LeftBottomTree = nullptr;
 	GameSpaceTree* m_LeftTopTree = nullptr;
@@ -67,21 +69,20 @@ private:
 };
 
 template<class T>
-inline void GameSpaceTree::distributionVector(std::vector<std::shared_ptr<T>>& vector){
+inline void GameSpaceTree::distributionObject(const std::shared_ptr<T>& obj){
 	static_assert(std::is_base_of<Collision, T>::value, "T must be derived from Collision");
-	for (auto& obj : vector) {
-		if (m_LeftBottomTree->getCollision().CheckCollision(*obj).hasCollision) m_LeftBottomTree->addToTree(obj);
-		if (m_LeftTopTree->getCollision().CheckCollision(*obj).hasCollision)	m_LeftTopTree->addToTree(obj);
-		if (m_RightTopTree->getCollision().CheckCollision(*obj).hasCollision) m_RightTopTree->addToTree(obj);
-		if (m_RightBottomTree->getCollision().CheckCollision(*obj).hasCollision) m_RightBottomTree->addToTree(obj);
-	}
+	if (m_LeftBottomTree->m_collision.CheckCollision(*obj).hasCollision) m_LeftBottomTree->addToTree(obj);
+	if (m_LeftTopTree->m_collision.CheckCollision(*obj).hasCollision) m_LeftTopTree->addToTree(obj);
+	if (m_RightTopTree->m_collision.CheckCollision(*obj).hasCollision) m_RightTopTree->addToTree(obj);
+	if (m_RightBottomTree->m_collision.CheckCollision(*obj).hasCollision) m_RightBottomTree->addToTree(obj);
 }
 
+
 template<class T>
-inline void GameSpaceTree::linkedVectot(std::vector<std::shared_ptr<T>>& vectorTo, std::vector<std::shared_ptr<T>>& vector0, std::vector<std::shared_ptr<T>>& vector1, std::vector<std::shared_ptr<T>>& vector2, std::vector<std::shared_ptr<T>>& vector3){
+inline void GameSpaceTree::linkedSet(std::set<std::shared_ptr<T>>& setTo, std::set<std::shared_ptr<T>>& set0, std::set<std::shared_ptr<T>>& set1, std::set<std::shared_ptr<T>>& set2, std::set<std::shared_ptr<T>>& set3){
 	static_assert(std::is_base_of<Collision, T>::value, "T must be derived from Collision");
-	vectorTo.insert(vectorTo.end(), vector0.begin(), vector0.end());
-	vectorTo.insert(vectorTo.end(), vector1.begin(), vector1.end());
-	vectorTo.insert(vectorTo.end(), vector2.begin(), vector2.end());
-	vectorTo.insert(vectorTo.end(), vector3.begin(), vector3.end());
+	setTo.insert(set0.begin(), set0.end());
+	setTo.insert(set1.begin(), set1.end());
+	setTo.insert(set2.begin(), set2.end());
+	setTo.insert(set3.begin(), set3.end());
 }

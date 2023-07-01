@@ -8,6 +8,18 @@ Collision::Collision(Collision&& collision) noexcept{
 	m_points = std::move(collision.m_points);
 }
 
+Collision Collision::operator=(const Collision& collision){
+	m_position = collision.m_position;
+	m_points = collision.m_points;
+	return *this;
+}
+
+Collision Collision::operator=(Collision&& collision){
+	m_position = std::move(collision.m_position);
+	m_points = std::move(collision.m_points);
+	return *this;
+}
+
 std::shared_ptr<Collision> Collision::copyCollision(){
 	return std::make_shared<Collision>(copyShape());
 }

@@ -19,6 +19,9 @@ public:
 	Collision(const Collision& collision) :Shape(collision.m_position, collision.m_points) {};
 	Collision(Collision&& collision) noexcept;
 
+	Collision operator=(const Collision& collision);
+	Collision operator=(Collision&& collision);
+
 	std::shared_ptr<Collision> copyCollision();
 
 	EPAResult CheckCollision(const Collision& other);

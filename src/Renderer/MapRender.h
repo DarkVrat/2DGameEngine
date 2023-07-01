@@ -14,6 +14,8 @@ namespace Renderer {
 		static void render();
 
 		static void setMap(const std::string& mapPath, const float& sizeCellMap);
+
+		static glm::vec2 getSize() { return glm::vec2(m_sizeMap.x*m_sizeCellMap, m_sizeMap.y * m_sizeCellMap); }
 	private:
 		static std::pair<glm::vec4, float> pixelToTextureCoords(const uint8_t& red, const uint8_t& green, const uint8_t& blue);
 

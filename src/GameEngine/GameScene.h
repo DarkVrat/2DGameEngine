@@ -4,10 +4,7 @@
 #include <string>
 #include <vector>
 #include "GameSceneResources.h"
-#include "Objects/Collider.h"
-#include "Objects/Entity.h"
-#include "Objects/Object.h"
-#include "Objects/Trigger.h"
+#include "PhysicsAndLogic/GameSpaceTree.h"
 
 class GameScene {
 public:
@@ -19,7 +16,7 @@ public:
 	void clear();
 private:
 	GameSceneResources m_Resources;
-	Entity col_1;
-	Collider col_2;
+	GameSpaceTree m_GSTree;
+	std::shared_ptr<Entity> m_MainEntity;
 	bool debug = false;
 };

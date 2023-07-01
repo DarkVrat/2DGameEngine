@@ -28,10 +28,12 @@ public:
 	Trigger operator=(const Trigger& trigger);
 	Trigger operator=(Trigger&& trigger) noexcept;
 
-	void run(Entity& entity, const double& duration) const;
+	void run(Entity& entity, const double& duration);
+	bool getStopWork() { return m_stopWork; }
 
 	TriggerData& Data() { return m_triggerData; }
 
 private:
 	TriggerData m_triggerData;
+	bool m_stopWork = false;
 };

@@ -1,5 +1,11 @@
 #include "GameSpaceTree.h"
 
+#include "DebugRender.h"
+
+#define MAX_ENTITY 15
+
+Collision GameSpaceTree::m_collisionForCamera;
+
 void GameSpaceTree::updatePositionCamera() {
 	m_collisionForCamera.SetPosition(CAMERA::getCoords());
 }
@@ -22,17 +28,148 @@ GameSpaceTree::GameSpaceTree(const glm::vec2& size) {
 	points.push_back(glm::vec2(size.x, 0));
 	m_collision.SetPosition(glm::vec2(0, 0));
 	m_collision.ShapeIsPolygon(points);
+
+	m_Colliders.insert(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[0], points[1] })));
+	m_Colliders.insert(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[1], points[2] })));
+	m_Colliders.insert(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[2], points[3] })));
+	m_Colliders.insert(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[3], points[0] })));
+}
+
+GameSpaceTree::GameSpaceTree(const GameSpaceTree& GST) {
+	*this = GST;
+}
+
+GameSpaceTree::GameSpaceTree(GameSpaceTree&& GST) noexcept {
+	*this = std::move(GST);
+}
+
+void GameSpaceTree::operator=(const GameSpaceTree& GST){
+	m_collision = GST.m_collision;
+	m_Entitys = GST.m_Entitys;
+	m_Objects = GST.m_Objects;
+	m_Colliders = GST.m_Colliders;
+	m_Triggers = GST.m_Triggers;
+	m_LeftBottomTree = GST.m_LeftBottomTree;
+	m_LeftTopTree = GST.m_LeftTopTree;
+	m_RightBottomTree = GST.m_RightBottomTree;
+	m_RightTopTree = GST.m_RightTopTree;
+	m_LeftNeighbour = GST.m_LeftNeighbour;
+	m_RightNeighbour = GST.m_RightNeighbour;
+	m_TopNeighbour = GST.m_TopNeighbour;
+	m_BottomNeighbour = GST.m_BottomNeighbour;
+	m_parrent = GST.m_parrent;
+}
+
+void GameSpaceTree::operator=(GameSpaceTree&& GST) noexcept{
+	m_collision = std::move(GST.m_collision);
+	m_Entitys = std::move(GST.m_Entitys);
+	m_Objects = std::move(GST.m_Objects);
+	m_Colliders = std::move(GST.m_Colliders);
+	m_Triggers = std::move(GST.m_Triggers);
+	m_LeftBottomTree = std::move(GST.m_LeftBottomTree);
+	m_LeftTopTree = std::move(GST.m_LeftTopTree);
+	m_RightBottomTree = std::move(GST.m_RightBottomTree);
+	m_RightTopTree = std::move(GST.m_RightTopTree);
+	m_LeftNeighbour = std::move(GST.m_LeftNeighbour);
+	m_RightNeighbour = std::move(GST.m_RightNeighbour);
+	m_TopNeighbour = std::move(GST.m_TopNeighbour);
+	m_BottomNeighbour = std::move(GST.m_BottomNeighbour);
+	m_parrent = std::move(GST.m_parrent);
 }
 
 void GameSpaceTree::Render(){
+	if (m_LeftBottomTree != nullptr) {
+		if (m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftBottomTree->Render();
+		if (m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftTopTree->Render();
+		if (m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightTopTree->Render();
+		if (m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightBottomTree->Render();
+
+		return;
+	}
+
+	//TODO: рендеринг объектов
 }
 
-void GameSpaceTree::DebugRender()
-{
+void GameSpaceTree::DebugRender(){
+	if (m_LeftBottomTree != nullptr) {
+		if (m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftBottomTree->DebugRender();
+		if (m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftTopTree->DebugRender();
+		if (m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightTopTree->DebugRender();
+		if (m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightBottomTree->DebugRender();
+
+		return;
+	}
+
+	DebugRender::drawShape(m_collision);
+
+	for (auto& entity : m_Entitys) {
+		DebugRender::drawShape(*entity, glm::vec4(0, 1, 0, 1));
+	}
+	for (auto& object : m_Objects) {
+		DebugRender::drawShape(*object, glm::vec4(0, 0, 1, 1));
+	}
+	for (auto& collider : m_Colliders) {
+		DebugRender::drawShape(*collider, glm::vec4(0, 1, 1, 1));
+	}
+	for (auto& trigger : m_Triggers) {
+		DebugRender::drawShape(*trigger, glm::vec4(1, 0, 0, 1));
+	}
+
 }
 
-void GameSpaceTree::Update(const double& duration)
-{
+void GameSpaceTree::Update(const double& duration){
+	if (m_LeftBottomTree != nullptr && m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftBottomTree->Update(duration);
+	if (m_LeftTopTree != nullptr && m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftTopTree->Update(duration);
+	if (m_RightTopTree != nullptr && m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightTopTree->Update(duration);
+	if (m_RightBottomTree != nullptr && m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightBottomTree->Update(duration);
+	if (m_RightBottomTree != nullptr) return;
+	
+
+	for (auto it = m_Entitys.begin(); it != m_Entitys.end();) {
+		auto& entity = *it;
+
+		if (m_LeftNeighbour != nullptr && m_LeftNeighbour->m_collision.CheckCollision(*entity).hasCollision)
+			m_LeftNeighbour->addToTree(entity);
+
+		if (m_RightNeighbour != nullptr && m_RightNeighbour->m_collision.CheckCollision(*entity).hasCollision)
+			m_RightNeighbour->addToTree(entity);
+
+		if (m_TopNeighbour != nullptr && m_TopNeighbour->m_collision.CheckCollision(*entity).hasCollision)
+			m_TopNeighbour->addToTree(entity);
+
+		if (m_BottomNeighbour != nullptr && m_BottomNeighbour->m_collision.CheckCollision(*entity).hasCollision)
+			m_BottomNeighbour->addToTree(entity);
+
+		if (!m_collision.CheckCollision(*entity).hasCollision) {
+			it = m_Entitys.erase(it);
+			GameSpaceTree* parrent = m_parrent;
+			m_parrent->link();
+			break;
+		}
+
+		Update(entity, duration);
+
+		++it;
+	}
+}
+
+void GameSpaceTree::Update(std::shared_ptr<Entity> entityForUpdate, const double& duration){
+	for (auto& entity : m_Entitys) {
+		if (entityForUpdate == entity) {
+			break;
+		}
+		entityForUpdate->CheckCollision(*entity);
+	}
+	for (auto& collider : m_Colliders) {
+		entityForUpdate->CheckCollision(*collider);
+	}
+	for (auto& object : m_Objects) {
+		entityForUpdate->CheckCollision(*object);
+	}
+	for (auto& trigger: m_Triggers) {
+		entityForUpdate->CheckCollision(*trigger, duration);
+		if (trigger->getStopWork()) m_Triggers.erase(trigger);
+	}
 }
 
 GameSpaceTree::GameSpaceTree(const std::vector<glm::vec2>& points, const glm::vec2 leftBottomPoint, GameSpaceTree* parrent) {
@@ -42,11 +179,12 @@ GameSpaceTree::GameSpaceTree(const std::vector<glm::vec2>& points, const glm::ve
 }
 
 void GameSpaceTree::split() {
+	if (m_Entitys.size() <= MAX_ENTITY) 
+		return;
+
 	glm::vec2 position = m_collision.GetPosition();
 	std::vector<glm::vec2> points = m_collision.GetPoints();
-	for (auto& point : points) {
-		point = point / 2.f;
-	}
+	for (auto& point : points) point = point / 2.f;
 
 	m_LeftBottomTree = new GameSpaceTree(points, position + points[0], this);
 	m_LeftTopTree = new GameSpaceTree(points, position + points[1], this);
@@ -58,33 +196,30 @@ void GameSpaceTree::split() {
 	m_RightTopTree->setNeighbours(m_LeftTopTree, m_RightNeighbour, m_TopNeighbour, m_RightBottomTree);
 	m_RightBottomTree->setNeighbours(m_LeftBottomTree, m_RightNeighbour, m_RightTopTree, m_BottomNeighbour);
 
-	distributionVector<Entity>(m_Entitys);
-	distributionVector<Object>(m_Objects);
-	distributionVector<Collider>(m_Colliders);
-	distributionVector<Trigger>(m_Triggers);
+	for (auto& entity : m_Entitys) distributionObject<Entity>(entity);
+	for (auto& object : m_Objects) distributionObject<Object>(object);
+	for (auto& collider : m_Colliders) distributionObject<Collider>(collider);
+	for (auto& trigger : m_Triggers) distributionObject<Trigger>(trigger);
 
-	if (m_LeftBottomTree->m_collision.CheckCollision(*m_MainEntity).hasCollision) m_LeftBottomTree->m_MainEntity = m_MainEntity;
-	if (m_LeftTopTree->m_collision.CheckCollision(*m_MainEntity).hasCollision) m_LeftTopTree->m_MainEntity = m_MainEntity;
-	if (m_RightTopTree->m_collision.CheckCollision(*m_MainEntity).hasCollision) m_RightTopTree->m_MainEntity = m_MainEntity;
-	if (m_RightBottomTree->m_collision.CheckCollision(*m_MainEntity).hasCollision) m_RightBottomTree->m_MainEntity = m_MainEntity;
-
-	m_MainEntity = nullptr;
 	m_Entitys.clear();
 	m_Objects.clear();
 	m_Colliders.clear();
 	m_Triggers.clear();
 }
 
-void GameSpaceTree::link() {
-	if (m_LeftBottomTree->m_MainEntity != nullptr) m_MainEntity = m_LeftBottomTree->m_MainEntity;
-	else if (m_LeftTopTree->m_MainEntity != nullptr) m_MainEntity = m_LeftTopTree->m_MainEntity;
-	else if (m_RightTopTree->m_MainEntity != nullptr) m_MainEntity = m_RightTopTree->m_MainEntity;
-	else m_MainEntity = m_RightBottomTree->m_MainEntity;
+bool GameSpaceTree::link() {
+	if (m_LeftBottomTree->m_LeftBottomTree != nullptr || 
+		m_LeftTopTree->m_LeftTopTree != nullptr ||
+		m_RightTopTree->m_RightTopTree != nullptr ||
+		m_RightBottomTree->m_RightBottomTree != nullptr ||
+		m_LeftBottomTree->m_Entitys.size() + m_LeftTopTree->m_Entitys.size() + m_RightBottomTree->m_Entitys.size() + m_RightTopTree->m_Entitys.size() > MAX_ENTITY ) {
+		return false;
+	}
 
-	linkedVectot<Entity>(m_Entitys, m_LeftBottomTree->m_Entitys, m_LeftTopTree->m_Entitys, m_RightTopTree->m_Entitys, m_RightBottomTree->m_Entitys);
-	linkedVectot<Object>(m_Objects, m_LeftBottomTree->m_Objects, m_LeftTopTree->m_Objects, m_RightTopTree->m_Objects, m_RightBottomTree->m_Objects);
-	linkedVectot<Collider>(m_Colliders, m_LeftBottomTree->m_Colliders, m_LeftTopTree->m_Colliders, m_RightTopTree->m_Colliders, m_RightBottomTree->m_Colliders);
-	linkedVectot<Trigger>(m_Triggers, m_LeftBottomTree->m_Triggers, m_LeftTopTree->m_Triggers, m_RightTopTree->m_Triggers, m_RightBottomTree->m_Triggers);
+	linkedSet<Entity>(m_Entitys, m_LeftBottomTree->m_Entitys, m_LeftTopTree->m_Entitys, m_RightTopTree->m_Entitys, m_RightBottomTree->m_Entitys);
+	linkedSet<Object>(m_Objects, m_LeftBottomTree->m_Objects, m_LeftTopTree->m_Objects, m_RightTopTree->m_Objects, m_RightBottomTree->m_Objects);
+	linkedSet<Collider>(m_Colliders, m_LeftBottomTree->m_Colliders, m_LeftTopTree->m_Colliders, m_RightTopTree->m_Colliders, m_RightBottomTree->m_Colliders);
+	linkedSet<Trigger>(m_Triggers, m_LeftBottomTree->m_Triggers, m_LeftTopTree->m_Triggers, m_RightTopTree->m_Triggers, m_RightBottomTree->m_Triggers);
 
 	delete m_LeftBottomTree;
 	delete m_LeftTopTree;
@@ -95,6 +230,8 @@ void GameSpaceTree::link() {
 	m_LeftTopTree = nullptr;
 	m_RightTopTree = nullptr;
 	m_RightBottomTree = nullptr;
+
+	return true;
 }
 
 void GameSpaceTree::setNeighbours(GameSpaceTree* LeftNeighbour, GameSpaceTree* RightNeighbour, GameSpaceTree* TopNeighbour, GameSpaceTree* BottomNeighbour) {
@@ -104,70 +241,36 @@ void GameSpaceTree::setNeighbours(GameSpaceTree* LeftNeighbour, GameSpaceTree* R
 	m_BottomNeighbour = BottomNeighbour;
 }
 
-void GameSpaceTree::addMainEntity(const std::shared_ptr<Entity>& entity){
-	if (m_LeftBottomTree == nullptr) {
-		m_MainEntity = entity;
-		return;
-	}
-
-	if (m_LeftBottomTree->m_collision.CheckCollision(*entity).hasCollision) m_LeftBottomTree->addMainEntity(entity);
-	if (m_LeftTopTree->m_collision.CheckCollision(*entity).hasCollision) m_LeftTopTree->addMainEntity(entity);
-	if (m_RightTopTree->m_collision.CheckCollision(*entity).hasCollision) m_RightTopTree->addMainEntity(entity);
-	if (m_RightBottomTree->m_collision.CheckCollision(*entity).hasCollision) m_RightBottomTree->addMainEntity(entity);
-}
-
 void GameSpaceTree::addToTree(const std::shared_ptr<Entity>& entity){
 	if (m_LeftBottomTree == nullptr) {
-		m_Entitys.push_back(entity);
-		if (m_Entitys.size() > 16) {
-			split();
-		}
-		return;
+		m_Entitys.insert(entity);
+		split();
 	}
-
-	if (m_LeftBottomTree->m_collision.CheckCollision(*entity).hasCollision) m_LeftBottomTree->addToTree(entity);
-	if (m_LeftTopTree->m_collision.CheckCollision(*entity).hasCollision) m_LeftTopTree->addToTree(entity);
-	if (m_RightTopTree->m_collision.CheckCollision(*entity).hasCollision) m_RightTopTree->addToTree(entity);
-	if (m_RightBottomTree->m_collision.CheckCollision(*entity).hasCollision) m_RightBottomTree->addToTree(entity);
+	else
+		distributionObject<Entity>(entity);
 }
 
 void GameSpaceTree::addToTree(const std::shared_ptr<Object>& object) {
-	if (m_LeftBottomTree == nullptr) {
-		m_Objects.push_back(object);
-		return;
-	}
-
-	if (m_LeftBottomTree->m_collision.CheckCollision(*object).hasCollision) m_LeftBottomTree->addToTree(object);
-	if (m_LeftTopTree->m_collision.CheckCollision(*object).hasCollision) m_LeftTopTree->addToTree(object);
-	if (m_RightTopTree->m_collision.CheckCollision(*object).hasCollision) m_RightTopTree->addToTree(object);
-	if (m_RightBottomTree->m_collision.CheckCollision(*object).hasCollision) m_RightBottomTree->addToTree(object);
+	if (m_LeftBottomTree == nullptr) 
+		m_Objects.insert(object);
+	else
+		distributionObject<Object>(object);
 }
 
 void GameSpaceTree::addToTree(const std::shared_ptr<Collider>& collider) {
-	if (m_LeftBottomTree == nullptr) {
-		m_Colliders.push_back(collider);
-		return;
-	}
-
-	if (m_LeftBottomTree->m_collision.CheckCollision(*collider).hasCollision) m_LeftBottomTree->addToTree(collider);
-	if (m_LeftTopTree->m_collision.CheckCollision(*collider).hasCollision) m_LeftTopTree->addToTree(collider);
-	if (m_RightTopTree->m_collision.CheckCollision(*collider).hasCollision) m_RightTopTree->addToTree(collider);
-	if (m_RightBottomTree->m_collision.CheckCollision(*collider).hasCollision) m_RightBottomTree->addToTree(collider);
+	if (m_LeftBottomTree == nullptr) 
+		m_Colliders.insert(collider);
+	else
+		distributionObject<Collider>(collider);
 }
 
 void GameSpaceTree::addToTree(const std::shared_ptr<Trigger>& trigger) {
-	if (m_LeftBottomTree == nullptr) {
-		m_Triggers.push_back(trigger);
-		return;
-	}
-
-	if (m_LeftBottomTree->m_collision.CheckCollision(*trigger).hasCollision) m_LeftBottomTree->addToTree(trigger);
-	if (m_LeftTopTree->m_collision.CheckCollision(*trigger).hasCollision) m_LeftTopTree->addToTree(trigger);
-	if (m_RightTopTree->m_collision.CheckCollision(*trigger).hasCollision) m_RightTopTree->addToTree(trigger);
-	if (m_RightBottomTree->m_collision.CheckCollision(*trigger).hasCollision) m_RightBottomTree->addToTree(trigger);
+	if (m_LeftBottomTree == nullptr) 
+		m_Triggers.insert(trigger);
+	else
+		distributionObject<Trigger>(trigger);
 }
 
-void GameSpaceTree::addMainEntity(const Entity& entity) { addMainEntity(std::make_shared<Entity>(entity)); }
 void GameSpaceTree::addToTree(const Entity& entity) { addToTree(std::make_shared<Entity>(entity)); }
 void GameSpaceTree::addToTree(const Object& object) { addToTree(std::make_shared<Object>(object)); }
 void GameSpaceTree::addToTree(const Collider& collider) { addToTree(std::make_shared<Collider>(collider)); }

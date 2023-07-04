@@ -3,13 +3,15 @@
 #include "../PhysicsAndLogic/Collision.h"
 
 struct ObjectData {
-	ObjectData(const bool& breakable = false, const float& health = 1.f, const float& elasticity = 1.f, const float& friction = 1.f)
-		:Breakable(breakable), Health(health), Elasticity(elasticity), Friction(friction){}
+	ObjectData(const bool& breakable = false, const float& health = 1.f, const float& elasticity = 0.05f, const float& mass = 1.f)
+		:Breakable(breakable), Health(health), Elasticity(elasticity), Mass(mass){
+		
+	}
 
 	bool Breakable;
 	float Health;
 	float Elasticity;
-	float Friction;
+	float Mass;
 };
 
 class Object : public Collision {

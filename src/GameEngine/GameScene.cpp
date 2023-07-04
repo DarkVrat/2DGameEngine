@@ -20,18 +20,19 @@ void GameScene::init(const std::string& gameScene){
 	glm::vec2 sezeMap = MAP::getSize();
 	m_GSTree = GameSpaceTree(sezeMap);
 
-	EntityData dat1(1, 20, 1);
+	EntityData dat1(1.f, 20.f, 256.f, 0.5f, 50.f);
 	std::vector<glm::vec2> vecPol;
 	vecPol.push_back(glm::vec2(32, 32));
 	vecPol.push_back(glm::vec2(32, -32));
 	vecPol.push_back(glm::vec2(-32, -32));
 	vecPol.push_back(glm::vec2(-32, 32));
 	m_MainEntity = std::make_shared<Entity>(dat1, glm::vec2(40, 40), vecPol);
+	m_MainEntity->ShapeIsCircle(32, 16);
 	m_GSTree.addToTree(m_MainEntity);
-
-
+	m_GSTree.updatePositionCamera();
+	m_GSTree.updateSizeCamera();
 }
-
+ 
 void GameScene::render(){
 	
 	if (debug) {
@@ -70,18 +71,13 @@ void GameScene::update(const double& duration){
 		m_GSTree.updatePositionCamera();
 	}
 
-	if (KEYBOARD::ifClamped(GLFW_KEY_A)) {
-		m_MainEntity->Move(glm::vec2(-duration / 10, 0));
-	}
-	if (KEYBOARD::ifClamped(GLFW_KEY_D)) {
-		m_MainEntity->Move(glm::vec2(duration / 10, 0));
-	}
-	if (KEYBOARD::ifClamped(GLFW_KEY_S)) {
-		m_MainEntity->Move(glm::vec2(0, -duration / 10));
-	}
-	if (KEYBOARD::ifClamped(GLFW_KEY_W)) {
-		m_MainEntity->Move(glm::vec2(0, duration / 10));
-	}
+	glm::vec2 direction = glm::vec2(0, 0);
+	if (KEYBOARD::ifClamped(GLFW_KEY_W)) direction.y += 1.f;
+	if (KEYBOARD::ifClamped(GLFW_KEY_S)) direction.y -= 1.f;
+	if (KEYBOARD::ifClamped(GLFW_KEY_A)) direction.x -= 1.f;
+	if (KEYBOARD::ifClamped(GLFW_KEY_D)) direction.x += 1.f;
+	m_MainEntity->SetDirection(direction);
+
 	if (KEYBOARD::ifClamped(GLFW_KEY_Q)) {
 		m_MainEntity->Rotate(duration/20);
 	}
@@ -89,10 +85,12 @@ void GameScene::update(const double& duration){
 		m_MainEntity->Rotate(-duration/20);
 	}
 
-	if (KEYBOARD::ifClamped(GLFW_KEY_LEFT_SHIFT)) {
-		if (KEYBOARD::ifPressed(GLFW_KEY_F2)) {
-			debug = !debug;
-		}
+	if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+		m_MainEntity->AddImpulse(glm::vec2(500, 500));
+	}
+
+	if (KEYBOARD::ifPressed(GLFW_KEY_F2)) {
+		debug = !debug;
 	}
 
 	if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_LEFT)) {
@@ -101,15 +99,17 @@ void GameScene::update(const double& duration){
 		glm::vec2 posmouse = MOUSE::getPosition();
 		glm::vec2 posFromSizeCamera = posmouse * Camera::getSize() + glm::vec2(posCam.x-sizeCam.x/2, posCam.y - sizeCam.y/2);
 
-		EntityData dat1(1, 1, 1);
+		EntityData dat1(1.f, 1.f, 1.f, 0.2f, 20.f);
 		std::vector<glm::vec2> vecPol;
-		vecPol.push_back(glm::vec2(8, 8));
-		vecPol.push_back(glm::vec2(8, -8));
-		vecPol.push_back(glm::vec2(-8, -8));
-		vecPol.push_back(glm::vec2(-8, 8));
+		vecPol.push_back(glm::vec2(32, 32));
+		vecPol.push_back(glm::vec2(32, -32));
+		vecPol.push_back(glm::vec2(-32, -32));
+		vecPol.push_back(glm::vec2(-32, 32));
 
 		Entity obj(dat1, posFromSizeCamera, vecPol);
+		obj.ShapeIsCircle(4, 8);
 		m_GSTree.addToTree(obj);
+
 
 	}
 

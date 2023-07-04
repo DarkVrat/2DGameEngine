@@ -8,12 +8,22 @@
 class Trigger;
 
 struct EntityData {
-	EntityData(const float& health = 1.f, const float& mass = 1.f, const float& movementSpeed = 1.f)
-		:Health(health), Mass(mass), MovementSpeed(movementSpeed) {}
+	EntityData(const float& health = 1.f, const float& mass = 1.f, const float& movementSpeed = 1.f, const float& elasticity = 0.1f, const float& friction=10.f)
+		:Health(health), Mass(mass), MovementSpeed(movementSpeed), Elasticity(elasticity),Friction(friction)  {
+		if (Health < 0) Health *= -1;
+		if (Mass < 0) Mass *= -1;
+		if (MovementSpeed < 0) MovementSpeed *= -1;
+		if (Friction < 0) Friction *= -1;
+
+		if (Elasticity < 0.01f) Elasticity = 0.01f;
+		else if (Elasticity > 1.f) Elasticity = 1.f;
+	}
 
 	float Health;
 	float Mass;
 	float MovementSpeed;
+	float Elasticity;
+	float Friction;
 };
 
 class Entity : public Collision {
@@ -31,14 +41,24 @@ public:
 
 	void CheckCollision(Trigger& trigger, const double& duration);
 	void CheckCollision(const Collider& collider);
-	void CheckCollision(const Object& object);
+	void CheckCollision(Object& object);
 	void CheckCollision(Entity& entity);
 
 	EntityData& Data() { return m_entityData; }
 
+	void SetDirection(const glm::vec2& direction);
+	void SetSpeed(const glm::vec2& speed) { m_CurrentSpeed = speed; }
+
+	void AddImpulse(const glm::vec2& impulse);
+	void AddForce(const glm::vec2& force);
+
+	void Update(const double& duration);
+
 protected:
 	EntityData m_entityData;
 
+	glm::vec2 m_deltaPosition = glm::vec2(0, 0);
+	glm::vec2 m_DirectionMove = glm::vec2(0, 0);
 	glm::vec2 m_CurrentSpeed = glm::vec2(0, 0);
 	glm::vec2 m_Acceleration = glm::vec2(0, 0);
 };

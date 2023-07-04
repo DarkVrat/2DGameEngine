@@ -1,6 +1,6 @@
 #pragma once
 
-#include <set>
+#include <map>
 #include "../Objects/Camera.h"
 #include "../Objects/Collider.h"
 #include "../Objects/Entity.h"
@@ -41,17 +41,17 @@ private:
 	template<class T>
 	void distributionObject(const std::shared_ptr<T>& obj);
 	template<class T>
-	void linkedSet(std::set<std::shared_ptr<T>>& setTo, std::set<std::shared_ptr<T>>& set0, std::set<std::shared_ptr<T>>& set1, std::set<std::shared_ptr<T>>& set2, std::set<std::shared_ptr<T>>& set3);
+	void linkedMap(std::map<std::shared_ptr<T>, uint8_t>& setTo, std::map<std::shared_ptr<T>, uint8_t>& set0, std::map<std::shared_ptr<T>, uint8_t>& set1, std::map<std::shared_ptr<T>, uint8_t>& set2, std::map<std::shared_ptr<T>, uint8_t>& set3);
 
 	void split();
 	bool link();
 
 	Collision m_collision;
 
-	std::set<std::shared_ptr<Entity>> m_Entitys;
-	std::set<std::shared_ptr<Object>> m_Objects;
-	std::set<std::shared_ptr<Collider>> m_Colliders;
-	std::set<std::shared_ptr<Trigger>> m_Triggers;
+	std::map<std::shared_ptr<Entity>, uint8_t> m_Entitys;
+	std::map<std::shared_ptr<Object>, uint8_t> m_Objects;
+	std::map<std::shared_ptr<Collider>, uint8_t> m_Colliders;
+	std::map<std::shared_ptr<Trigger>, uint8_t> m_Triggers;
 
 	GameSpaceTree* m_LeftBottomTree = nullptr;
 	GameSpaceTree* m_LeftTopTree = nullptr;
@@ -79,7 +79,7 @@ inline void GameSpaceTree::distributionObject(const std::shared_ptr<T>& obj){
 
 
 template<class T>
-inline void GameSpaceTree::linkedSet(std::set<std::shared_ptr<T>>& setTo, std::set<std::shared_ptr<T>>& set0, std::set<std::shared_ptr<T>>& set1, std::set<std::shared_ptr<T>>& set2, std::set<std::shared_ptr<T>>& set3){
+inline void GameSpaceTree::linkedMap(std::map<std::shared_ptr<T>, uint8_t>& setTo, std::map<std::shared_ptr<T>, uint8_t>& set0, std::map<std::shared_ptr<T>, uint8_t>& set1, std::map<std::shared_ptr<T>, uint8_t>& set2, std::map<std::shared_ptr<T>, uint8_t>& set3){
 	static_assert(std::is_base_of<Collision, T>::value, "T must be derived from Collision");
 	setTo.insert(set0.begin(), set0.end());
 	setTo.insert(set1.begin(), set1.end());

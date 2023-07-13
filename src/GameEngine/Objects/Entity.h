@@ -57,7 +57,6 @@ public:
 protected:
 	EntityData m_entityData;
 
-	glm::vec2 m_deltaPosition = glm::vec2(0, 0);
 	glm::vec2 m_DirectionMove = glm::vec2(0, 0);
 	glm::vec2 m_CurrentSpeed = glm::vec2(0, 0);
 	glm::vec2 m_Acceleration = glm::vec2(0, 0);

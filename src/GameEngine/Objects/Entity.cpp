@@ -16,7 +16,7 @@ Entity::Entity(Entity&& entity) noexcept{
 	m_entityData = std::move(entity.m_entityData);
 }
 
-Entity Entity::operator=(const Entity& entity){
+Entity Entity::operator=(const Entity& entity){ 
 	m_position = entity.m_position;
 	m_points = entity.m_points;
 	m_entityData = entity.m_entityData;
@@ -39,14 +39,14 @@ void Entity::CheckCollision(Trigger& trigger, const double& duration){
 void Entity::CheckCollision(const Collider& collider){
 	EPAResult result = Collision::CheckCollision(collider);
 	if (result.hasCollision) {
-		m_deltaPosition -= result.penetrationVector;
+		m_position -= result.penetrationVector;
 	}
 }
 
 void Entity::CheckCollision( Object& object){
 	EPAResult result = Collision::CheckCollision(object);
 	if (result.hasCollision) {
-		m_deltaPosition -= result.penetrationVector;
+		m_position -= result.penetrationVector;
 
 		float Speed = glm::length(m_CurrentSpeed);
 		if (Speed > 0.0001f) {
@@ -62,8 +62,8 @@ void Entity::CheckCollision(Entity& entity){
 	if (result.hasCollision) {
 		float ration = m_entityData.Mass / (m_entityData.Mass + entity.m_entityData.Mass);
 
-		m_deltaPosition -= result.penetrationVector * (1 - ration);
-		entity.m_deltaPosition += result.penetrationVector * ration;
+		m_position -= result.penetrationVector * (1 - ration);
+		entity.m_position += result.penetrationVector * ration;
 
 		glm::vec2 normal = glm::normalize(result.penetrationVector);
 		float resultDot = glm::dot(entity.m_CurrentSpeed - m_CurrentSpeed, normal);
@@ -94,8 +94,8 @@ void Entity::AddForce(const glm::vec2& force){
 }
 
 void Entity::Update(const double& duration){
-	m_position += m_deltaPosition;
 	m_CurrentSpeed += m_Acceleration * static_cast<float>(duration / 1000);
+	m_Acceleration = glm::vec2(0, 0);
 	
 	float lenghtSpeed = glm::length(m_CurrentSpeed);
 	if (lenghtSpeed > 0.00001) {
@@ -108,7 +108,4 @@ void Entity::Update(const double& duration){
 	}
 
 	m_position += static_cast<float>(duration / 1000) * (m_entityData.MovementSpeed * m_DirectionMove + m_CurrentSpeed);
-
-	m_deltaPosition = glm::vec2(0, 0);
-	m_Acceleration = glm::vec2(0, 0);
 }

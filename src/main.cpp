@@ -13,11 +13,12 @@
 #include "UI/Translater.h"
 #include "GameEngine/PhysicsAndLogic/DebugRender.h"
 
-//Проверить позже на ноутбуке
-//extern "C" {
-//    _declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
-//    _declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-//}
+ //(RUS) Для отрисовки с видеокарт NVidia и AMD, а не встроеных
+//(ENG) For rendering from NVidia and AMD video cards, not built-in ones
+extern "C" {
+    _declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+    _declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+} 
 
 GLFWwindow* PWindow = nullptr;
 

@@ -1,3 +1,5 @@
+Будующая игра краткоописана в файле [Game description](https://github.com/DarkVrat/2DGameEngine/blob/Game/Game%20description.pdf)
+
 # 2DGameEngine
 
 This is my first serious pet project. I like games and I want to be the one who creates them.

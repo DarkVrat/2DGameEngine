@@ -1,4 +1,4 @@
-Будующая игра краткоописана в файле [Game description](https://github.com/DarkVrat/2DGameEngine/blob/Game/Game%20description.pdf)
+Будующая игра кратко описана в файле [Game description](https://github.com/DarkVrat/2DGameEngine/blob/Game/Game%20description.pdf)
 
 # 2DGameEngine
 

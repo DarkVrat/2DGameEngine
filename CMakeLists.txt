@@ -90,6 +90,8 @@ add_executable(${PROJECT}
 	src/GameEngine/PhysicsAndLogic/Shape.cpp
 	src/GameEngine/PhysicsAndLogic/GameSpaceTree.h
 	src/GameEngine/PhysicsAndLogic/GameSpaceTree.cpp
+	src/GameEngine/PhysicsAndLogic/WaySearch.h
+	src/GameEngine/PhysicsAndLogic/WaySearch.cpp
 	
 	src/UI/Button.cpp
 	src/UI/Button.h

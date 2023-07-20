@@ -56,18 +56,21 @@ void DebugRender::updateUniform(){
 	m_shader->setVec3("view", glm::vec3(pos.x - size.x / 2, pos.y - size.y / 2, 0));
 }
 
-void DebugRender::drawShape(const Shape shape, const glm::vec4& color){
+void DebugRender::drawShape(const Shape shape, const glm::vec4& color, const bool& flagLoop) {
 	std::vector<glm::vec2> points = shape.Render();
 
 	m_VAO->bind();
 
 	m_pointsVBO.bind();
-	m_pointsVBO.update(points.data(), points.size()*sizeof(glm::vec2));
+	m_pointsVBO.update(points.data(), points.size() * sizeof(glm::vec2));
 
 	m_shader->use();
 	m_shader->setVec4("color", color);
 
-	glDrawArrays(GL_LINE_LOOP, 0, points.size());
+	if (flagLoop)
+		glDrawArrays(GL_LINE_LOOP, 0, points.size());
+	else
+		glDrawArrays(GL_LINE_STRIP, 0, points.size());
 	m_VAO->unbind();
 }
 

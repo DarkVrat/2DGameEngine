@@ -19,4 +19,6 @@ private:
 	GameSpaceTree m_GSTree;
 	std::shared_ptr<Entity> m_MainEntity;
 	bool debug = false;
+	std::vector<glm::vec2> vectorWay;
+	Shape shapeWay;
 };

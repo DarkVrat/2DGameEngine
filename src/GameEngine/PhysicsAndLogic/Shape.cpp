@@ -19,6 +19,18 @@ Shape::Shape(Shape&& shape) noexcept{
 	m_position = std::move(shape.m_position);
 }
 
+Shape Shape::operator=(const Shape& shape){
+	m_points = shape.m_points;
+	m_position = shape.m_position;
+	return *this;
+}
+
+Shape Shape::operator=(Shape&& shape) noexcept{
+	m_points = std::move(shape.m_points);
+	m_position = std::move(shape.m_position);
+	return *this;
+}
+
 Shape Shape::copyShape() const{
 	return Shape(m_position, m_points);
 }

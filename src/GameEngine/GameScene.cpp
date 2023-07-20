@@ -3,6 +3,7 @@
 #include "../Renderer/MapRender.h"
 #include "../Control/KeyboardControl.h"
 #include "../Control/MouseControl.h"
+#include "PhysicsAndLogic/WaySearch.h"
 #include "Objects/Camera.h"
 #include "PhysicsAndLogic/DebugRender.h"
 
@@ -37,6 +38,7 @@ void GameScene::render(){
 	if (debug) {
 		DebugRender::updateUniform();
 		m_GSTree.DebugRender();
+		DebugRender::drawShape(shapeWay, glm::vec4(1,0,1,1), false);
 	}
 
 	MAP::render();
@@ -98,18 +100,14 @@ void GameScene::update(const double& duration){
 		glm::vec2 posmouse = MOUSE::getPosition();
 		glm::vec2 posFromSizeCamera = posmouse * Camera::getSize() + glm::vec2(posCam.x-sizeCam.x/2, posCam.y - sizeCam.y/2);
 
-		EntityData dat1(1.f, 1.f, 1.f, 0.8f, 20.f);
-		std::vector<glm::vec2> vecPol;
-		vecPol.push_back(glm::vec2(4, 4));
-		vecPol.push_back(glm::vec2(4, -4));
-		vecPol.push_back(glm::vec2(-4, -4));
-		vecPol.push_back(glm::vec2(-4, 4));
-
-		Entity obj(dat1, posFromSizeCamera, vecPol);
-		m_GSTree.addToTree(obj);
-
-
+		vectorWay = WaySearch::FindWay(m_MainEntity->GetPosition(), posFromSizeCamera);
+		shapeWay = Shape(glm::vec2(0, 0), vectorWay);
 	}
+
+	/*if (!vectorWay.empty()) {
+		m_MainEntity->SetPosition(vectorWay.at(0));
+		vectorWay.erase(vectorWay.begin());
+	}*/
 
 	m_GSTree.Update(duration);
 }

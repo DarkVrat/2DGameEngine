@@ -10,6 +10,9 @@ public:
 	Shape(const Shape& shape);
 	Shape(Shape&& shape) noexcept;
 
+	Shape operator=(const Shape& shape);
+	Shape operator=(Shape&& shape) noexcept;
+
 	Shape copyShape() const;
 
 	void ShapeIsPoint();

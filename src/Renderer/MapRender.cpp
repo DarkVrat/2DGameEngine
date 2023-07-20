@@ -3,6 +3,7 @@
 #include "../Managers/ResourceManager.h"
 #include "../Managers/stb_image.h"
 #include "../GameEngine/Objects/Camera.h"
+#include "../GameEngine/PhysicsAndLogic/WaySearch.h"
 #include "RenderEngine.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -170,6 +171,8 @@ namespace Renderer {
 				}
 			}
 		}
+
+		WaySearch::init(m_sizeCellMap, m_sizeMap, m_mapPixels);
 
 		stbi_image_free(Pixels);
 	} 

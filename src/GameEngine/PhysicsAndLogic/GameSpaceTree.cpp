@@ -106,7 +106,7 @@ void GameSpaceTree::DebugRender(){
 	for (auto& entity : m_Entitys) {
 		if (entity.second.second & SIDES_RIGHT || entity.second.second & SIDES_BOTTOM)
 			continue;
-		DebugRender::drawShape(*entity.first, glm::vec4(0, 1, 0, 1));
+		DebugRender::drawShape(*entity.first, glm::vec4(1, 0, 1, 1));
 	}
 	for (auto& object : m_Objects) {
 		if (object.second & SIDES_RIGHT || object.second & SIDES_BOTTOM)

@@ -5,6 +5,7 @@
 #include <vector>
 #include "GameSceneResources.h"
 #include "PhysicsAndLogic/GameSpaceTree.h"
+#include "Objects/Character.h"
 
 class GameScene {
 public:
@@ -17,8 +18,6 @@ public:
 private:
 	GameSceneResources m_Resources;
 	GameSpaceTree m_GSTree;
-	std::shared_ptr<Entity> m_MainEntity;
+	std::shared_ptr<Character> m_MainEntity;
 	bool debug = false;
-	std::vector<glm::vec2> vectorWay;
-	Shape shapeWay;
 };

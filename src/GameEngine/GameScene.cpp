@@ -23,11 +23,11 @@ void GameScene::init(const std::string& gameScene){
 
 	EntityData dat1(1.f, 20.f, 256.f, 0.7f, 50.f);
 	std::vector<glm::vec2> vecPol;
-	vecPol.push_back(glm::vec2(32, 32));
-	vecPol.push_back(glm::vec2(32, -32));
-	vecPol.push_back(glm::vec2(-32, -32));
-	vecPol.push_back(glm::vec2(-32, 32));
-	m_MainEntity = std::make_shared<Entity>(dat1, glm::vec2(40, 40), vecPol);
+	vecPol.push_back(glm::vec2(8, 8));
+	vecPol.push_back(glm::vec2(8, -8));
+	vecPol.push_back(glm::vec2(-8, -8));
+	vecPol.push_back(glm::vec2(-8, 8));
+	m_MainEntity = std::make_shared<Character>(dat1, glm::vec2(40, 40), vecPol);
 	m_GSTree.addToTree(m_MainEntity);
 	m_GSTree.updatePositionCamera();
 	m_GSTree.updateSizeCamera();
@@ -38,7 +38,6 @@ void GameScene::render(){
 	if (debug) {
 		DebugRender::updateUniform();
 		m_GSTree.DebugRender();
-		DebugRender::drawShape(shapeWay, glm::vec4(1,0,1,1), false);
 	}
 
 	MAP::render();
@@ -72,12 +71,19 @@ void GameScene::update(const double& duration){
 		m_GSTree.updatePositionCamera();
 	}
 
-	glm::vec2 direction = glm::vec2(0, 0);
-	if (KEYBOARD::ifClamped(GLFW_KEY_W)) direction.y += 1.f;
-	if (KEYBOARD::ifClamped(GLFW_KEY_S)) direction.y -= 1.f;
-	if (KEYBOARD::ifClamped(GLFW_KEY_A)) direction.x -= 1.f;
-	if (KEYBOARD::ifClamped(GLFW_KEY_D)) direction.x += 1.f;
-	m_MainEntity->SetDirection(direction);
+	if (KEYBOARD::ifClamped(GLFW_KEY_LEFT_CONTROL)) {
+		CAMERA::setCoords(m_MainEntity->GetPosition());
+		m_GSTree.updatePositionCamera();
+	}
+
+	if (KEYBOARD::ifClamped(GLFW_KEY_LEFT_SHIFT)) {
+		glm::vec2 direction = glm::vec2(0, 0);
+		if (KEYBOARD::ifClamped(GLFW_KEY_W)) direction.y += 1.f;
+		if (KEYBOARD::ifClamped(GLFW_KEY_S)) direction.y -= 1.f;
+		if (KEYBOARD::ifClamped(GLFW_KEY_A)) direction.x -= 1.f;
+		if (KEYBOARD::ifClamped(GLFW_KEY_D)) direction.x += 1.f;
+		m_MainEntity->SetDirection(direction);
+	}
 
 	if (KEYBOARD::ifClamped(GLFW_KEY_Q)) {
 		m_MainEntity->Rotate(duration/20);
@@ -100,14 +106,8 @@ void GameScene::update(const double& duration){
 		glm::vec2 posmouse = MOUSE::getPosition();
 		glm::vec2 posFromSizeCamera = posmouse * Camera::getSize() + glm::vec2(posCam.x-sizeCam.x/2, posCam.y - sizeCam.y/2);
 
-		vectorWay = WaySearch::FindWay(m_MainEntity->GetPosition(), posFromSizeCamera);
-		shapeWay = Shape(glm::vec2(0, 0), vectorWay);
+		m_MainEntity->FollowWayTo(posFromSizeCamera);
 	}
-
-	/*if (!vectorWay.empty()) {
-		m_MainEntity->SetPosition(vectorWay.at(0));
-		vectorWay.erase(vectorWay.begin());
-	}*/
 
 	m_GSTree.Update(duration);
 }

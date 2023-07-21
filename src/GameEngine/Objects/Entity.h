@@ -42,7 +42,7 @@ public:
 	void CheckCollision(Trigger& trigger, const double& duration);
 	void CheckCollision(const Collider& collider);
 	void CheckCollision(Object& object);
-	void CheckCollision(Entity& entity);
+	virtual void CheckCollision(Entity& entity);
 
 	EntityData& Data() { return m_entityData; }
 
@@ -52,7 +52,7 @@ public:
 	void AddImpulse(const glm::vec2& impulse);
 	void AddForce(const glm::vec2& force);
 
-	void Update(const double& duration);
+	virtual void Update(const double& duration);
 
 protected:
 	EntityData m_entityData;

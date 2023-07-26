@@ -21,7 +21,7 @@ void GameScene::init(const std::string& gameScene){
 	glm::vec2 sezeMap = MAP::getSize();
 	m_GSTree = GameSpaceTree(sezeMap);
 
-	EntityData dat1(1.f, 20.f, 256.f, 0.7f, 50.f);
+	EntityData dat1(1.f, 20.f, 512.f, 0.7f, 50.f);
 	std::vector<glm::vec2> vecPol;
 	vecPol.push_back(glm::vec2(8, 8));
 	vecPol.push_back(glm::vec2(8, -8));

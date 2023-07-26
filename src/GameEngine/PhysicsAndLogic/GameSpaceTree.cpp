@@ -30,10 +30,22 @@ GameSpaceTree::GameSpaceTree(const glm::vec2& size) {
 	m_collision.SetPosition(glm::vec2(0, 0));
 	m_collision.ShapeIsPolygon(points);
 
-	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[0], points[1] })), 0);
-	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[1], points[2] })), 0);
-	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[2], points[3] })), 0);
-	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[3], points[0] })), 0);
+	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[0] + glm::vec2(0, -32), 
+																							 points[1] + glm::vec2(0, 32),
+																							 points[1] + glm::vec2(-32, 32),
+																							 points[0] + glm::vec2(-32, -32) })), 0);
+	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[1] + glm::vec2(-32, 0),
+																							 points[2] + glm::vec2(32, 0),
+																							 points[2] + glm::vec2(32, 32),
+																							 points[1] + glm::vec2(-32, 32) })), 0);
+	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[2] + glm::vec2(0, 32),
+																							 points[3] + glm::vec2(0, -32),
+																							 points[3] + glm::vec2(32, -32),
+																							 points[2] + glm::vec2(32, 32) })), 0);
+	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[3] + glm::vec2(32, 0),
+																							 points[0] + glm::vec2(-32, 0),
+																							 points[0] + glm::vec2(-32, -32),
+																							 points[3] + glm::vec2(32, -32) })), 0);
 }
 
 GameSpaceTree::GameSpaceTree(const GameSpaceTree& GST) {

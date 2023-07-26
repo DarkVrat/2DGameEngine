@@ -1,6 +1,5 @@
 #include "Character.h"
 
-#include "../PhysicsAndLogic/WaySearch.h"
 #include <glm/glm.hpp>
 
 Character::Character(){
@@ -48,17 +47,10 @@ void Character::CheckCollision(Character& character){
 }
 
 void Character::Update(const double& duration){
-	if (!m_way.empty()) {
-		m_DirectionMove = glm::normalize(*(m_way.end() - 1) - m_position);
-		if (glm::length(m_position - *(m_way.end() - 1)) < 0.1f) {
-			m_way.pop_back();
-			m_DirectionMove = glm::vec2(0, 0);
-		}
-	}
-
+	m_way.updateDirection(m_DirectionMove, m_position);
 	Entity::Update(duration);
 }
 
 void Character::FollowWayTo(const glm::vec2& position){
-	m_way = WaySearch::FindWay(m_position, position);
+	m_DirectionMove = m_way.followWayTo(m_position, position);
 }

@@ -16,6 +16,7 @@ class WaySearch {
 public:
 	static void init(const float& cellSize, const glm::ivec2& sizeMap, uint32_t* pixels);
 	static std::vector<glm::vec2> FindWay(const glm::vec2& start, const glm::vec2& end);
+	static float getLengthError();
 private:
 	static std::vector<glm::vec2> Way(const glm::vec2& end);
 

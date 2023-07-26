@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include "../PhysicsAndLogic/WayControlBlock.h"
 
 class Character : public Entity {
 public:
@@ -24,5 +25,5 @@ public:
 
 	void FollowWayTo(const glm::vec2& position);
 private:
-	std::vector<glm::vec2> m_way;
+	WayControlBlock m_way;
 };

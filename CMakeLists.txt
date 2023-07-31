@@ -83,6 +83,8 @@ add_executable(${PROJECT}
 	src/GameEngine/Objects/Trigger.cpp
 	src/GameEngine/Objects/Character.h
 	src/GameEngine/Objects/Character.cpp
+	src/GameEngine/Objects/Projectile.h
+	src/GameEngine/Objects/Projectile.cpp
 	
 	src/GameEngine/PhysicsAndLogic/Collision.h
 	src/GameEngine/PhysicsAndLogic/Collision.cpp

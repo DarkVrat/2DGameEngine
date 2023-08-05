@@ -54,3 +54,10 @@ void Character::Update(const double& duration){
 void Character::FollowWayTo(const glm::vec2& position){
 	m_DirectionMove = m_way.followWayTo(m_position, position);
 }
+
+void Character::addDamage(const float& damage){
+	m_healt -= damage;
+	if (m_healt < 0.f) {
+		m_break = true;
+	}
+}

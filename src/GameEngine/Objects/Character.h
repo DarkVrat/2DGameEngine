@@ -24,6 +24,10 @@ public:
 	void Update(const double& duration);
 
 	void FollowWayTo(const glm::vec2& position);
+
+	float getHealt() { return m_healt; }
+	void addDamage(const float& damage);
 private:
 	WayControlBlock m_way;
+	float m_healt = 1.f;
 };

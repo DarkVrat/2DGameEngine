@@ -4,7 +4,6 @@
 
 struct ProjectileData{
 	bool m_physics = false;
-	bool m_breakOnCollision = false;
 	float m_collisionLengthForBreakage = 0.f;
 	float m_distanceTravel = 512.f;
 	int8_t m_bounceCounter = -1;
@@ -32,6 +31,11 @@ class Projectile : public Entity{
 	void CheckCollision(Collider& collider);
 	void CheckCollision(Entity& entity);
 	void CheckCollision(Character& character);
+
+	void physicsCollision(const Shape& shape);
+	void breakageCollision(const Shape& shape);
+
+	void Update(const double& duration);
 private:
 	ProjectileData m_DataProjectire;
 };

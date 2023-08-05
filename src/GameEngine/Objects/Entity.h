@@ -54,8 +54,12 @@ public:
 
 	virtual void Update(const double& duration);
 
+	bool IsBreak() { return m_break; }
+
 protected:
 	EntityData m_entityData;
+
+	bool m_break=false;
 
 	glm::vec2 m_DirectionMove = glm::vec2(0, 0);
 	glm::vec2 m_CurrentSpeed = glm::vec2(0, 0);

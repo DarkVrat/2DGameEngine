@@ -10,6 +10,7 @@ float Camera::m_BaseSpeed;
 float Camera::m_DistanceSpeed;
 glm::vec2 Camera::m_coordsCamera;
 glm::vec2 Camera::m_size;
+std::shared_ptr<Entity> Camera::m_followingEntity=nullptr;
 
 void Camera::setCoords(const glm::vec2& newCoords){
 	m_coordsCamera = newCoords;
@@ -37,18 +38,27 @@ glm::vec2 Camera::getSize(){
 } 
 
 
-void Camera::update(){
-	glm::vec2 posObject = glm::vec2(0, 0); //m_Object->getPosition();
+void Camera::update(const double& duration){
+	if (m_followingEntity == nullptr)return;
+
+	glm::vec2 posObject = m_followingEntity->GetPosition();
 	float distanceToTargetX = std::abs(posObject.x - m_coordsCamera.x);
 	float distanceToTargetY = std::abs(posObject.y - m_coordsCamera.y);
+	bool flag = false;
 
 	if (distanceToTargetX > m_followingRectangle.x) {
-		float interpolationFactorX = m_BaseSpeed + m_DistanceSpeed * distanceToTargetX / m_followingRectangle.x;
+		float interpolationFactorX = m_BaseSpeed * duration + m_DistanceSpeed * distanceToTargetX / m_followingRectangle.x * duration;
 		m_coordsCamera.x += (posObject.x - m_coordsCamera.x) * interpolationFactorX;
+		flag = true;
 	}
 	if (distanceToTargetY > m_followingRectangle.y) {
-		float interpolationFactorY = m_BaseSpeed + m_DistanceSpeed * distanceToTargetY / m_followingRectangle.y;
+		float interpolationFactorY = m_BaseSpeed * duration + m_DistanceSpeed * distanceToTargetY / m_followingRectangle.y * duration;
 		m_coordsCamera.y += (posObject.y - m_coordsCamera.y) * interpolationFactorY;
+		flag = true;
+	}
+
+	if (flag) {
+		RESOURCE_MANAGER::setView(glm::vec4(m_coordsCamera.x - m_size.x / 2, m_coordsCamera.y - m_size.y / 2, 0, 0));
 	}
 }
 

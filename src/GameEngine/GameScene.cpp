@@ -27,11 +27,13 @@ void GameScene::init(const std::string& gameScene){
 	vecPol.push_back(glm::vec2(8, -8));
 	vecPol.push_back(glm::vec2(-8, -8));
 	vecPol.push_back(glm::vec2(-8, 8));
-	m_MainEntity = std::make_shared<Character>(dat1, glm::vec2(40, 40), vecPol);
+	m_MainEntity = std::make_shared<Character>(dat1, glm::vec2(24, 24), vecPol);
 	m_GSTree.addToTree(m_MainEntity);
 	m_GSTree.updatePositionCamera();
 	m_GSTree.updateSizeCamera();
-}
+	CAMERA::setFollowingEntity(m_MainEntity);
+	CAMERA::setSettings(glm::vec2(64, 64), 0.004, 0.0015); 
+} 
  
 void GameScene::render(){
 	
@@ -45,38 +47,34 @@ void GameScene::render(){
 
 void GameScene::update(const double& duration){
 
-	
-	if (KEYBOARD::ifClamped(GLFW_KEY_LEFT)) {
-		glm::vec2 pos = CAMERA::getCoords(); 
-		pos.x -= duration * CAMERA::getSize().x / 1000;
-		CAMERA::setCoords(pos);
-		m_GSTree.updatePositionCamera();
+	if (!KEYBOARD::ifClamped(GLFW_KEY_LEFT_CONTROL)) {
+		CAMERA::update(duration);
 	}
-	if (KEYBOARD::ifClamped(GLFW_KEY_RIGHT)) {
-		glm::vec2 pos = CAMERA::getCoords();
-		pos.x += duration * CAMERA::getSize().x / 1000;
-		CAMERA::setCoords(pos);
-		m_GSTree.updatePositionCamera();
+	else {
+		if (KEYBOARD::ifClamped(GLFW_KEY_LEFT)) {
+			glm::vec2 pos = CAMERA::getCoords();
+			pos.x -= duration * CAMERA::getSize().x / 1000;
+			CAMERA::setCoords(pos);
+		}
+		if (KEYBOARD::ifClamped(GLFW_KEY_RIGHT)) {
+			glm::vec2 pos = CAMERA::getCoords();
+			pos.x += duration * CAMERA::getSize().x / 1000;
+			CAMERA::setCoords(pos);
+		}
+		if (KEYBOARD::ifClamped(GLFW_KEY_DOWN)) {
+			glm::vec2 pos = CAMERA::getCoords();
+			pos.y -= duration * CAMERA::getSize().x / 1000;
+			CAMERA::setCoords(pos);
+		}
+		if (KEYBOARD::ifClamped(GLFW_KEY_UP)) {
+			glm::vec2 pos = CAMERA::getCoords();
+			pos.y += duration * CAMERA::getSize().x / 1000;
+			CAMERA::setCoords(pos);
+		}
 	}
-	if (KEYBOARD::ifClamped(GLFW_KEY_DOWN)) {
-		glm::vec2 pos = CAMERA::getCoords();
-		pos.y -= duration * CAMERA::getSize().x / 1000;
-		CAMERA::setCoords(pos);
-		m_GSTree.updatePositionCamera();
-	}
-	if (KEYBOARD::ifClamped(GLFW_KEY_UP)) {
-		glm::vec2 pos = CAMERA::getCoords();
-		pos.y += duration * CAMERA::getSize().x / 1000;
-		CAMERA::setCoords(pos);
-		m_GSTree.updatePositionCamera();
-	}
+	m_GSTree.updatePositionCamera();
 
-	if (KEYBOARD::ifClamped(GLFW_KEY_LEFT_CONTROL)) {
-		CAMERA::setCoords(m_MainEntity->GetPosition());
-		m_GSTree.updatePositionCamera();
-	}
-
-	if (KEYBOARD::ifClamped(GLFW_KEY_LEFT_SHIFT)) {
+	if (!KEYBOARD::ifClamped(GLFW_KEY_LEFT_SHIFT)) {
 		glm::vec2 direction = glm::vec2(0, 0);
 		if (KEYBOARD::ifClamped(GLFW_KEY_W)) direction.y += 1.f;
 		if (KEYBOARD::ifClamped(GLFW_KEY_S)) direction.y -= 1.f;

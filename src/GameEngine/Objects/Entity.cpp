@@ -36,7 +36,7 @@ void Entity::CheckCollision(Trigger& trigger, const double& duration){
 	}
 }
 
-void Entity::CheckCollision(const Collider& collider){
+void Entity::CheckCollision(Collider& collider){
 	EPAResult result = Collision::CheckCollision(collider);
 	if (result.hasCollision) {
 		m_position -= result.penetrationVector;

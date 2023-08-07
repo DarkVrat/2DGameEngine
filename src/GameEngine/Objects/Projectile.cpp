@@ -32,18 +32,17 @@ Projectile Projectile::CopyProjectile(){
 	return Projectile(*this);
 }
 
-void Projectile::setDataProjectile(const ProjectileData& data){
-	m_DataProjectire = data;
-}
-
 void Projectile::CheckCollision(Object& object){
 	if (!m_DataProjectire.m_physics || m_DataProjectire.m_bounceCounter==0) {
 		breakageCollision(object);
 	}
 	else {
 		physicsCollision(object);
-		m_DataProjectire.m_bounceCounter--;
 	}
+}
+
+void Projectile::setDataProjectile(const ProjectileData& data){
+	m_DataProjectire = data;
 }
 
 void Projectile::CheckCollision(Collider& collider){
@@ -52,7 +51,6 @@ void Projectile::CheckCollision(Collider& collider){
 	}
 	else {
 		physicsCollision(collider);
-		m_DataProjectire.m_bounceCounter--;
 	}
 }
 
@@ -62,11 +60,12 @@ void Projectile::CheckCollision(Entity& entity){
 	}
 	else {
 		Entity::CheckCollision(entity);
-		m_DataProjectire.m_bounceCounter--;
 	}
 }
 
 void Projectile::CheckCollision(Character& character){
+	if (character.GetTeam() == m_team) return;
+
 	EPAResult result = Collision::CheckCollision(character);
 	if (result.hasCollision && m_DataProjectire.m_collisionLengthForBreakage < glm::length(result.penetrationVector)) {
 		character.addDamage(2.f);
@@ -77,13 +76,11 @@ void Projectile::physicsCollision(const Shape& shape){
 	EPAResult result = Collision::CheckCollision(shape);
 	if (result.hasCollision) {
 		m_position -= result.penetrationVector;
-
 		float Speed = glm::length(m_CurrentSpeed);
-		if (Speed > 0.0001f) {
-			glm::vec2 reflect = glm::reflect(glm::normalize(m_CurrentSpeed), glm::normalize(result.penetrationVector));
-			float e = m_entityData.Elasticity;
-			m_CurrentSpeed = Speed * (1.f - e) * reflect;
-		}
+		glm::vec2 reflect = glm::reflect(glm::normalize(m_CurrentSpeed), glm::normalize(result.penetrationVector));
+		float e = m_entityData.Elasticity;
+		m_CurrentSpeed = Speed * (1.f - e) * reflect;
+		m_DataProjectire.m_bounceCounter--;
 	}
 }
 

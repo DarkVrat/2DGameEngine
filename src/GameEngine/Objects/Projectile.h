@@ -3,13 +3,17 @@
 #include "Character.h"
 
 struct ProjectileData{
-	bool m_physics = false;
-	float m_collisionLengthForBreakage = 0.f;
-	float m_distanceTravel = 512.f;
-	int8_t m_bounceCounter = -1;
+	bool m_physics;
+	float m_collisionLengthForBreakage;
+	float m_distanceTravel;
+	int8_t m_bounceCounter;
+
+	ProjectileData(const bool& physics = false, const float& lengthBreak = 0.f, const float& distance = 512.f, const int8_t& bounce = -1) :
+		m_physics(physics), m_collisionLengthForBreakage(lengthBreak), m_distanceTravel(distance), m_bounceCounter(bounce){}
 };
 
 class Projectile : public Entity{
+public:
 	Projectile();
 	Projectile(const EntityData& data, const glm::vec2& position = glm::vec2(0, 0)) :Entity(data, position) {}
 	Projectile(const EntityData& data, const glm::vec2& position, const std::vector<glm::vec2>& points) :Entity(data, position, points) {}

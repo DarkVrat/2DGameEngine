@@ -21,7 +21,7 @@ void GameScene::init(const std::string& gameScene){
 	glm::vec2 sezeMap = MAP::getSize();
 	m_GSTree = GameSpaceTree(sezeMap);
 
-	EntityData dat1(1.f, 20.f, 512.f, 0.7f, 50.f);
+	EntityData dat1(1.f, 20.f, 128.f, 0.7f, 50.f);
 	std::vector<glm::vec2> vecPol;
 	vecPol.push_back(glm::vec2(8, 8));
 	vecPol.push_back(glm::vec2(8, -8));
@@ -33,6 +33,10 @@ void GameScene::init(const std::string& gameScene){
 	m_GSTree.updateSizeCamera();
 	CAMERA::setFollowingEntity(m_MainEntity);
 	CAMERA::setSettings(glm::vec2(64, 64), 0.004, 0.0015); 
+
+	m_project = std::make_shared<Projectile>(EntityData(1, 1, 128, 0.9, 1), glm::vec2(-1, -1));
+	m_project->ShapeIsCircle(1, 6);
+	m_project->setDataProjectile(ProjectileData(true, 0.5f, 4096.f, 2));
 } 
  
 void GameScene::render(){
@@ -90,10 +94,6 @@ void GameScene::update(const double& duration){
 		m_MainEntity->Rotate(-duration/20);
 	}
 
-	if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-		m_MainEntity->AddImpulse(glm::vec2(500, 500));
-	}
-
 	if (KEYBOARD::ifPressed(GLFW_KEY_F2)) {
 		debug = !debug;
 	}
@@ -105,6 +105,19 @@ void GameScene::update(const double& duration){
 		glm::vec2 posFromSizeCamera = posmouse * Camera::getSize() + glm::vec2(posCam.x-sizeCam.x/2, posCam.y - sizeCam.y/2);
 
 		m_MainEntity->FollowWayTo(posFromSizeCamera);
+	} 
+
+	if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+		glm::vec2 sizeCam = Camera::getSize();
+		glm::vec2 posCam = Camera::getCoords();
+		glm::vec2 posmouse = MOUSE::getPosition();
+		glm::vec2 posFromSizeCamera = posmouse * Camera::getSize() + glm::vec2(posCam.x - sizeCam.x / 2, posCam.y - sizeCam.y / 2);
+		
+		std::shared_ptr<Projectile> bufferProjectile = std::make_shared<Projectile>(m_project->CopyProjectile());
+
+		bufferProjectile->SetPosition(m_MainEntity->GetPosition());
+		bufferProjectile->SetSpeed(glm::normalize(posFromSizeCamera - m_MainEntity->GetPosition())*bufferProjectile->Data().MovementSpeed);
+		m_GSTree.addToTree(bufferProjectile);
 	}
 
 	m_GSTree.Update(duration);

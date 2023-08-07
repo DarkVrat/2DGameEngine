@@ -163,7 +163,7 @@ void GameSpaceTree::Update(const double& duration){
 		setSidesByVec2(entity.second.second, entity.first, direction);
 		entity.second.first = entity.first->GetPosition();
 
-		if (!m_collision.CheckCollision(*entity.first).hasCollision) {
+		if (!m_collision.CheckCollision(*entity.first).hasCollision || entity.first->IsBreak()) {
 			if (m_LeftNeighbour != nullptr && m_LeftNeighbour->m_collision.CheckCollision(*entity.first).hasCollision) m_LeftNeighbour->addToTree(entity.first);
 			if (m_RightNeighbour != nullptr && m_RightNeighbour->m_collision.CheckCollision(*entity.first).hasCollision) m_RightNeighbour->addToTree(entity.first);
 			if (m_TopNeighbour != nullptr && m_TopNeighbour->m_collision.CheckCollision(*entity.first).hasCollision) m_TopNeighbour->addToTree(entity.first);

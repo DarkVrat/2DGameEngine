@@ -39,9 +39,9 @@ public:
 	Entity operator=(const Entity& entity);
 	Entity operator=(Entity&& entity)noexcept;
 
-	void CheckCollision(Trigger& trigger, const double& duration);
-	void CheckCollision(const Collider& collider);
-	void CheckCollision(Object& object);
+	virtual void CheckCollision(Trigger& trigger, const double& duration);
+	virtual void CheckCollision(Collider& collider);
+	virtual void CheckCollision(Object& object);
 	virtual void CheckCollision(Entity& entity);
 
 	EntityData& Data() { return m_entityData; }
@@ -55,11 +55,15 @@ public:
 	virtual void Update(const double& duration);
 
 	bool IsBreak() { return m_break; }
+	void SetBreak(const bool& flag) { m_break = flag; }
+	int GetTeam() { return m_team; }
+	void SetTeam(const int& team) { m_team=team; }
 
 protected:
 	EntityData m_entityData;
 
 	bool m_break=false;
+	int m_team = 0;
 
 	glm::vec2 m_DirectionMove = glm::vec2(0, 0);
 	glm::vec2 m_CurrentSpeed = glm::vec2(0, 0);

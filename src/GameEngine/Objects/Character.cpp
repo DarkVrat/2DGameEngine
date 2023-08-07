@@ -56,8 +56,8 @@ void Character::FollowWayTo(const glm::vec2& position){
 }
 
 void Character::addDamage(const float& damage){
-	m_healt -= damage;
-	if (m_healt < 0.f) {
+	m_entityData.Health -= damage;
+	if (m_entityData.Health < 0.f) {
 		m_break = true;
 	}
 }

@@ -83,7 +83,7 @@ std::vector<glm::vec2> WaySearch::FindWay(const glm::vec2& start, const glm::vec
 }
 
 float WaySearch::getLengthError(){
-	return m_sizeCell/8.f;
+	return m_sizeCell/16.f;
 }
 
 std::vector<glm::vec2> WaySearch::Way(const glm::vec2& end){
@@ -121,10 +121,10 @@ std::set<glm::ivec2> WaySearch::updateCellAround(const glm::ivec2& coords, const
 
 	if (coords.x > 0) {
 		finalSet.insert(updateCell(coords + glm::ivec2(-1, 0), coords, cellEnd));
-		/*if (coords.y > 0)
+		if (coords.y > 0)
 			finalSet.insert(updateCell(coords + glm::ivec2(-1, -1), coords, cellEnd));
 		if (coords.y < m_sizeMap.y - 1)
-			finalSet.insert(updateCell(coords + glm::ivec2(-1, 1), coords, cellEnd));*/
+			finalSet.insert(updateCell(coords + glm::ivec2(-1, 1), coords, cellEnd));
 	}
 
 	if (coords.y > 0) 
@@ -134,10 +134,10 @@ std::set<glm::ivec2> WaySearch::updateCellAround(const glm::ivec2& coords, const
 
 	if (coords.x < m_sizeMap.x - 1) {
 		finalSet.insert(updateCell(coords + glm::ivec2(1, 0), coords, cellEnd));
-		/*if (coords.y > 0)
+		if (coords.y > 0)
 			finalSet.insert(updateCell(coords + glm::ivec2(1, -1), coords, cellEnd));
 		if (coords.y < m_sizeMap.y - 1)
-			finalSet.insert(updateCell(coords + glm::ivec2(1, 1), coords, cellEnd));*/
+			finalSet.insert(updateCell(coords + glm::ivec2(1, 1), coords, cellEnd));
 	}
 
 	finalSet.erase(glm::ivec2(-1, -1));

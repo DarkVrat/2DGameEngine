@@ -6,6 +6,7 @@
 #include "GameSceneResources.h"
 #include "PhysicsAndLogic/GameSpaceTree.h"
 #include "Objects/Character.h"
+#include "Objects/Projectile.h"
 
 class GameScene {
 public:
@@ -19,5 +20,6 @@ private:
 	GameSceneResources m_Resources;
 	GameSpaceTree m_GSTree;
 	std::shared_ptr<Character> m_MainEntity;
+	std::shared_ptr<Projectile> m_project;
 	bool debug = false;
 };

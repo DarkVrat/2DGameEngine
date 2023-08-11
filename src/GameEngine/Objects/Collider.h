@@ -13,4 +13,6 @@ public:
 
 	Collider operator=(const Collider& collider);
 	Collider operator=(Collider&& collider);
+
+	friend class CollisionController;
 };

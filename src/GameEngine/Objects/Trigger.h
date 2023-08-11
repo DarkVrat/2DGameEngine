@@ -3,16 +3,17 @@
 #include "../PhysicsAndLogic/Collision.h"
 #include "Entity.h"
 #include <functional>
+#include "../PhysicsAndLogic/Timer.h"
 
 class Entity;
 
 struct TriggerData{
-	TriggerData(const bool& disposible = true, const bool& forMainEntity = true, const std::function<void(Entity& entity, const double& duration)>& script = [](Entity& entity, const double& duration){})
+	TriggerData(const bool& disposible = true, const bool& forMainEntity = true, const std::function<void(Entity& entity)>& script = [](Entity& entity){})
 		:Disposable(disposible), ForMainEntity(forMainEntity), Script(script) {};
 
 	bool Disposable;
 	bool ForMainEntity;
-	std::function<void(Entity& entity, const double& duration)> Script;
+	std::function<void(Entity& entity)> Script;
 };
 
 class Trigger : public Collision {
@@ -28,11 +29,12 @@ public:
 	Trigger operator=(const Trigger& trigger);
 	Trigger operator=(Trigger&& trigger) noexcept;
 
-	void run(Entity& entity, const double& duration);
+	void run(Entity& entity);
 	bool getStopWork() { return m_stopWork; }
 
 	TriggerData& Data() { return m_triggerData; }
 
+	friend class CollisionController;
 private:
 	TriggerData m_triggerData;
 	bool m_stopWork = false;

@@ -14,7 +14,7 @@ Collision Collision::operator=(const Collision& collision){
 	return *this;
 }
 
-Collision Collision::operator=(Collision&& collision){
+Collision Collision::operator=(Collision&& collision) noexcept {
 	m_position = std::move(collision.m_position);
 	m_points = std::move(collision.m_points);
 	return *this;
@@ -24,7 +24,7 @@ std::shared_ptr<Collision> Collision::copyCollision(){
 	return std::make_shared<Collision>(copyShape());
 }
 
-EPAResult Collision::CheckCollision(const Collision& other){
+EPAResult Collision::CheckCollision(const Collision& other, const bool& flag){
 	glm::vec2 direction(1.0f, 0.0f);
 
 	glm::vec2 supportA = this->Support(direction);
@@ -49,7 +49,10 @@ EPAResult Collision::CheckCollision(const Collision& other){
 		simplex.push_back(newPoint);
 
 		if (IsSimplexColinear(simplex, direction)) {
-			return ProcessEPA(other, simplex);
+			if (flag) {
+				return ProcessEPA(other, simplex);
+			}
+			return EPAResult(true);
 		}
 	}
 

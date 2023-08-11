@@ -29,6 +29,7 @@ public:
 
 	ObjectData& Data() { return m_objectData; }
 
+	friend class CollisionController;
 protected:
 	ObjectData m_objectData;
 };

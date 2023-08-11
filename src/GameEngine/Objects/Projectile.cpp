@@ -32,44 +32,8 @@ Projectile Projectile::CopyProjectile(){
 	return Projectile(*this);
 }
 
-void Projectile::CheckCollision(Object& object){
-	if (!m_DataProjectire.m_physics || m_DataProjectire.m_bounceCounter==0) {
-		breakageCollision(object);
-	}
-	else {
-		physicsCollision(object);
-	}
-}
-
 void Projectile::setDataProjectile(const ProjectileData& data){
 	m_DataProjectire = data;
-}
-
-void Projectile::CheckCollision(Collider& collider){
-	if (!m_DataProjectire.m_physics || m_DataProjectire.m_bounceCounter == 0) {
-		breakageCollision(collider);
-	}
-	else {
-		physicsCollision(collider);
-	}
-}
-
-void Projectile::CheckCollision(Entity& entity){
-	if (!m_DataProjectire.m_physics || m_DataProjectire.m_bounceCounter == 0) {
-		breakageCollision(entity);
-	}
-	else {
-		Entity::CheckCollision(entity);
-	}
-}
-
-void Projectile::CheckCollision(Character& character){
-	if (character.GetTeam() == m_team) return;
-
-	EPAResult result = Collision::CheckCollision(character);
-	if (result.hasCollision && m_DataProjectire.m_collisionLengthForBreakage < glm::length(result.penetrationVector)) {
-		character.addDamage(2.f);
-	}
 }
 
 void Projectile::physicsCollision(const Shape& shape){

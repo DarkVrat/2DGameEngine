@@ -92,10 +92,14 @@ void GameSpaceTree::operator=(GameSpaceTree&& GST) noexcept{
 
 void GameSpaceTree::Render(){
 	if (m_LeftBottomTree != nullptr) {
-		if (m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftBottomTree->Render();
-		if (m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftTopTree->Render();
-		if (m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightTopTree->Render();
-		if (m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightBottomTree->Render();
+		if (m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+			m_LeftBottomTree->Render();
+		if (m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+			m_LeftTopTree->Render();
+		if (m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+			m_RightTopTree->Render();
+		if (m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+			m_RightBottomTree->Render();
 
 		return;
 	}
@@ -105,10 +109,14 @@ void GameSpaceTree::Render(){
 
 void GameSpaceTree::DebugRender(){
 	if (m_LeftBottomTree != nullptr) {
-		if (m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftBottomTree->DebugRender();
-		if (m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftTopTree->DebugRender();
-		if (m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightTopTree->DebugRender();
-		if (m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightBottomTree->DebugRender();
+		if (m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+			m_LeftBottomTree->DebugRender();
+		if (m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+			m_LeftTopTree->DebugRender();
+		if (m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+			m_RightTopTree->DebugRender();
+		if (m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+			m_RightBottomTree->DebugRender();
 
 		return;
 	}
@@ -139,10 +147,14 @@ void GameSpaceTree::DebugRender(){
 }
 
 void GameSpaceTree::Update(const double& duration){
-	if (m_LeftTopTree != nullptr && m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftTopTree->Update(duration);
-	if (m_LeftBottomTree != nullptr && m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_LeftBottomTree->Update(duration);
-	if (m_RightTopTree != nullptr && m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightTopTree->Update(duration);
-	if (m_RightBottomTree != nullptr && m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera).hasCollision) m_RightBottomTree->Update(duration);
+	if (m_LeftTopTree != nullptr && m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		m_LeftTopTree->Update(duration);
+	if (m_LeftBottomTree != nullptr && m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		m_LeftBottomTree->Update(duration);
+	if (m_RightTopTree != nullptr && m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		m_RightTopTree->Update(duration);
+	if (m_RightBottomTree != nullptr && m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		m_RightBottomTree->Update(duration);
 	if (m_RightBottomTree != nullptr) return;
 	
 	for (auto& entity : m_Entitys) {
@@ -164,10 +176,14 @@ void GameSpaceTree::Update(const double& duration){
 		entity.second.first = entity.first->GetPosition();
 
 		if (!m_collision.CheckCollision(*entity.first).hasCollision || entity.first->IsBreak()) {
-			if (m_LeftNeighbour != nullptr && m_LeftNeighbour->m_collision.CheckCollision(*entity.first).hasCollision) m_LeftNeighbour->addToTree(entity.first);
-			if (m_RightNeighbour != nullptr && m_RightNeighbour->m_collision.CheckCollision(*entity.first).hasCollision) m_RightNeighbour->addToTree(entity.first);
-			if (m_TopNeighbour != nullptr && m_TopNeighbour->m_collision.CheckCollision(*entity.first).hasCollision) m_TopNeighbour->addToTree(entity.first);
-			if (m_BottomNeighbour != nullptr && m_BottomNeighbour->m_collision.CheckCollision(*entity.first).hasCollision) m_BottomNeighbour->addToTree(entity.first);
+			if (m_LeftNeighbour != nullptr && m_LeftNeighbour->m_collision.CheckCollision(*entity.first, ONLY_COLLISION).hasCollision) 
+				m_LeftNeighbour->addToTree(entity.first);
+			if (m_RightNeighbour != nullptr && m_RightNeighbour->m_collision.CheckCollision(*entity.first, ONLY_COLLISION).hasCollision) 
+				m_RightNeighbour->addToTree(entity.first);
+			if (m_TopNeighbour != nullptr && m_TopNeighbour->m_collision.CheckCollision(*entity.first, ONLY_COLLISION).hasCollision) 
+				m_TopNeighbour->addToTree(entity.first);
+			if (m_BottomNeighbour != nullptr && m_BottomNeighbour->m_collision.CheckCollision(*entity.first, ONLY_COLLISION).hasCollision) 
+				m_BottomNeighbour->addToTree(entity.first);
 
 			it = m_Entitys.erase(it);
 			if (m_parrent != nullptr && m_parrent->link())
@@ -186,17 +202,17 @@ void GameSpaceTree::Update(std::shared_ptr<Entity> entityForUpdate, const double
 			sides = entity.second.second;
 			break;
 		}
-		entityForUpdate->CheckCollision(*entity.first);
+		CollisionController::CheckCollision(*entityForUpdate, *entity.first);
 	}
 	for (auto& collider : m_Colliders) {
-		entityForUpdate->CheckCollision(*collider.first);
+		CollisionController::CheckCollision(*entityForUpdate, *collider.first);
 	}
 	for (auto& object : m_Objects) {
-		entityForUpdate->CheckCollision(*object.first);
+		CollisionController::CheckCollision(*entityForUpdate, *object.first);
 	}
 	for (auto& trigger: m_Triggers) {
 		if (!(sides&trigger.second&(SIDES_BOTTOM|SIDES_RIGHT))) {
-			entityForUpdate->CheckCollision(*trigger.first, duration);
+			CollisionController::CheckCollision(*entityForUpdate, *trigger.first);
 			if (trigger.first->getStopWork()) m_Triggers.erase(trigger.first);
 		}
 	}

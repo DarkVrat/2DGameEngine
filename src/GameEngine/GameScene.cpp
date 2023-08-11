@@ -34,7 +34,7 @@ void GameScene::init(const std::string& gameScene){
 	CAMERA::setFollowingEntity(m_MainEntity);
 	CAMERA::setSettings(glm::vec2(64, 64), 0.004, 0.0015); 
 
-	m_project = std::make_shared<Projectile>(EntityData(1, 1, 128, 0.9, 1), glm::vec2(-1, -1));
+	m_project = std::make_shared<Projectile>(EntityData(1, 1, 128, 0, 1), glm::vec2(-1, -1));
 	m_project->ShapeIsCircle(1, 6);
 	m_project->setDataProjectile(ProjectileData(true, 0.5f, 4096.f, 2));
 } 

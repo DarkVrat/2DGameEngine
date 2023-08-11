@@ -31,15 +31,12 @@ public:
 
 	void setDataProjectile(const ProjectileData& data);
 
-	void CheckCollision(Object& object);
-	void CheckCollision(Collider& collider);
-	void CheckCollision(Entity& entity);
-	void CheckCollision(Character& character);
-
 	void physicsCollision(const Shape& shape);
 	void breakageCollision(const Shape& shape);
 
 	void Update(const double& duration);
+
+	friend class CollisionController;
 private:
 	ProjectileData m_DataProjectire;
 };

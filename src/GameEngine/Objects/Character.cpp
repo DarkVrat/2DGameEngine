@@ -38,14 +38,6 @@ Character Character::operator=(Character&& character) noexcept{
 	return *this;
 }
 
-void Character::CheckCollision(Entity& entity){
-	Entity::CheckCollision(entity);
-}
-
-void Character::CheckCollision(Character& character){
-	Entity::CheckCollision(character);
-}
-
 void Character::Update(const double& duration){
 	m_way.updateDirection(m_DirectionMove, m_position);
 	Entity::Update(duration);

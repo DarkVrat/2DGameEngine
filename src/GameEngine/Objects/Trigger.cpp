@@ -26,7 +26,7 @@ Trigger Trigger::operator=(Trigger&& trigger) noexcept{
 	return *this;
 }
 
-void Trigger::run(Entity& entity, const double& duration){
-	m_triggerData.Script(entity, duration);
+void Trigger::run(Entity& entity){
+	m_triggerData.Script(entity);
 	if (m_triggerData.Disposable) m_stopWork = true;
 }

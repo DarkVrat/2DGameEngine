@@ -98,6 +98,10 @@ add_executable(${PROJECT}
 	src/GameEngine/PhysicsAndLogic/WaySearch.cpp
 	src/GameEngine/PhysicsAndLogic/WayControlBlock.h
 	src/GameEngine/PhysicsAndLogic/WayControlBlock.cpp
+	src/GameEngine/PhysicsAndLogic/CollisionController.h
+	src/GameEngine/PhysicsAndLogic/CollisionController.cpp
+	src/GameEngine/PhysicsAndLogic/Timer.h
+	src/GameEngine/PhysicsAndLogic/Timer.cpp
 	
 	src/UI/Button.cpp
 	src/UI/Button.h

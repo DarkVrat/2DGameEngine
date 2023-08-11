@@ -18,15 +18,14 @@ public:
 	Character operator=(const Character& character);
 	Character operator=(Character&& character)noexcept;
 
-	void CheckCollision(Entity& entity);
-	void CheckCollision(Character& character);
-
 	void Update(const double& duration);
 
 	void FollowWayTo(const glm::vec2& position);
 
 	float getHealt() { return m_entityData.Health; }
 	void addDamage(const float& damage);
+
+	friend class CollisionController;
 private:
 	WayControlBlock m_way;
 };

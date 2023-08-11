@@ -4,6 +4,9 @@
 #include <memory>
 #include <vector>
 
+#define ONLY_COLLISION false
+#define WITH_VECTOR true
+
 struct EPAResult {
 	EPAResult(const bool& has = false, const glm::vec2& pen = glm::vec2(0, 0)) :hasCollision(has), penetrationVector(pen) {};
 
@@ -20,11 +23,11 @@ public:
 	Collision(Collision&& collision) noexcept;
 
 	Collision operator=(const Collision& collision);
-	Collision operator=(Collision&& collision);
+	Collision operator=(Collision&& collision)noexcept;
 
 	std::shared_ptr<Collision> copyCollision();
 
-	EPAResult CheckCollision(const Collision& other);
+	EPAResult CheckCollision(const Collision& other,const bool& flag = WITH_VECTOR);
 protected:
 	static bool IsSimplexColinear(std::vector<glm::vec2>& simplex, glm::vec2& direction);
 	EPAResult ProcessEPA(const Collision& other, std::vector<glm::vec2>& simplex);

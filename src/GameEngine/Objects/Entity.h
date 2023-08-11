@@ -39,11 +39,6 @@ public:
 	Entity operator=(const Entity& entity);
 	Entity operator=(Entity&& entity)noexcept;
 
-	virtual void CheckCollision(Trigger& trigger, const double& duration);
-	virtual void CheckCollision(Collider& collider);
-	virtual void CheckCollision(Object& object);
-	virtual void CheckCollision(Entity& entity);
-
 	EntityData& Data() { return m_entityData; }
 
 	void SetDirection(const glm::vec2& direction);
@@ -59,6 +54,7 @@ public:
 	int GetTeam() { return m_team; }
 	void SetTeam(const int& team) { m_team=team; }
 
+	friend class CollisionController;
 protected:
 	EntityData m_entityData;
 

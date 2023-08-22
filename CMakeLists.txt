@@ -102,7 +102,9 @@ add_executable(${PROJECT}
 	src/GameEngine/PhysicsAndLogic/CollisionController.cpp
 	src/GameEngine/PhysicsAndLogic/Timer.h
 	src/GameEngine/PhysicsAndLogic/Timer.cpp
-	
+	src/GameEngine/PhysicsAndLogic/ProjectileMoveController.h
+	src/GameEngine/PhysicsAndLogic/ProjectileMoveController.cpp
+
 	src/UI/Button.cpp
 	src/UI/Button.h
 	src/UI/ListParameter.h

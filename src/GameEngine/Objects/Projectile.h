@@ -1,26 +1,45 @@
 #pragma once 
 
 #include "Character.h"
+#include "../PhysicsAndLogic/ProjectileMoveController.h"
+#include <map>
+#include <functional>
 
 struct ProjectileData{
-	bool m_physics;
-	float m_collisionLengthForBreakage;
-	float m_distanceTravel;
-	int8_t m_bounceCounter;
+	bool m_physics = false;
+	bool m_destructible = true;
+	bool m_breakableWhenStopped = true;
+	bool m_permanentDamage = false;
+	bool m_oneTimeUse = true;
+	float m_collisionLengthForBreakage = 0.f;
+	int8_t m_maxBounceCounter = 0;
+	std::function<void(Projectile&, Character&)> m_function = [](Projectile& p, Character& c) {c.addDamage(1);};
+	ProjectileMoveController m_moveScript;
 
-	ProjectileData(const bool& physics = false, const float& lengthBreak = 0.f, const float& distance = 512.f, const int8_t& bounce = -1) :
-		m_physics(physics), m_collisionLengthForBreakage(lengthBreak), m_distanceTravel(distance), m_bounceCounter(bounce){}
+	ProjectileData() {}
+
+	ProjectileData(bool physics , bool destructible , bool breakableWhenStopped, bool permanentDamage, bool oneTimeUse , float collisionLengthForBreakage , int8_t bounceCounter , std::function<void(Projectile&, Character&)> functionForProjectile, ProjectileMoveController moveScript)
+		:m_physics(physics), 
+		m_destructible(destructible), 
+		m_breakableWhenStopped(breakableWhenStopped), 
+		m_permanentDamage(permanentDamage), 
+		m_oneTimeUse(oneTimeUse), 
+		m_collisionLengthForBreakage(collisionLengthForBreakage), 
+		m_maxBounceCounter(bounceCounter),
+		m_function(functionForProjectile),
+		m_moveScript(moveScript) {
+	}
 };
 
-class Projectile : public Entity{
+class Projectile : public Entity {
 public:
-	Projectile();
-	Projectile(const EntityData& data, const glm::vec2& position = glm::vec2(0, 0)) :Entity(data, position) {}
-	Projectile(const EntityData& data, const glm::vec2& position, const std::vector<glm::vec2>& points) :Entity(data, position, points) {}
-	Projectile(const EntityData& data, const Shape& shape) :Entity(data, shape) {}
-	Projectile(const EntityData& data, const Collision& collision) :Entity(data, collision) {}
-	Projectile(const Entity& entity) :Entity(entity) {}
-	Projectile(Entity&& entity) noexcept : Entity(std::move(entity)) {}
+	Projectile() { startMoveController(); };
+	Projectile(const ProjectileData& projectileData, const EntityData& entitydata, const glm::vec2& position = glm::vec2(0, 0)) :m_DataProjectire(projectileData), Entity(entitydata, position) { startMoveController(); }
+	Projectile(const ProjectileData& projectileData, const EntityData& entitydata, const glm::vec2& position, const std::vector<glm::vec2>& points) :m_DataProjectire(projectileData), Entity(entitydata, position, points) { startMoveController(); }
+	Projectile(const ProjectileData& projectileData, const EntityData& entitydata, const Shape& shape) :m_DataProjectire(projectileData), Entity(entitydata, shape) { startMoveController(); }
+	Projectile(const ProjectileData& projectileData, const EntityData& entitydata, const Collision& collision) :m_DataProjectire(projectileData), Entity(entitydata, collision) { startMoveController(); }
+	Projectile(const ProjectileData& projectileData, const Entity& entity) :m_DataProjectire(projectileData), Entity(entity) { startMoveController(); }
+	Projectile(const ProjectileData& projectileData, Entity&& entity) noexcept :m_DataProjectire(projectileData), Entity(std::move(entity)) { startMoveController(); }
 	Projectile(const Projectile& projectile);
 	Projectile(Projectile&& projectile) noexcept;
 
@@ -33,10 +52,21 @@ public:
 
 	void physicsCollision(const Shape& shape);
 	void breakageCollision(const Shape& shape);
+	void characterCollision(Character& character);
 
 	void Update(const double& duration);
+	void UpdateAsEntity(const double& duration);
+
+	bool BounceIsOver();
 
 	friend class CollisionController;
+	friend struct ProjectileData;
 private:
+	void startMoveController();
+
 	ProjectileData m_DataProjectire;
+
+	int8_t m_countBounce = 0;
+	std::map<Character*, bool> m_contactWithCharacters;
+	MoveScriptController m_controllerMove;
 };

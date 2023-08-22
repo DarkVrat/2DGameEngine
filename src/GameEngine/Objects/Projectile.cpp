@@ -44,7 +44,7 @@ void Projectile::physicsCollision(const Shape& shape){
 		glm::vec2 reflect = glm::reflect(glm::normalize(m_CurrentSpeed), glm::normalize(result.penetrationVector));
 		float e = m_entityData.Elasticity;
 		m_CurrentSpeed = Speed * (1.f - e) * reflect;
-		m_DataProjectire.m_bounceCounter--;
+		m_countBounce++;
 	}
 }
 
@@ -55,11 +55,49 @@ void Projectile::breakageCollision(const Shape& shape){
 	}
 }
 
+void Projectile::characterCollision(Character& character){
+	m_DataProjectire.m_function(*this, character);
+	m_contactWithCharacters.emplace(&character , true);
+}
+
 void Projectile::Update(const double& duration){
-	glm::vec2 start = m_position;
+	for (auto currentCharacter : m_contactWithCharacters) {
+		if (currentCharacter.second) {
+			currentCharacter.second = false;
+		}
+		else {
+			m_contactWithCharacters.extract(currentCharacter.first);
+		}
+	}
+
+	if (m_controllerMove.m_stop == true) {
+		return;
+	}
+
+	m_controllerMove.m_timeCurrentInstruction += duration;
+	if (m_DataProjectire.m_moveScript.UpdateProjectile(*this, m_controllerMove.m_indexInstruction, duration) < m_controllerMove.m_timeCurrentInstruction) {
+		m_controllerMove.m_indexInstruction++;
+		if (m_controllerMove.m_SizeScript == 0) {
+			m_controllerMove.m_stop = true;
+			if (m_DataProjectire.m_breakableWhenStopped) {
+				m_break = true;
+			}
+		}
+	}
+}
+
+void Projectile::UpdateAsEntity(const double& duration){
 	Entity::Update(duration);
-	m_DataProjectire.m_distanceTravel -= glm::length(start - m_position);
-	if (m_DataProjectire.m_distanceTravel < 0) {
-		m_break = true;
+}
+
+bool Projectile::BounceIsOver(){
+	return m_countBounce>=m_DataProjectire.m_maxBounceCounter;
+}
+
+void Projectile::startMoveController(){
+	m_controllerMove.m_SizeScript = m_DataProjectire.m_moveScript.SizeScript();
+	if (m_controllerMove.m_SizeScript == 0) {
+		m_DataProjectire.m_moveScript.addMoveInstruction([](Projectile& projectile, const double& duration) {projectile.UpdateAsEntity(duration); }, 10000);
+		m_controllerMove.m_SizeScript = 1;
 	}
 }

@@ -1,5 +1,6 @@
 #include "WayControlBlock.h"
 
+#include <iostream>
 #include <glm/glm.hpp>
 
 glm::vec2 WayControlBlock::followWayTo(const glm::vec2& positionStart, const glm::vec2& positionEnd){

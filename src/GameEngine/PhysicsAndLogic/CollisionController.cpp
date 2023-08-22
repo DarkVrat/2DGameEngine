@@ -69,7 +69,7 @@ void CollisionController::Help(Entity& entity, Character& character){
 }
 
 void CollisionController::Help(Entity& entity, Projectile& projectile){
-    if (!projectile.m_DataProjectire.m_physics || projectile.m_DataProjectire.m_bounceCounter == 0) {
+    if (!projectile.m_DataProjectire.m_physics || projectile.BounceIsOver()) {
         projectile.breakageCollision(entity);
     }
     else {
@@ -108,7 +108,7 @@ void CollisionController::Help(Character& character, Collider& collider){
 }
 
 void CollisionController::Help(Projectile& projectile, Collider& collider){
-    if (!projectile.m_DataProjectire.m_physics || projectile.m_DataProjectire.m_bounceCounter == 0) {
+    if (!projectile.m_DataProjectire.m_physics || projectile.BounceIsOver()) {
         projectile.breakageCollision(collider);
     }
     else {
@@ -135,7 +135,7 @@ void CollisionController::Help(Character& character, Object& object){
 }
 
 void CollisionController::Help(Projectile& projectile, Object& object){
-    if (!projectile.m_DataProjectire.m_physics || projectile.m_DataProjectire.m_bounceCounter == 0) {
+    if (!projectile.m_DataProjectire.m_physics || projectile.BounceIsOver()) {
         projectile.breakageCollision(object);
     }
     else {

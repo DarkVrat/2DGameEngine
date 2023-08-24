@@ -11,6 +11,7 @@ Character::Character(){
 Character::Character(const Character& character){
 	m_position = character.m_position;
 	m_points = character.m_points;
+	m_circumradius = character.m_circumradius;
 	m_entityData = character.m_entityData;
 	m_way = character.m_way;
 }
@@ -18,6 +19,7 @@ Character::Character(const Character& character){
 Character::Character(Character&& character) noexcept{
 	m_position = std::move(character.m_position);
 	m_points = std::move(character.m_points);
+	m_circumradius = std::move(character.m_circumradius);
 	m_entityData = std::move(character.m_entityData);
 	m_way = std::move(character.m_way);
 }
@@ -25,6 +27,7 @@ Character::Character(Character&& character) noexcept{
 Character Character::operator=(const Character& character){
 	m_position = character.m_position;
 	m_points = character.m_points;
+	m_circumradius = character.m_circumradius;
 	m_entityData = character.m_entityData;
 	m_way = character.m_way;
 	return *this;
@@ -33,6 +36,7 @@ Character Character::operator=(const Character& character){
 Character Character::operator=(Character&& character) noexcept{
 	m_position = std::move(character.m_position);
 	m_points = std::move(character.m_points);
+	m_circumradius = std::move(character.m_circumradius);
 	m_entityData = std::move(character.m_entityData);
 	m_way = std::move(character.m_way);
 	return *this;

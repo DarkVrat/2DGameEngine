@@ -169,7 +169,7 @@ void GameSpaceTree::Update(const double& duration){
 	for (auto it = m_Entitys.begin(); it != m_Entitys.end();) {
 		auto& entity = *it;
 
-		Update(entity.first, duration);
+		Update(entity, duration);
 
 		glm::vec2 direction = entity.first->GetPosition() - entity.second.first;
 		setSidesByVec2(entity.second.second, entity.first, direction);
@@ -200,24 +200,29 @@ void GameSpaceTree::Update(const double& duration){
 	}
 }
 
-void GameSpaceTree::Update(std::shared_ptr<Entity> entityForUpdate, const double& duration){
-	uint8_t sides=0;
+void GameSpaceTree::Update(std::pair<std::shared_ptr<Entity>, std::pair<glm::vec2, uint8_t>> entityForUpdate, const double& duration){
 	for (auto& entity : m_Entitys) {
-		if (entityForUpdate == entity.first) {
-			sides = entity.second.second;
+		if (entityForUpdate.first == entity.first) {
 			break;
 		}
-		CollisionController::CheckCollision(*entityForUpdate, *entity.first);
+
+		if (!(entityForUpdate.second.second & entity.second.second & (SIDES_BOTTOM | SIDES_RIGHT))) {
+			CollisionController::CheckCollision(*entityForUpdate.first, *entity.first);
+		}
 	}
 	for (auto& collider : m_Colliders) {
-		CollisionController::CheckCollision(*entityForUpdate, *collider.first);
+		if (!(entityForUpdate.second.second & collider.second & (SIDES_BOTTOM | SIDES_RIGHT))) {
+			CollisionController::CheckCollision(*entityForUpdate.first, *collider.first);
+		}
 	}
 	for (auto& object : m_Objects) {
-		CollisionController::CheckCollision(*entityForUpdate, *object.first);
+		if (!(entityForUpdate.second.second & object.second & (SIDES_BOTTOM | SIDES_RIGHT))) {
+			CollisionController::CheckCollision(*entityForUpdate.first, *object.first);
+		}
 	}
 	for (auto& trigger: m_Triggers) {
-		if (!(sides&trigger.second&(SIDES_BOTTOM|SIDES_RIGHT))) {
-			CollisionController::CheckCollision(*entityForUpdate, *trigger.first);
+		if (!(entityForUpdate.second.second & trigger.second & (SIDES_BOTTOM | SIDES_RIGHT))) {
+			CollisionController::CheckCollision(*entityForUpdate.first, *trigger.first);
 			if (trigger.first->getStopWork()) m_Triggers.erase(trigger.first);
 		}
 	}

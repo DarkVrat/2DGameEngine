@@ -6,15 +6,24 @@ Object::Object(){
 	ShapeIsPoint();
 }
 
+Object::Object(const Object& object){
+	m_position = object.m_position;
+	m_points = object.m_points;
+	m_circumradius = object.m_circumradius;
+	m_objectData = object.m_objectData;
+}
+
 Object::Object(Object&& object) noexcept{
 	m_position = std::move(object.m_position);
 	m_points = std::move(object.m_points);
+	m_circumradius = std::move(object.m_circumradius);
 	m_objectData = std::move(object.m_objectData);
 }
 
 Object Object::operator=(const Object& object){
 	m_position = object.m_position;
 	m_points = object.m_points;
+	m_circumradius = object.m_circumradius;
 	m_objectData = object.m_objectData;
 	return *this;
 }
@@ -22,6 +31,7 @@ Object Object::operator=(const Object& object){
 Object Object::operator=(Object&& object)noexcept {
 	m_position = std::move(object.m_position);
 	m_points = std::move(object.m_points);
+	m_circumradius = std::move(object.m_circumradius);
 	m_objectData = std::move(object.m_objectData);
 	return *this;
 }

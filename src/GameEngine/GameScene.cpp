@@ -34,8 +34,8 @@ void GameScene::init(const std::string& gameScene){
 	CAMERA::setFollowingEntity(m_MainEntity);
 	CAMERA::setSettings(glm::vec2(64, 64), 0.0003, 0.0008); 
 
-	m_project = std::make_shared<Projectile>(ProjectileData(), EntityData(1, 1, 64, 0, 1), glm::vec2(-1, -1));
-	m_project->ShapeIsCircle(1, 6);
+	m_project = std::make_shared<Projectile>(ProjectileData(), EntityData(1, 1, 128, 0, 1), glm::vec2(-1, -1));
+	m_project->ShapeIsCircle(8, 6);
 } 
  
 void GameScene::render(){
@@ -107,10 +107,6 @@ void GameScene::update(const double& duration){
 	} 
 
 	if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-		glm::vec2 sizeCam = Camera::getSize();
-		glm::vec2 posCam = Camera::getCoords();
-		glm::vec2 posmouse = MOUSE::getPosition();
-		glm::vec2 posFromSizeCamera = posmouse * Camera::getSize() + glm::vec2(posCam.x - sizeCam.x / 2, posCam.y - sizeCam.y / 2);
 		for (int i = 0; i < 8; i++) {
 			std::shared_ptr<Projectile> bufferProjectile = std::make_shared<Projectile>(m_project->CopyProjectile());
 
@@ -118,8 +114,8 @@ void GameScene::update(const double& duration){
 			float x = cos(angleIncrement);
 			float y = sin(angleIncrement);
 
-			bufferProjectile->SetPosition(m_MainEntity->GetPosition()+glm::vec2(16*x, 16*y));
-			bufferProjectile->SetSpeed((glm::normalize(posFromSizeCamera - m_MainEntity->GetPosition())+glm::vec2(x,y)) * bufferProjectile->Data().MovementSpeed);
+			bufferProjectile->SetPosition(m_MainEntity->GetPosition()+glm::vec2(32*x, 32*y));
+			bufferProjectile->SetDirection(glm::vec2(x, y));
 			m_GSTree.addToTree(bufferProjectile);
 		}
 	}

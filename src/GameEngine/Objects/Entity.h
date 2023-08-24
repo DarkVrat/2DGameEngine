@@ -33,7 +33,7 @@ public:
 	Entity(const EntityData& data, const glm::vec2& position, const std::vector<glm::vec2>& points) :m_entityData(data), Collision(position, points) {}
 	Entity(const EntityData& data, const Shape& shape) :m_entityData(data), Collision(shape) {}
 	Entity(const EntityData& data, const Collision& collision) :m_entityData(data), Collision(collision) {}
-	Entity(const Entity& entity) :m_entityData(entity.m_entityData), Collision(entity.m_position, entity.m_points) {}
+	Entity(const Entity& entity);
 	Entity(Entity&& entity) noexcept;
 
 	Entity operator=(const Entity& entity);

@@ -1,5 +1,6 @@
 #include "CollisionController.h"
 
+#include <cmath>
 #include <glm/glm.hpp>
 
 //--------------Проверка и вызов функций----------//

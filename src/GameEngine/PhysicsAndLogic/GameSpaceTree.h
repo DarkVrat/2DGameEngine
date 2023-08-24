@@ -41,7 +41,7 @@ public:
 private:
 	GameSpaceTree(const std::vector<glm::vec2>& points, const glm::vec2 leftBottomPoint, GameSpaceTree* parrent);
 
-	void Update(std::shared_ptr<Entity> entity, const double& duration);
+	void Update(std::pair<std::shared_ptr<Entity>, std::pair<glm::vec2, uint8_t>> entity, const double& duration);
 	void setNeighbours(GameSpaceTree* LeftNeighbour, GameSpaceTree* RightNeighbour, GameSpaceTree* TopNeighbour, GameSpaceTree* BottomNeighbour);
 
 	template<class T>

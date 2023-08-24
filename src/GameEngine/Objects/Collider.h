@@ -8,7 +8,7 @@ public:
 	Collider(const glm::vec2& position, const std::vector<glm::vec2>& points) :Collision(position, points) {};
 	Collider(const Shape& shape) :Collision(shape) {};
 	Collider(const Collision& collision) :Collision(collision) {};
-	Collider(const Collider& collider) :Collision(collider.m_position, collider.m_points) {};
+	Collider(const Collider& collider);
 	Collider(Collider&& collider) noexcept;
 
 	Collider operator=(const Collider& collider);

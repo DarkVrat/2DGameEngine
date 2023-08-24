@@ -19,7 +19,7 @@ public:
 	Collision(const glm::vec2& position = glm::vec2(0, 0)) :Shape(position) {};
 	Collision(const glm::vec2& position, const std::vector<glm::vec2>& points) :Shape(position, points) {};
 	Collision(const Shape& shape) :Shape(shape) {};
-	Collision(const Collision& collision) :Shape(collision.m_position, collision.m_points) {};
+	Collision(const Collision& collision);
 	Collision(Collision&& collision) noexcept;
 
 	Collision operator=(const Collision& collision);

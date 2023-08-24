@@ -21,7 +21,7 @@ public:
 	Object(const ObjectData& data, const glm::vec2& position, const std::vector<glm::vec2>& points) :m_objectData(data), Collision(position, points) {};
 	Object(const ObjectData& data, const Shape& shape) :m_objectData(data), Collision(shape) {};
 	Object(const ObjectData& data, const Collision& collision) :m_objectData(data), Collision(collision) {};
-	Object(const Object& object) :m_objectData(object.m_objectData), Collision(object.m_position, object.m_points) {};
+	Object(const Object& object);
 	Object(Object&& object) noexcept;
 
 	Object operator=(const Object& object);

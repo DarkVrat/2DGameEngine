@@ -6,15 +6,24 @@ Trigger::Trigger(){
 	ShapeIsPoint();
 }
 
+Trigger::Trigger(const Trigger& trigger){
+	m_position = trigger.m_position;
+	m_points = trigger.m_points;
+	m_circumradius = trigger.m_circumradius;
+	m_triggerData = trigger.m_triggerData;
+}
+
 Trigger::Trigger(Trigger&& trigger) noexcept{
 	m_position = std::move(trigger.m_position);
 	m_points = std::move(trigger.m_points);
+	m_circumradius = std::move(trigger.m_circumradius);
 	m_triggerData = std::move(trigger.m_triggerData);
 }
 
 Trigger Trigger::operator=(const Trigger& trigger){
 	m_position = trigger.m_position;
 	m_points = trigger.m_points;
+	m_circumradius = trigger.m_circumradius;
 	m_triggerData = trigger.m_triggerData;
 	return *this;
 }
@@ -22,6 +31,7 @@ Trigger Trigger::operator=(const Trigger& trigger){
 Trigger Trigger::operator=(Trigger&& trigger) noexcept{
 	m_position = std::move(trigger.m_position);
 	m_points = std::move(trigger.m_points);
+	m_circumradius = std::move(trigger.m_circumradius);
 	m_triggerData = std::move(trigger.m_triggerData);
 	return *this;
 }

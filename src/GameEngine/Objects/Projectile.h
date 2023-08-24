@@ -6,13 +6,13 @@
 #include <functional>
 
 struct ProjectileData{
-	bool m_physics = false;
+	bool m_physics = true;
 	bool m_destructible = true;
 	bool m_breakableWhenStopped = true;
 	bool m_permanentDamage = false;
 	bool m_oneTimeUse = true;
-	float m_collisionLengthForBreakage = 0.f;
-	int8_t m_maxBounceCounter = 0;
+	float m_collisionLengthForBreakage = 2.f;
+	int8_t m_maxBounceCounter = 10;
 	std::function<void(Projectile&, Character&)> m_function = [](Projectile& p, Character& c) {c.addDamage(1);};
 	ProjectileMoveController m_moveScript;
 
@@ -58,6 +58,8 @@ public:
 	void UpdateAsEntity(const double& duration);
 
 	bool BounceIsOver();
+
+	void SetDirection(const glm::vec2& direction);
 
 	friend class CollisionController;
 	friend struct ProjectileData;

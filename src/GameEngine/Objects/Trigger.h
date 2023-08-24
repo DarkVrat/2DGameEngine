@@ -23,7 +23,7 @@ public:
 	Trigger(const TriggerData& triggerData, const glm::vec2& position, const std::vector<glm::vec2>& points) :m_triggerData(triggerData), Collision(position, points) {};
 	Trigger(const TriggerData& triggerData, const Shape& shape) :m_triggerData(triggerData), Collision(shape) {};
 	Trigger(const TriggerData& triggerData, const Collision& collision) :m_triggerData(triggerData), Collision(collision) {};
-	Trigger(const Trigger& trigger) :m_triggerData(trigger.m_triggerData), Collision(trigger.m_position, trigger.m_points) {};
+	Trigger(const Trigger& trigger);
 	Trigger(Trigger&& trigger) noexcept;
 
 	Trigger operator=(const Trigger& trigger);

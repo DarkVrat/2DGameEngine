@@ -10,15 +10,24 @@ Entity::Entity(){
 	ShapeIsPoint();
 }
 
+Entity::Entity(const Entity& entity){
+	m_position = entity.m_position;
+	m_points = entity.m_points;
+	m_circumradius = entity.m_circumradius;
+	m_entityData = entity.m_entityData;
+}
+
 Entity::Entity(Entity&& entity) noexcept{
 	m_position = std::move(entity.m_position);
 	m_points = std::move(entity.m_points);
+	m_circumradius = std::move(entity.m_circumradius);
 	m_entityData = std::move(entity.m_entityData);
 }
 
 Entity Entity::operator=(const Entity& entity){ 
 	m_position = entity.m_position;
 	m_points = entity.m_points;
+	m_circumradius = entity.m_circumradius;
 	m_entityData = entity.m_entityData;
 	return *this;
 }
@@ -26,6 +35,7 @@ Entity Entity::operator=(const Entity& entity){
 Entity Entity::operator=(Entity&& entity)noexcept {
 	m_position = std::move(entity.m_position);
 	m_points = std::move(entity.m_points);
+	m_circumradius = std::move(entity.m_circumradius);
 	m_entityData = std::move(entity.m_entityData);
 	return *this;
 }

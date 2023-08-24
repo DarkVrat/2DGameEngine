@@ -3,20 +3,29 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 
+Collision::Collision(const Collision& collision){
+	m_position = collision.m_position;
+	m_points = collision.m_points;
+	m_circumradius = collision.m_circumradius;
+}
+
 Collision::Collision(Collision&& collision) noexcept{
 	m_position = std::move(collision.m_position);
 	m_points = std::move(collision.m_points);
+	m_circumradius = std::move(collision.m_circumradius);
 }
 
 Collision Collision::operator=(const Collision& collision){
 	m_position = collision.m_position;
 	m_points = collision.m_points;
+	m_circumradius = collision.m_circumradius;
 	return *this;
 }
 
 Collision Collision::operator=(Collision&& collision) noexcept {
 	m_position = std::move(collision.m_position);
 	m_points = std::move(collision.m_points);
+	m_circumradius = std::move(collision.m_circumradius);
 	return *this;
 }
 
@@ -25,6 +34,10 @@ std::shared_ptr<Collision> Collision::copyCollision(){
 }
 
 EPAResult Collision::CheckCollision(const Collision& other, const bool& flag){
+    if (m_circumradius + other.m_circumradius < glm::length(m_position - other.m_position)) {
+		return EPAResult();
+	}
+
 	glm::vec2 direction(1.0f, 0.0f);
 
 	glm::vec2 supportA = this->Support(direction);

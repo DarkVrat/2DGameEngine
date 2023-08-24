@@ -24,6 +24,8 @@ public:
 	void Scale(const float& factor, const float& direction);
 	void Move(const glm::vec2& vec);
 
+	void updateCircumradius();
+
 	void SetPosition(const glm::vec2& position);
 	glm::vec2 GetPosition() const;
 	void SetPoints(const std::vector<glm::vec2>& points);
@@ -34,4 +36,5 @@ public:
 protected:
 	glm::vec2 m_position = glm::vec2(0, 0);
 	std::vector<glm::vec2> m_points;
+	float m_circumradius=0.f;
 };

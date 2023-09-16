@@ -85,6 +85,10 @@ void Projectile::characterCollision(Character& character){
 }
 
 void Projectile::Update(const double& duration){
+	if (m_localUpdateSync == m_updateSync) {
+		return;
+	}
+
 	for (auto currentCharacter : m_contactWithCharacters) {
 		if (currentCharacter.second) {
 			currentCharacter.second = false;
@@ -108,6 +112,7 @@ void Projectile::Update(const double& duration){
 			}
 		}
 	}
+	m_localUpdateSync = m_updateSync;
 }
 
 void Projectile::UpdateAsEntity(const double& duration){

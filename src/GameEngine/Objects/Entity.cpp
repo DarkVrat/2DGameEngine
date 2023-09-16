@@ -3,6 +3,7 @@
 #include <iostream>
 #include <glm/gtx/norm.hpp>
 
+uint8_t Entity::m_updateSync = 0;
 
 Entity::Entity(){
 	m_entityData = EntityData();
@@ -56,6 +57,14 @@ void Entity::AddForce(const glm::vec2& force){
 }
 
 void Entity::Update(const double& duration){
+	if (m_localUpdateSync == m_updateSync) {
+		return;
+	}
+
+	if (SyncBreak() > 1) {
+		std::cout << this << ": " << static_cast<int>(m_localUpdateSync) << "\t" << static_cast<int>(m_updateSync) << std::endl;
+	}
+
 	m_CurrentSpeed += m_Acceleration * static_cast<float>(duration / 1000);
 	m_Acceleration = glm::vec2(0, 0);
 	
@@ -70,4 +79,14 @@ void Entity::Update(const double& duration){
 	}
 
 	m_position += static_cast<float>(duration / 1000) * (m_entityData.MovementSpeed * m_DirectionMove + m_CurrentSpeed);
+	
+	m_localUpdateSync = m_updateSync;
+}
+
+uint8_t Entity::SyncBreak(){
+	return m_updateSync-m_localUpdateSync;
+}
+
+void Entity::UpdateSyncIncrement(){
+	m_updateSync++;
 }

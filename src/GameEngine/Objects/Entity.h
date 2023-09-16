@@ -54,12 +54,18 @@ public:
 	int GetTeam() { return m_team; }
 	void SetTeam(const int& team) { m_team=team; }
 
+	uint8_t SyncBreak();
+	static void UpdateSyncIncrement();
+
 	friend class CollisionController;
 protected:
 	EntityData m_entityData;
 
 	bool m_break=false;
 	int m_team = 0;
+
+	static uint8_t m_updateSync;
+	uint8_t m_localUpdateSync = m_updateSync;
 
 	glm::vec2 m_DirectionMove = glm::vec2(0, 0);
 	glm::vec2 m_CurrentSpeed = glm::vec2(0, 0);

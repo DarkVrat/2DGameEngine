@@ -13,6 +13,9 @@
 #define SIDES_TOP 4
 #define SIDES_BOTTOM 8
 
+#define MAX_ENTITY 12 
+#define MAX_LAYER 7
+
 class GameSpaceTree {
 public:
 	GameSpaceTree(const glm::vec2& size=glm::vec2(0,0));
@@ -41,8 +44,9 @@ public:
 private:
 	GameSpaceTree(const std::vector<glm::vec2>& points, const glm::vec2 leftBottomPoint, GameSpaceTree* parrent);
 
-	void Update(std::pair<std::shared_ptr<Entity>, std::pair<glm::vec2, uint8_t>> entity, const double& duration);
+	void Update(std::pair<std::shared_ptr<Entity>, uint8_t> entity);
 	void setNeighbours(GameSpaceTree* LeftNeighbour, GameSpaceTree* RightNeighbour, GameSpaceTree* TopNeighbour, GameSpaceTree* BottomNeighbour);
+	void DeleteEvent(GameSpaceTree* GST, std::shared_ptr<Entity> entity);
 
 	template<class T>
 	void distributionObject(const std::shared_ptr<T>& obj);
@@ -51,14 +55,14 @@ private:
 	template<class T>
 	void setSides(uint8_t& sides, const std::shared_ptr<T>& obj);
 	template<class T>
-	void setSidesByVec2(uint8_t& sides, const std::shared_ptr<T>& obj, const glm::vec2& direction);
+	void updateSides(uint8_t& sides, const std::shared_ptr<T>& obj);
 
 	bool split();
 	bool link();
 
 	Collision m_collision;
 
-	std::map<std::shared_ptr<Entity>, std::pair<glm::vec2, uint8_t>> m_Entitys;
+	std::map<std::shared_ptr<Entity>, uint8_t> m_Entitys;
 	std::map<std::shared_ptr<Object>, uint8_t> m_Objects;
 	std::map<std::shared_ptr<Collider>, uint8_t> m_Colliders;
 	std::map<std::shared_ptr<Trigger>, uint8_t> m_Triggers;
@@ -74,6 +78,7 @@ private:
 	GameSpaceTree* m_BottomNeighbour = nullptr;
 
 	GameSpaceTree* m_parrent = nullptr;
+	uint8_t m_layer;
 
 	static Collision m_collisionForCamera;
 };
@@ -105,51 +110,33 @@ template<class T>
 inline void GameSpaceTree::setSides(uint8_t& sides, const std::shared_ptr<T>& obj){
 	static_assert(std::is_base_of<Collision, T>::value, "T must be derived from Collision");
 	sides = 0;
-	if (m_LeftNeighbour != nullptr && m_LeftNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) 
+	if (m_LeftNeighbour != nullptr && m_LeftNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision)
 		sides |= SIDES_LEFT;
-	if (m_RightNeighbour != nullptr && m_RightNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) 
+	if (m_RightNeighbour != nullptr && m_RightNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision)
 		sides |= SIDES_RIGHT;
-	if (m_TopNeighbour != nullptr && m_TopNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) 
+	if (m_TopNeighbour != nullptr && m_TopNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision)
 		sides |= SIDES_TOP;
-	if (m_BottomNeighbour != nullptr && m_BottomNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) 
+	if (m_BottomNeighbour != nullptr && m_BottomNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision)
 		sides |= SIDES_BOTTOM;
 }
 
 template<class T>
-inline void GameSpaceTree::setSidesByVec2(uint8_t& sides, const std::shared_ptr<T>& obj, const glm::vec2& direction){
+inline void GameSpaceTree::updateSides(uint8_t& sides, const std::shared_ptr<T>& obj) {
 	static_assert(std::is_base_of<Collision, T>::value, "T must be derived from Collision");
-
-	if (direction.x > 0.0000001f) {
-		if (!(sides & SIDES_RIGHT) && m_RightNeighbour != nullptr && m_RightNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) {
-			m_RightNeighbour->addToTree(obj);
-			sides |= SIDES_RIGHT;
-		}
-		if ((sides & SIDES_LEFT) && m_LeftNeighbour != nullptr && !m_LeftNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision)
-			sides &= ~SIDES_LEFT;
+	if (m_LeftNeighbour != nullptr && !(sides & SIDES_LEFT) && m_LeftNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) {
+		sides |= SIDES_LEFT;
+		m_LeftNeighbour->addToTree(obj);
 	}
-	else if (direction.x < -0.0000001f) {
-		if (!(sides & SIDES_LEFT) && m_LeftNeighbour != nullptr && m_LeftNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) {
-			m_LeftNeighbour->addToTree(obj);
-			sides |= SIDES_LEFT;
-		}
-		if ((sides & SIDES_RIGHT) && m_RightNeighbour != nullptr && !m_RightNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision)
-			sides &= ~SIDES_RIGHT;
+	if (m_RightNeighbour != nullptr && !(sides & SIDES_RIGHT) && m_RightNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) {
+		sides |= SIDES_RIGHT;
+		m_RightNeighbour->addToTree(obj);
 	}
-
-	if (direction.y > 0.0000001f) {
-		if (!(sides & SIDES_TOP) && m_TopNeighbour != nullptr && m_TopNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) {
-			m_TopNeighbour->addToTree(obj);
-			sides |= SIDES_TOP;
-		}
-		if ((sides & SIDES_BOTTOM) && m_BottomNeighbour != nullptr && !m_BottomNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision)
-			sides &= ~SIDES_BOTTOM;
+	if (m_TopNeighbour != nullptr && !(sides & SIDES_TOP) && m_TopNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) {
+		sides |= SIDES_TOP;
+		m_TopNeighbour->addToTree(obj);
 	}
-	else if (direction.y < -0.0000001f) {
-		if (!(sides & SIDES_BOTTOM) && m_BottomNeighbour != nullptr && m_BottomNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) {
-			m_BottomNeighbour->addToTree(obj);
-			sides |= SIDES_BOTTOM;
-		}
-		if ((sides & SIDES_TOP) && m_TopNeighbour != nullptr && !m_TopNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision)
-			sides &= ~SIDES_TOP;
+	if (m_BottomNeighbour != nullptr && !(sides & SIDES_BOTTOM) && m_BottomNeighbour->m_collision.CheckCollision(*obj, ONLY_COLLISION).hasCollision) {
+		sides |= SIDES_BOTTOM;
+		m_BottomNeighbour->addToTree(obj);
 	}
 }

@@ -121,10 +121,10 @@ std::set<glm::ivec2> WaySearch::updateCellAround(const glm::ivec2& coords, const
 
 	if (coords.x > 0) {
 		finalSet.insert(updateCell(coords + glm::ivec2(-1, 0), coords, cellEnd));
-		if (coords.y > 0)
+		/*if (coords.y > 0)
 			finalSet.insert(updateCell(coords + glm::ivec2(-1, -1), coords, cellEnd));
 		if (coords.y < m_sizeMap.y - 1)
-			finalSet.insert(updateCell(coords + glm::ivec2(-1, 1), coords, cellEnd));
+			finalSet.insert(updateCell(coords + glm::ivec2(-1, 1), coords, cellEnd));*/
 	}
 
 	if (coords.y > 0) 
@@ -134,10 +134,10 @@ std::set<glm::ivec2> WaySearch::updateCellAround(const glm::ivec2& coords, const
 
 	if (coords.x < m_sizeMap.x - 1) {
 		finalSet.insert(updateCell(coords + glm::ivec2(1, 0), coords, cellEnd));
-		if (coords.y > 0)
+		/*if (coords.y > 0)
 			finalSet.insert(updateCell(coords + glm::ivec2(1, -1), coords, cellEnd));
 		if (coords.y < m_sizeMap.y - 1)
-			finalSet.insert(updateCell(coords + glm::ivec2(1, 1), coords, cellEnd));
+			finalSet.insert(updateCell(coords + glm::ivec2(1, 1), coords, cellEnd));*/
 	}
 
 	finalSet.erase(glm::ivec2(-1, -1));

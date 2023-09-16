@@ -27,15 +27,16 @@ void GameScene::init(const std::string& gameScene){
 	vecPol.push_back(glm::vec2(8, -8));
 	vecPol.push_back(glm::vec2(-8, -8));
 	vecPol.push_back(glm::vec2(-8, 8));
-	m_MainEntity = std::make_shared<Character>(dat1, glm::vec2(24, 24), vecPol);
+	m_MainEntity = std::make_shared<Character>(dat1, glm::vec2(504, 504), vecPol);
 	m_GSTree.addToTree(m_MainEntity);
 	m_GSTree.updatePositionCamera();
 	m_GSTree.updateSizeCamera();
 	CAMERA::setFollowingEntity(m_MainEntity);
-	CAMERA::setSettings(glm::vec2(64, 64), 0.0003, 0.0008); 
+	CAMERA::setCoords(glm::vec2(504, 504));
+	CAMERA::setSettings(glm::vec2(32, 32), 0.0003, 0.0008); 
 
 	m_project = std::make_shared<Projectile>(ProjectileData(), EntityData(1, 1, 128, 0, 1), glm::vec2(-1, -1));
-	m_project->ShapeIsCircle(8, 6);
+	m_project->ShapeIsCircle(2, 6);
 } 
  
 void GameScene::render(){
@@ -49,7 +50,6 @@ void GameScene::render(){
 }
 
 void GameScene::update(const double& duration){
-
 	if (!KEYBOARD::ifClamped(GLFW_KEY_LEFT_CONTROL)) {
 		CAMERA::update(duration);
 	}
@@ -107,19 +107,21 @@ void GameScene::update(const double& duration){
 	} 
 
 	if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+		glm::vec2 sizeCam = Camera::getSize();
+		glm::vec2 posCam = Camera::getCoords();
+		glm::vec2 posmouse = MOUSE::getPosition();
+		glm::vec2 posFromSizeCamera = posmouse * Camera::getSize() + glm::vec2(posCam.x - sizeCam.x / 2, posCam.y - sizeCam.y / 2);
 		for (int i = 0; i < 8; i++) {
 			std::shared_ptr<Projectile> bufferProjectile = std::make_shared<Projectile>(m_project->CopyProjectile());
+			glm::vec2 direction = glm::normalize(posFromSizeCamera+glm::vec2(i,i) - m_MainEntity->GetPosition());
 
-			const float angleIncrement = static_cast<float>(i)/4.f * 3.1415926f;
-			float x = cos(angleIncrement);
-			float y = sin(angleIncrement);
-
-			bufferProjectile->SetPosition(m_MainEntity->GetPosition()+glm::vec2(32*x, 32*y));
-			bufferProjectile->SetDirection(glm::vec2(x, y));
+			bufferProjectile->SetPosition(m_MainEntity->GetPosition() + glm::vec2(direction.x * 8, direction.y * 8));
+			bufferProjectile->SetDirection(direction);
 			m_GSTree.addToTree(bufferProjectile);
 		}
 	}
 
+	Entity::UpdateSyncIncrement();
 	m_GSTree.Update(duration);
 }
 

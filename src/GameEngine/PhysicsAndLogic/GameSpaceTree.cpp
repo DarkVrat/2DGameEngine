@@ -3,8 +3,6 @@
 #include "DebugRender.h"
 #include <iostream>
 
-#define MAX_ENTITY 15
-
 Collision GameSpaceTree::m_collisionForCamera;
 
 void GameSpaceTree::updatePositionCamera() {
@@ -23,29 +21,31 @@ void GameSpaceTree::updateSizeCamera() {
 
 GameSpaceTree::GameSpaceTree(const glm::vec2& size) {
 	std::vector<glm::vec2> points;
-	points.push_back(glm::vec2(0, 0));
-	points.push_back(glm::vec2(0, size.y));
-	points.push_back(glm::vec2(size.x, size.y));
-	points.push_back(glm::vec2(size.x, 0));
-	m_collision.SetPosition(glm::vec2(0, 0));
+	points.push_back(glm::vec2(-size.x / 2.f, -size.y / 2.f));
+	points.push_back(glm::vec2(-size.x / 2.f, size.y / 2.f));
+	points.push_back(glm::vec2(size.x / 2.f, size.y / 2.f));
+	points.push_back(glm::vec2(size.x / 2.f, -size.y / 2.f));
+	m_collision.SetPosition(glm::vec2(size.x / 2.f, size.y / 2.f));
 	m_collision.ShapeIsPolygon(points);
 
-	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[0] + glm::vec2(0, -32), 
-																							 points[1] + glm::vec2(0, 32),
-																							 points[1] + glm::vec2(-32, 32),
-																							 points[0] + glm::vec2(-32, -32) })), 0);
-	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[1] + glm::vec2(-32, 0),
-																							 points[2] + glm::vec2(32, 0),
-																							 points[2] + glm::vec2(32, 32),
-																							 points[1] + glm::vec2(-32, 32) })), 0);
-	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[2] + glm::vec2(0, 32),
-																							 points[3] + glm::vec2(0, -32),
-																							 points[3] + glm::vec2(32, -32),
-																							 points[2] + glm::vec2(32, 32) })), 0);
-	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(0, 0), std::vector<glm::vec2>({ points[3] + glm::vec2(32, 0),
-																							 points[0] + glm::vec2(-32, 0),
-																							 points[0] + glm::vec2(-32, -32),
-																							 points[3] + glm::vec2(32, -32) })), 0);
+	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(-16.f, size.y / 2.f), std::vector<glm::vec2>({	glm::vec2(-16.f, -size.y / 2.f - 32.f),
+																											glm::vec2(-16.f,  size.y / 2.f + 32.f),
+																											glm::vec2( 16.f,  size.y / 2.f + 32.f),
+																											glm::vec2( 16.f, -size.y / 2.f - 32.f) })), 0);
+	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(size.x / 2.f, size.y + 16.f), std::vector<glm::vec2>({	glm::vec2(-size.x / 2.f - 32.f, -16.f),
+																													glm::vec2(-size.x / 2.f - 32.f,  16.f),
+																													glm::vec2( size.x / 2.f + 32.f,  16.f),
+																													glm::vec2( size.x / 2.f + 32.f, -16.f) })), 0);
+	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(size.x + 16.f, size.y / 2.f), std::vector<glm::vec2>({	glm::vec2(-16.f, -size.y / 2.f - 32.f),
+																													glm::vec2(-16.f,  size.y / 2.f + 32.f),
+																													glm::vec2( 16.f,  size.y / 2.f + 32.f),
+																													glm::vec2( 16.f, -size.y / 2.f - 32.f) })), 0);
+	m_Colliders.emplace(std::make_shared<Collider>(glm::vec2(size.x / 2.f, -16.f), std::vector<glm::vec2>({	glm::vec2(-size.x / 2.f - 32.f, -16.f),
+																											glm::vec2(-size.x / 2.f - 32.f,  16.f),
+																											glm::vec2( size.x / 2.f + 32.f,  16.f),
+																											glm::vec2( size.x / 2.f + 32.f, -16.f) })), 0);
+
+	m_layer = 0;
 }
 
 GameSpaceTree::GameSpaceTree(const GameSpaceTree& GST) {
@@ -71,6 +71,7 @@ void GameSpaceTree::operator=(const GameSpaceTree& GST){
 	m_TopNeighbour = GST.m_TopNeighbour;
 	m_BottomNeighbour = GST.m_BottomNeighbour;
 	m_parrent = GST.m_parrent;
+	m_layer = GST.m_layer;
 }
 
 void GameSpaceTree::operator=(GameSpaceTree&& GST) noexcept{
@@ -88,6 +89,7 @@ void GameSpaceTree::operator=(GameSpaceTree&& GST) noexcept{
 	m_TopNeighbour = std::move(GST.m_TopNeighbour);
 	m_BottomNeighbour = std::move(GST.m_BottomNeighbour);
 	m_parrent = std::move(GST.m_parrent);
+	m_layer = std::move(GST.m_layer);
 }
 
 void GameSpaceTree::Render(){
@@ -124,107 +126,74 @@ void GameSpaceTree::DebugRender(){
 	DebugRender::drawShape(m_collision);
 
 	for (auto& entity : m_Entitys) {
-		if (entity.second.second & SIDES_RIGHT || entity.second.second & SIDES_BOTTOM)
-			continue;
 		DebugRender::drawShape(*entity.first, glm::vec4(1, 0, 1, 1));
 	}
 	for (auto& object : m_Objects) {
-		if (object.second & SIDES_RIGHT || object.second & SIDES_BOTTOM)
-			continue;
 		DebugRender::drawShape(*object.first, glm::vec4(0, 0, 1, 1));
 	}
 	for (auto& collider : m_Colliders) {
-		if (collider.second & SIDES_RIGHT || collider.second & SIDES_BOTTOM)
-			continue;
 		DebugRender::drawShape(*collider.first, glm::vec4(0, 1, 1, 1));
 	}
 	for (auto& trigger : m_Triggers) {
-		if (trigger.second & SIDES_RIGHT || trigger.second & SIDES_BOTTOM)
-			continue;
 		DebugRender::drawShape(*trigger.first, glm::vec4(1, 0, 0, 1));
 	}
 
 }
 
 void GameSpaceTree::Update(const double& duration){
-	if (m_LeftTopTree != nullptr && m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+	if (m_LeftTopTree != nullptr && m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision)
 		m_LeftTopTree->Update(duration);
 	if (m_LeftBottomTree != nullptr && m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
 		m_LeftBottomTree->Update(duration);
 	if (m_RightTopTree != nullptr && m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
 		m_RightTopTree->Update(duration);
-	if (m_RightBottomTree != nullptr && m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+	if (m_RightBottomTree != nullptr && m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision)
 		m_RightBottomTree->Update(duration);
 	if (m_RightBottomTree != nullptr) return;
 	
+
 	for (auto& entity : m_Entitys) {
-		if (!((SIDES_RIGHT | SIDES_BOTTOM) & entity.second.second)) {
-			entity.first->Update(duration);
-			glm::vec2 direction = entity.first->GetPosition() - entity.second.first;
-			setSidesByVec2(entity.second.second, entity.first, direction);
-			entity.second.first = entity.first->GetPosition();
-		}
+		entity.first->Update(duration);
 	}
 
 	for (auto it = m_Entitys.begin(); it != m_Entitys.end();) {
 		auto& entity = *it;
 
-		Update(entity, duration);
+		Update(entity);
 
-		glm::vec2 direction = entity.first->GetPosition() - entity.second.first;
-		setSidesByVec2(entity.second.second, entity.first, direction);
-		entity.second.first = entity.first->GetPosition();
+		if (!m_collision.CheckCollision(*entity.first).hasCollision || entity.first->IsBreak()) {
+			if (m_LeftNeighbour != nullptr) m_LeftNeighbour->DeleteEvent(this, entity.first);
+			if (m_RightNeighbour != nullptr) m_RightNeighbour->DeleteEvent(this, entity.first);
+			if (m_TopNeighbour != nullptr) m_TopNeighbour->DeleteEvent(this, entity.first);
+			if (m_BottomNeighbour != nullptr) m_BottomNeighbour->DeleteEvent(this, entity.first);
 
-		if (!m_collision.CheckCollision(*entity.first).hasCollision) {
-			if (m_LeftNeighbour != nullptr && m_LeftNeighbour->m_collision.CheckCollision(*entity.first, ONLY_COLLISION).hasCollision) 
-				m_LeftNeighbour->addToTree(entity.first);
-			if (m_RightNeighbour != nullptr && m_RightNeighbour->m_collision.CheckCollision(*entity.first, ONLY_COLLISION).hasCollision) 
-				m_RightNeighbour->addToTree(entity.first);
-			if (m_TopNeighbour != nullptr && m_TopNeighbour->m_collision.CheckCollision(*entity.first, ONLY_COLLISION).hasCollision) 
-				m_TopNeighbour->addToTree(entity.first);
-			if (m_BottomNeighbour != nullptr && m_BottomNeighbour->m_collision.CheckCollision(*entity.first, ONLY_COLLISION).hasCollision) 
-				m_BottomNeighbour->addToTree(entity.first);
-
-			it = m_Entitys.erase(it);
-			if (m_parrent != nullptr && m_parrent->link())
-				return;
-		}
-		else if (entity.first->IsBreak()) {
 			it = m_Entitys.erase(it);
 			if (m_parrent != nullptr && m_parrent->link())
 				return;
 		}
 		else {
+			updateSides(entity.second, entity.first);
 			++it;
 		}
 	}
 }
 
-void GameSpaceTree::Update(std::pair<std::shared_ptr<Entity>, std::pair<glm::vec2, uint8_t>> entityForUpdate, const double& duration){
+void GameSpaceTree::Update(std::pair<std::shared_ptr<Entity>, uint8_t> entityForUpdate) {
 	for (auto& entity : m_Entitys) {
 		if (entityForUpdate.first == entity.first) {
 			break;
 		}
-
-		if (!(entityForUpdate.second.second & entity.second.second & (SIDES_BOTTOM | SIDES_RIGHT))) {
-			CollisionController::CheckCollision(*entityForUpdate.first, *entity.first);
-		}
+		CollisionController::CheckCollision(*entityForUpdate.first, *entity.first);
 	}
 	for (auto& collider : m_Colliders) {
-		if (!(entityForUpdate.second.second & collider.second & (SIDES_BOTTOM | SIDES_RIGHT))) {
-			CollisionController::CheckCollision(*entityForUpdate.first, *collider.first);
-		}
+		CollisionController::CheckCollision(*entityForUpdate.first, *collider.first);
 	}
 	for (auto& object : m_Objects) {
-		if (!(entityForUpdate.second.second & object.second & (SIDES_BOTTOM | SIDES_RIGHT))) {
-			CollisionController::CheckCollision(*entityForUpdate.first, *object.first);
-		}
+		CollisionController::CheckCollision(*entityForUpdate.first, *object.first);
 	}
-	for (auto& trigger: m_Triggers) {
-		if (!(entityForUpdate.second.second & trigger.second & (SIDES_BOTTOM | SIDES_RIGHT))) {
-			CollisionController::CheckCollision(*entityForUpdate.first, *trigger.first);
-			if (trigger.first->getStopWork()) m_Triggers.erase(trigger.first);
-		}
+	for (auto& trigger : m_Triggers) {
+		CollisionController::CheckCollision(*entityForUpdate.first, *trigger.first);
+		if (trigger.first->getStopWork()) m_Triggers.erase(trigger.first);
 	}
 }
 
@@ -232,10 +201,11 @@ GameSpaceTree::GameSpaceTree(const std::vector<glm::vec2>& points, const glm::ve
 	m_collision.SetPosition(leftBottomPoint);
 	m_collision.ShapeIsPolygon(points);
 	m_parrent = parrent;
+	m_layer = parrent->m_layer + 1;
 }
 
 bool GameSpaceTree::split() {
-	if (m_Entitys.size() <= MAX_ENTITY) 
+	if (m_Entitys.size() <= MAX_ENTITY || m_layer >= MAX_LAYER) 
 		return false;
 
 	glm::vec2 position = m_collision.GetPosition();
@@ -280,19 +250,10 @@ bool GameSpaceTree::link() {
 	linkedMap(m_Colliders, m_LeftBottomTree->m_Colliders, m_LeftTopTree->m_Colliders, m_RightTopTree->m_Colliders, m_RightBottomTree->m_Colliders);
 	linkedMap(m_Triggers, m_LeftBottomTree->m_Triggers, m_LeftTopTree->m_Triggers, m_RightTopTree->m_Triggers, m_RightBottomTree->m_Triggers);
 
-	for (auto& entity : m_Entitys) {
-		setSides(entity.second.second, entity.first);
-		entity.second.first = entity.first->GetPosition();
-	}
-	for (auto& objects : m_Objects) {
-		setSides(objects.second, objects.first);
-	}
-	for (auto& collider : m_Colliders) {
-		setSides(collider.second, collider.first);
-	}
-	for (auto& trigger : m_Triggers) {
-		setSides(trigger.second, trigger.first);
-	}
+	for (auto& entity : m_Entitys) {setSides(entity.second, entity.first);}
+	for (auto& objects : m_Objects)	{setSides(objects.second, objects.first);}
+	for (auto& collider : m_Colliders) {setSides(collider.second, collider.first);}
+	for (auto& trigger : m_Triggers) {setSides(trigger.second, trigger.first);}
 
 	delete m_LeftBottomTree;
 	delete m_LeftTopTree;
@@ -314,11 +275,67 @@ void GameSpaceTree::setNeighbours(GameSpaceTree* LeftNeighbour, GameSpaceTree* R
 	m_BottomNeighbour = BottomNeighbour;
 }
 
+void GameSpaceTree::DeleteEvent(GameSpaceTree* GST, std::shared_ptr<Entity> entity){
+	if (m_LeftBottomTree != nullptr) {
+		m_LeftBottomTree->DeleteEvent(GST, entity);
+		m_LeftTopTree->DeleteEvent(GST, entity);
+		m_RightTopTree->DeleteEvent(GST, entity);
+		m_RightBottomTree->DeleteEvent(GST, entity);
+		return;
+	}
+
+	if (GST == m_LeftNeighbour) {
+		auto it = m_Entitys.find(entity);
+		if (it != m_Entitys.end()) {
+			if (it->first->IsBreak()) {
+				m_Entitys.erase(it);
+			}
+			else {
+				it->second = it->second & ~SIDES_LEFT;
+			}
+		}
+	}
+	else if (GST == m_RightNeighbour) {
+		auto it = m_Entitys.find(entity);
+		if (it != m_Entitys.end()) {
+			if (it->first->IsBreak()) {
+				m_Entitys.erase(it);
+			}
+			else {
+				it->second = it->second & ~SIDES_RIGHT;
+			}
+		}
+	}
+	else if(GST == m_TopNeighbour) {
+		auto it = m_Entitys.find(entity);
+		if (it != m_Entitys.end()) {
+			if (it->first->IsBreak()) {
+				m_Entitys.erase(it);
+			}
+			else {
+				it->second = it->second & ~SIDES_TOP;
+			}
+		}
+	}
+	else if(GST == m_BottomNeighbour) {
+		auto it = m_Entitys.find(entity);
+		if (it != m_Entitys.end()) {
+			if (it->first->IsBreak()) {
+				m_Entitys.erase(it);
+			}
+			else {
+				it->second = it->second & ~SIDES_BOTTOM;
+			}
+		}
+	}
+	
+}
+
 void GameSpaceTree::addToTree(const std::shared_ptr<Entity>& entity){
 	if (m_LeftBottomTree == nullptr) {
-		auto& sides = m_Entitys.emplace(entity, std::pair(entity->GetPosition(), 0)).first->second;
+		auto& sides = m_Entitys.emplace(entity, 0).first->second;
 		if (!split()) {
-			setSides(sides.second, entity);
+			setSides(sides, entity);
 		}
 	}
 	else

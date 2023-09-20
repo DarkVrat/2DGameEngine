@@ -18,7 +18,6 @@ public:
 	void clear();
 private:
 	GameSceneResources m_Resources;
-	GameSpaceTree m_GSTree;
 	std::shared_ptr<Character> m_MainEntity;
 	std::shared_ptr<Projectile> m_project;
 	bool debug = false;

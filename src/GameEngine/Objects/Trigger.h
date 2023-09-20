@@ -8,11 +8,11 @@
 class Entity;
 
 struct TriggerData{
-	TriggerData(const bool& disposible = true, const bool& forMainEntity = true, const std::function<void(Entity& entity)>& script = [](Entity& entity){})
-		:Disposable(disposible), ForMainEntity(forMainEntity), Script(script) {};
+	TriggerData(const bool& disposible = true, const bool& forSpacialEntity = true, const std::function<void(Entity& entity)>& script = [](Entity& entity){})
+		:Disposable(disposible), ForSpecialEntity(forSpacialEntity), Script(script) {};
 
 	bool Disposable;
-	bool ForMainEntity;
+	bool ForSpecialEntity;
 	std::function<void(Entity& entity)> Script;
 };
 

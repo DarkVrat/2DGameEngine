@@ -19,7 +19,7 @@ void GameScene::init(const std::string& gameScene){
 	m_Resources.load(jsonPath);
 
 	glm::vec2 sezeMap = MAP::getSize();
-	m_GSTree = GameSpaceTree(sezeMap);
+	GameSpaceTree::GlobalGST = new GameSpaceTree(sezeMap);
 
 	EntityData dat1(1.f, 20.f, 128.f, 0.7f, 50.f);
 	std::vector<glm::vec2> vecPol;
@@ -28,9 +28,10 @@ void GameScene::init(const std::string& gameScene){
 	vecPol.push_back(glm::vec2(-8, -8));
 	vecPol.push_back(glm::vec2(-8, 8));
 	m_MainEntity = std::make_shared<Character>(dat1, glm::vec2(504, 504), vecPol);
-	m_GSTree.addToTree(m_MainEntity);
-	m_GSTree.updatePositionCamera();
-	m_GSTree.updateSizeCamera();
+	m_MainEntity->setSpecial(true);
+	GameSpaceTree::GlobalGST->addToTree(m_MainEntity);
+	GameSpaceTree::GlobalGST->updatePositionCamera();
+	GameSpaceTree::GlobalGST->updateSizeCamera();
 	CAMERA::setFollowingEntity(m_MainEntity);
 	CAMERA::setCoords(glm::vec2(504, 504));
 	CAMERA::setSettings(glm::vec2(32, 32), 0.0003, 0.0008); 
@@ -43,7 +44,7 @@ void GameScene::render(){
 	
 	if (debug) {
 		DebugRender::updateUniform();
-		m_GSTree.DebugRender();
+		GameSpaceTree::GlobalGST->DebugRender();
 	}
 
 	MAP::render();
@@ -75,7 +76,7 @@ void GameScene::update(const double& duration){
 			CAMERA::setCoords(pos);
 		}
 	}
-	m_GSTree.updatePositionCamera();
+	GameSpaceTree::GlobalGST->updatePositionCamera();
 
 	if (!KEYBOARD::ifClamped(GLFW_KEY_LEFT_SHIFT)) {
 		glm::vec2 direction = glm::vec2(0, 0);
@@ -103,7 +104,7 @@ void GameScene::update(const double& duration){
 		glm::vec2 posmouse = MOUSE::getPosition();
 		glm::vec2 posFromSizeCamera = posmouse * Camera::getSize() + glm::vec2(posCam.x-sizeCam.x/2, posCam.y - sizeCam.y/2);
 
-		m_MainEntity->FollowWayTo(posFromSizeCamera);
+		m_MainEntity->SetPosition(posFromSizeCamera);
 	} 
 
 	if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
@@ -117,21 +118,22 @@ void GameScene::update(const double& duration){
 
 			bufferProjectile->SetPosition(m_MainEntity->GetPosition() + glm::vec2(direction.x * 8, direction.y * 8));
 			bufferProjectile->SetDirection(direction);
-			m_GSTree.addToTree(bufferProjectile);
+			GameSpaceTree::GlobalGST->addToTree(bufferProjectile);
 		}
 	}
 
 	Entity::UpdateSyncIncrement();
-	m_GSTree.Update(duration);
+	GameSpaceTree::GlobalGST->Update(duration);
 }
 
 void GameScene::events(){
 	float s = MOUSE::getScroll().y;
 	if (std::abs(s) > 0) {
 		CAMERA::setSize(CAMERA::getSize().x * (20-s)/20);
-		m_GSTree.updateSizeCamera();
+		GameSpaceTree::GlobalGST->updateSizeCamera();
 	}
 }
 
 void GameScene::clear(){
+	delete GameSpaceTree::GlobalGST;
 }

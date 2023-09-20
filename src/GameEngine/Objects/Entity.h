@@ -49,6 +49,7 @@ public:
 
 	virtual void Update(const double& duration);
 
+	void setSpecial(const bool& flag) { m_Special = flag; }
 	bool IsBreak() { return m_break; }
 	void SetBreak(const bool& flag) { m_break = flag; }
 	int GetTeam() { return m_team; }
@@ -61,6 +62,7 @@ public:
 protected:
 	EntityData m_entityData;
 
+	bool m_Special = false;
 	bool m_break=false;
 	int m_team = 0;
 

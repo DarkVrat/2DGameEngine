@@ -35,7 +35,7 @@ std::shared_ptr<Collision> Collision::copyCollision(){
 
 //GJK אכדמנטעל
 EPAResult Collision::CheckCollision(const Collision& other, const bool& flag){
-    if (m_circumradius + other.m_circumradius <= glm::length(m_position - other.m_position)) {
+	if (m_circumradius + other.m_circumradius <= glm::length(m_position - other.m_position)) {
 		return EPAResult();
 	}
 

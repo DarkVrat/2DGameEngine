@@ -144,16 +144,21 @@ void CollisionController::Help(Projectile& projectile, Object& object){
     }
 }
 
-void CollisionController::Help(Entity& entity, Trigger& trigger){
-    if (entity.CheckCollision(trigger, ONLY_COLLISION).hasCollision) {
+void CollisionController::Help(Entity& entity, Trigger& trigger) {
+    if ((!trigger.m_triggerData.ForSpecialEntity || entity.m_Special) && entity.CheckCollision(trigger, ONLY_COLLISION).hasCollision) {
         trigger.run(entity);
     }
 }
 
 void CollisionController::Help(Character& character, Trigger& trigger){
-    Help(static_cast<Entity&>(character), trigger);
+    if ((!trigger.m_triggerData.ForSpecialEntity || character.m_Special) && character.CheckCollision(trigger, ONLY_COLLISION).hasCollision) {
+        trigger.run(character);
+    }
 }
 
 void CollisionController::Help(Projectile& projectile, Trigger& trigger){
+    if ((!trigger.m_triggerData.ForSpecialEntity || projectile.m_Special) && projectile.CheckCollision(trigger, ONLY_COLLISION).hasCollision) {
+        trigger.run(projectile);
+    }
 }
 //--------------Функции для коллизий----------//

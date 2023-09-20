@@ -89,6 +89,11 @@ void Projectile::Update(const double& duration){
 		return;
 	}
 
+	if (SyncBreak() > 1) {
+		m_break = true;
+		return;
+	}
+
 	for (auto currentCharacter : m_contactWithCharacters) {
 		if (currentCharacter.second) {
 			currentCharacter.second = false;
@@ -116,7 +121,20 @@ void Projectile::Update(const double& duration){
 }
 
 void Projectile::UpdateAsEntity(const double& duration){
-	Entity::Update(duration);
+	m_CurrentSpeed += m_Acceleration * static_cast<float>(duration / 1000);
+	m_Acceleration = glm::vec2(0, 0);
+
+	float lenghtSpeed = glm::length(m_CurrentSpeed);
+	if (lenghtSpeed > 0.00001) {
+		glm::vec2 friction = -glm::normalize(m_CurrentSpeed) * m_entityData.Friction * static_cast<float>(duration / 1000);
+
+		if (glm::length(friction) > lenghtSpeed)
+			m_CurrentSpeed = glm::vec2(0, 0);
+		else
+			m_CurrentSpeed += friction;
+	}
+
+	m_position += static_cast<float>(duration / 1000) * (m_entityData.MovementSpeed * m_DirectionMove + m_CurrentSpeed);
 }
 
 bool Projectile::BounceIsOver(){

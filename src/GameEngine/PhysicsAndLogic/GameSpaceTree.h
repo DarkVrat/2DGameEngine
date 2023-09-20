@@ -13,7 +13,7 @@
 #define SIDES_TOP 4
 #define SIDES_BOTTOM 8
 
-#define MAX_ENTITY 12 
+#define MAX_ENTITY 12
 #define MAX_LAYER 7
 
 class GameSpaceTree {
@@ -21,6 +21,7 @@ public:
 	GameSpaceTree(const glm::vec2& size=glm::vec2(0,0));
 	GameSpaceTree(const GameSpaceTree& GST);
 	GameSpaceTree(GameSpaceTree&& GST)noexcept;
+	~GameSpaceTree();
 
 	void operator=(const GameSpaceTree& GST);
 	void operator=(GameSpaceTree&& GST)noexcept;
@@ -29,11 +30,6 @@ public:
 	void DebugRender();
 	void Update(const double& duration);
 
-	void addToTree(const Entity& entity);
-	void addToTree(const Object& object);
-	void addToTree(const Collider& collider);
-	void addToTree(const Trigger& trigger);
-
 	void addToTree(const std::shared_ptr<Entity>& entity);
 	void addToTree(const std::shared_ptr<Object>& object);
 	void addToTree(const std::shared_ptr<Collider>& collider);
@@ -41,12 +37,20 @@ public:
 
 	static void updatePositionCamera();
 	static void updateSizeCamera();
+	static GameSpaceTree* GlobalGST;
 private:
 	GameSpaceTree(const std::vector<glm::vec2>& points, const glm::vec2 leftBottomPoint, GameSpaceTree* parrent);
 
 	void Update(std::pair<std::shared_ptr<Entity>, uint8_t> entity);
 	void setNeighbours(GameSpaceTree* LeftNeighbour, GameSpaceTree* RightNeighbour, GameSpaceTree* TopNeighbour, GameSpaceTree* BottomNeighbour);
-	void DeleteEvent(GameSpaceTree* GST, std::shared_ptr<Entity> entity);
+
+	bool ifTeleport(std::pair<const std::shared_ptr<Entity>, uint8_t> entity);
+	void TeleportEvent(std::pair<const std::shared_ptr<Entity>, uint8_t> entity);
+	void TeleportEventHelp(const std::shared_ptr<Entity> entity);
+	void MovingEvent(std::pair<const std::shared_ptr<Entity>, uint8_t> entity);
+	void MovingEventHelp(const std::shared_ptr<Entity> entity);
+	void DeleteEvent(std::shared_ptr<Entity> entity);
+
 
 	template<class T>
 	void distributionObject(const std::shared_ptr<T>& obj);
@@ -78,6 +82,7 @@ private:
 	GameSpaceTree* m_BottomNeighbour = nullptr;
 
 	GameSpaceTree* m_parrent = nullptr;
+	bool m_split = false;
 	uint8_t m_layer;
 
 	static Collision m_collisionForCamera;

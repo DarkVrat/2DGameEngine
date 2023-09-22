@@ -208,9 +208,12 @@ void GameSpaceTree::Update(std::pair<std::shared_ptr<Entity>, uint8_t> entityFor
 	for (auto& object : m_Objects) {
 		CollisionController::CheckCollision(*entityForUpdate.first, *object.first);
 	}
-	for (auto& trigger : m_Triggers) {
-		CollisionController::CheckCollision(*entityForUpdate.first, *trigger.first);
-		if (trigger.first->getStopWork()) m_Triggers.erase(trigger.first);
+	for (auto it = m_Triggers.begin(); it != m_Triggers.end();) {
+		CollisionController::CheckCollision(*entityForUpdate.first, *it->first);
+		if (it->first->getStopWork()) 
+			it=m_Triggers.erase(it);
+		else
+			it++;
 	}
 }
 

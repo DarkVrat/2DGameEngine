@@ -83,11 +83,11 @@ void CollisionController::Help(Character& character1, Character& character2){
 }
 
 void CollisionController::Help(Character& character, Projectile& projectile){
-    if (projectile.m_team == projectile.m_team) return;
+    if (character.m_team == projectile.m_team) return;
 
     EPAResult result = projectile.CheckCollision(character);
     if (result.hasCollision && projectile.m_DataProjectire.m_collisionLengthForBreakage < glm::length(result.penetrationVector)) {
-        character.addDamage(2.f);
+        projectile.characterCollision(character);
     }
 }
 

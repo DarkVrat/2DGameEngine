@@ -55,6 +55,8 @@ public:
 	int GetTeam() { return m_team; }
 	void SetTeam(const int& team) { m_team=team; }
 
+	glm::vec2 getDirection() { return m_DirectionMove; }
+
 	uint8_t SyncBreak();
 	static void UpdateSyncIncrement();
 

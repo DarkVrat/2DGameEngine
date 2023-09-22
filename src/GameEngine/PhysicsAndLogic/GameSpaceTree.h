@@ -13,8 +13,8 @@
 #define SIDES_TOP 4
 #define SIDES_BOTTOM 8
 
-#define MAX_ENTITY 12
-#define MAX_LAYER 7
+#define MAX_ENTITY 4
+#define MAX_LAYER 5
 
 class GameSpaceTree {
 public:

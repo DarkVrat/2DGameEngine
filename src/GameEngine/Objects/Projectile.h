@@ -8,7 +8,6 @@
 struct ProjectileData{
 	bool m_physics = true;
 	bool m_destructible = true;
-	bool m_breakableWhenStopped = true;
 	bool m_permanentDamage = false;
 	bool m_oneTimeUse = true;
 	float m_collisionLengthForBreakage = 2.f;
@@ -18,10 +17,9 @@ struct ProjectileData{
 
 	ProjectileData() {}
 
-	ProjectileData(bool physics , bool destructible , bool breakableWhenStopped, bool permanentDamage, bool oneTimeUse , float collisionLengthForBreakage , int8_t bounceCounter , std::function<void(Projectile&, Character&)> functionForProjectile, ProjectileMoveController moveScript)
+	ProjectileData(bool physics , bool destructible , bool permanentDamage, bool oneTimeUse , float collisionLengthForBreakage , int8_t bounceCounter , std::function<void(Projectile&, Character&)> functionForProjectile, ProjectileMoveController moveScript)
 		:m_physics(physics), 
 		m_destructible(destructible), 
-		m_breakableWhenStopped(breakableWhenStopped), 
 		m_permanentDamage(permanentDamage), 
 		m_oneTimeUse(oneTimeUse), 
 		m_collisionLengthForBreakage(collisionLengthForBreakage), 
@@ -68,6 +66,7 @@ private:
 
 	ProjectileData m_DataProjectire;
 
+	int8_t m_logicByte = 0;
 	int8_t m_countBounce = 0;
 	std::map<Character*, bool> m_contactWithCharacters;
 	MoveScriptController m_controllerMove;

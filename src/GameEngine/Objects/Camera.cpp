@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "../../Managers/ConfigManager.h"
 #include "../../Managers/ResourceManager.h"
+#include "../../Control/MouseControl.h"
 
 glm::vec2 Camera::m_followingRectangle;
 float Camera::m_BaseSpeed;
@@ -71,4 +72,11 @@ void Camera::setSettings(const glm::vec2& RectangleFollowing, const float& baseS
 	m_followingRectangle.y = RectangleFollowing.y / 2;
 	m_BaseSpeed = baseSpeed;
 	m_DistanceSpeed = distanceSpeed;
+}
+
+glm::vec2 Camera::getPositionMouseFromCamera(){
+	glm::vec2 sizeCam = Camera::getSize();
+	glm::vec2 posCam = Camera::getCoords();
+	glm::vec2 posmouse = MOUSE::getPosition();
+	return posmouse * Camera::getSize() + glm::vec2(posCam.x - sizeCam.x / 2, posCam.y - sizeCam.y / 2);
 }

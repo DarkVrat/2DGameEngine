@@ -7,6 +7,7 @@
 #include "Objects/Camera.h"
 #include "PhysicsAndLogic/DebugRender.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "PhysicsAndLogic/ProjectileSpawner.h"
 
 GameScene::GameScene(){
 	
@@ -55,6 +56,8 @@ void GameScene::init(const std::string& gameScene){
 	vecProj.push_back(glm::vec2(-1, -1));
 	vecProj.push_back(glm::vec2(15, 0));
 	m_project->ShapeIsPolygon(vecProj);
+	ProjectileSpawner* spawn = new ProjectileSpawner(m_project);
+	m_MainEntity->setSpawner(spawn);
 } 
  
 void GameScene::render(){
@@ -116,36 +119,21 @@ void GameScene::update(const double& duration){
 	}
 
 	if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-		glm::vec2 sizeCam = Camera::getSize();
-		glm::vec2 posCam = Camera::getCoords();
-		glm::vec2 posmouse = MOUSE::getPosition();
-		glm::vec2 posFromSizeCamera = posmouse * Camera::getSize() + glm::vec2(posCam.x-sizeCam.x/2, posCam.y - sizeCam.y/2);
-
 		EntityData dat1(1.f, 20.f, 128.f, 0.7f, 50.f);
 		std::vector<glm::vec2> vecPol;
 		vecPol.push_back(glm::vec2(8, 8));
 		vecPol.push_back(glm::vec2(8, -8));
 		vecPol.push_back(glm::vec2(-8, -8));
 		vecPol.push_back(glm::vec2(-8, 8));
-		std::shared_ptr<Character> ent = std::make_shared<Character>(dat1, posFromSizeCamera, vecPol);
+		std::shared_ptr<Character> ent = std::make_shared<Character>(dat1, CAMERA::getPositionMouseFromCamera(), vecPol);
 		ent->SetTeam(2);
 		GameSpaceTree::GlobalGST->addToTree(ent);
 	} 
 
 	if (MOUSE::ifPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-		glm::vec2 sizeCam = Camera::getSize();
-		glm::vec2 posCam = Camera::getCoords();
-		glm::vec2 posmouse = MOUSE::getPosition();
-		glm::vec2 posFromSizeCamera = posmouse * Camera::getSize() + glm::vec2(posCam.x - sizeCam.x / 2, posCam.y - sizeCam.y / 2);
-		for (int i = 0; i < 1; i++) {
-			std::shared_ptr<Projectile> bufferProjectile = std::make_shared<Projectile>(m_project->CopyProjectile());
-			glm::vec2 direction = glm::normalize(posFromSizeCamera+glm::vec2(i,i) - m_MainEntity->GetPosition());
-
-			bufferProjectile->SetPosition(m_MainEntity->GetPosition() + glm::vec2(direction.x * 8, direction.y * 8));
-			bufferProjectile->SetDirection(direction);
-			GameSpaceTree::GlobalGST->addToTree(bufferProjectile);
-		}
-	}
+		glm::vec2 direction = glm::normalize(CAMERA::getPositionMouseFromCamera() - m_MainEntity->GetPosition());
+		GameSpaceTree::GlobalGST->addToTree(m_MainEntity->projectileSpawner()->SpawnProjectile(m_MainEntity->GetPosition(),direction)); 
+	} 
 
 	Entity::UpdateSyncIncrement();
 	GameSpaceTree::GlobalGST->Update(duration);

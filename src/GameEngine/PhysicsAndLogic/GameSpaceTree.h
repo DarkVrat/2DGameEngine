@@ -85,7 +85,8 @@ private:
 	bool m_split = false;
 	uint8_t m_layer;
 
-	static Collision m_collisionForCamera;
+	static Collision m_collisionCameraForLogic;
+	static Collision m_collisionCameraForRender;
 };
 
 template<class T>

@@ -3,6 +3,8 @@
 #include "Entity.h"
 #include "../PhysicsAndLogic/WayControlBlock.h"
 
+class ProjectileSpawner;
+
 class Character : public Entity {
 public:
 	Character();
@@ -14,6 +16,7 @@ public:
 	Character(Entity&& entity) noexcept : Entity(std::move(entity)) {}
 	Character(const Character& character);
 	Character(Character&& character) noexcept;
+	~Character() {if(m_projectileSpawner!=nullptr) delete m_projectileSpawner; }
 
 	Character operator=(const Character& character);
 	Character operator=(Character&& character)noexcept;
@@ -25,7 +28,11 @@ public:
 	float getHealt() { return m_entityData.Health; }
 	void addDamage(const float& damage);
 
+	void setSpawner(ProjectileSpawner* spawn) { m_projectileSpawner = spawn; }
+	ProjectileSpawner* projectileSpawner() { return m_projectileSpawner; }
+
 	friend class CollisionController;
 private:
 	WayControlBlock m_way;
+	ProjectileSpawner* m_projectileSpawner=nullptr;
 };

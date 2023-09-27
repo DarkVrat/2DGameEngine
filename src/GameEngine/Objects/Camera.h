@@ -5,6 +5,7 @@
 #include "Entity.h"
 #define CAMERA Camera
 
+
 class Camera {
 public:
 	static void setCoords(const glm::vec2& newCoords);
@@ -17,6 +18,8 @@ public:
 	static void update(const double& duration);
 	static void updateSize();
 	static void setSettings(const glm::vec2& RectangleFollowing, const float& baseSpeed, const float& distanceSpeed);
+
+	static glm::vec2 getPositionMouseFromCamera();
 private:
 	static glm::vec2 m_followingRectangle;
 	static float m_BaseSpeed;

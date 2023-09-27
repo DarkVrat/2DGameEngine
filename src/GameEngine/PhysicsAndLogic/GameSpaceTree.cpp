@@ -3,29 +3,33 @@
 #include "DebugRender.h"
 #include <iostream>
 
-Collision GameSpaceTree::m_collisionForCamera;
+Collision GameSpaceTree::m_collisionCameraForLogic;
+Collision GameSpaceTree::m_collisionCameraForRender;
 GameSpaceTree* GameSpaceTree::GlobalGST=new GameSpaceTree();
 
 void GameSpaceTree::updatePositionCamera() {
-	m_collisionForCamera.SetPosition(CAMERA::getCoords());
+	m_collisionCameraForLogic.SetPosition(CAMERA::getCoords());
+	m_collisionCameraForRender.SetPosition(CAMERA::getCoords());
 }
 
 void GameSpaceTree::updateSizeCamera() {
 	glm::vec2 size = CAMERA::getSize();
-	std::vector<glm::vec2> points;
-	points.push_back(glm::vec2(size.x, size.y));
-	points.push_back(glm::vec2(size.x, -size.y));
-	points.push_back(glm::vec2(-size.x, -size.y));
-	points.push_back(glm::vec2(-size.x, size.y));
-	m_collisionForCamera.ShapeIsPolygon(points);
+
+	std::vector<glm::vec2> points ={glm::vec2(size.x, size.y),
+									glm::vec2(size.x, -size.y), 
+									glm::vec2(-size.x, -size.y),
+									glm::vec2(-size.x, size.y)};
+	m_collisionCameraForLogic.ShapeIsPolygon(points);
+
+	for (auto& point : points) point /= 2.f;
+	m_collisionCameraForRender.ShapeIsPolygon(points);
 }
 
 GameSpaceTree::GameSpaceTree(const glm::vec2& size) {
-	std::vector<glm::vec2> points;
-	points.push_back(glm::vec2(-size.x / 2.f, -size.y / 2.f));
-	points.push_back(glm::vec2(-size.x / 2.f, size.y / 2.f));
-	points.push_back(glm::vec2(size.x / 2.f, size.y / 2.f));
-	points.push_back(glm::vec2(size.x / 2.f, -size.y / 2.f));
+	std::vector<glm::vec2> points ={glm::vec2(-size.x / 2.f, -size.y / 2.f), 
+									glm::vec2(-size.x / 2.f, size.y / 2.f), 
+									glm::vec2(size.x / 2.f, size.y / 2.f),
+									glm::vec2(size.x / 2.f, -size.y / 2.f)};
 	m_collision.SetPosition(glm::vec2(size.x / 2.f, size.y / 2.f));
 	m_collision.ShapeIsPolygon(points);
 
@@ -109,13 +113,13 @@ void GameSpaceTree::operator=(GameSpaceTree&& GST) noexcept {
 
 void GameSpaceTree::Render(){
 	if (m_split) {
-		if (m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		if (m_LeftBottomTree->m_collision.CheckCollision(m_collisionCameraForRender, ONLY_COLLISION).hasCollision)
 			m_LeftBottomTree->Render();
-		if (m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		if (m_LeftTopTree->m_collision.CheckCollision(m_collisionCameraForRender, ONLY_COLLISION).hasCollision)
 			m_LeftTopTree->Render();
-		if (m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		if (m_RightTopTree->m_collision.CheckCollision(m_collisionCameraForRender, ONLY_COLLISION).hasCollision)
 			m_RightTopTree->Render();
-		if (m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		if (m_RightBottomTree->m_collision.CheckCollision(m_collisionCameraForRender, ONLY_COLLISION).hasCollision)
 			m_RightBottomTree->Render();
 
 		return;
@@ -126,13 +130,13 @@ void GameSpaceTree::Render(){
 
 void GameSpaceTree::DebugRender(){
 	if (m_split) {
-		if (m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		if (m_LeftBottomTree->m_collision.CheckCollision(m_collisionCameraForRender, ONLY_COLLISION).hasCollision)
 			m_LeftBottomTree->DebugRender();
-		if (m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		if (m_LeftTopTree->m_collision.CheckCollision(m_collisionCameraForRender, ONLY_COLLISION).hasCollision)
 			m_LeftTopTree->DebugRender();
-		if (m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		if (m_RightTopTree->m_collision.CheckCollision(m_collisionCameraForRender, ONLY_COLLISION).hasCollision)
 			m_RightTopTree->DebugRender();
-		if (m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) 
+		if (m_RightBottomTree->m_collision.CheckCollision(m_collisionCameraForRender, ONLY_COLLISION).hasCollision)
 			m_RightBottomTree->DebugRender();
 
 		return;
@@ -156,10 +160,10 @@ void GameSpaceTree::DebugRender(){
 }
 
 void GameSpaceTree::Update(const double& duration){
-	if (m_split && m_LeftTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision)	m_LeftTopTree->Update(duration);
-	if (m_split && m_LeftBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision) m_LeftBottomTree->Update(duration);
-	if (m_split && m_RightTopTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision)	m_RightTopTree->Update(duration);
-	if (m_split && m_RightBottomTree->m_collision.CheckCollision(m_collisionForCamera, ONLY_COLLISION).hasCollision)m_RightBottomTree->Update(duration);
+	if (m_split && m_LeftTopTree->m_collision.CheckCollision(m_collisionCameraForLogic, ONLY_COLLISION).hasCollision)	m_LeftTopTree->Update(duration);
+	if (m_split && m_LeftBottomTree->m_collision.CheckCollision(m_collisionCameraForLogic, ONLY_COLLISION).hasCollision) m_LeftBottomTree->Update(duration);
+	if (m_split && m_RightTopTree->m_collision.CheckCollision(m_collisionCameraForLogic, ONLY_COLLISION).hasCollision)	m_RightTopTree->Update(duration);
+	if (m_split && m_RightBottomTree->m_collision.CheckCollision(m_collisionCameraForLogic, ONLY_COLLISION).hasCollision)m_RightBottomTree->Update(duration);
 	if (m_split) return;
 	
 
@@ -170,22 +174,23 @@ void GameSpaceTree::Update(const double& duration){
 	for (auto it = m_Entitys.begin(); it != m_Entitys.end();) {
 		auto& entity = *it;
 
-		if (!m_collision.CheckCollision(*entity.first).hasCollision) {
-			it++;
-
-			if (ifTeleport(entity)) 
-				TeleportEvent(entity);
-			else 
-				MovingEvent(entity);
-
-			if (m_parrent != nullptr && m_parrent->link())
-				return;
-		}
-		else if (entity.first->IsBreak()) {
+		
+		if (entity.first->IsBreak()) {
 			it++;
 			GlobalGST->DeleteEvent(entity.first);
 			if (m_parrent != nullptr && m_parrent->link())
 				return;
+		}
+		else if (!m_collision.CheckCollision(*entity.first).hasCollision) {
+			 it++;
+
+			 if (ifTeleport(entity))
+				 TeleportEvent(entity);
+			 else
+				 MovingEvent(entity);
+
+			 if (m_parrent != nullptr && m_parrent->link())
+				 return;
 		}
 		else {
 			Update(entity);
